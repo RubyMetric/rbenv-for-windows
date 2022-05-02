@@ -21,3 +21,8 @@ Comment:
 
 #>
 
+param($cmd)
+
+. $PSScriptRoot\..\lib\commands.ps1
+
+haha
