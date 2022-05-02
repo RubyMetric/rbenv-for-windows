@@ -21,22 +21,24 @@ Comment:
 
 #>
 
+# Must be at top
 param($cmd)
+
 
 . $PSScriptRoot\..\lib\commands.ps1
 
-
-
-
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
-if (! Test-Path $GLOBAL_VERSION_FILE ) {
-  New-Item $GLOBAL_VERSION_FILE
+
+if ($cmd -eq "init") {
+
+  $env:PATH += ";$env:RBENV_ROOT\rbenv\bin"
+
+  If (-Not (Test-Path $GLOBAL_VERSION_FILE) ) {
+    New-Item $GLOBAL_VERSION_FILE
+  }
+
+  $env:RBENV_VERSION_GLOBAL = Get-Content $GLOBAL_VERSION_FILE
+  $ruby_version_global_path = "$env:RBENV_ROOT\$env:RBENV_VERSION_GLOBAL\bin"
+  $env:PATH += ";$ruby_version_global_path"
 }
-
-$env:RBENV_VERSION_GLOBAL = Get-Content $GLOBAL_VERSION_FILE
-
-$ruby_version_global_path = "$env:RBENV_ROOT\$env:RBENV_VERSION_GLOBAL\bin"
-$env:PATH += ";$ruby_version_global_path"
-
-haha
