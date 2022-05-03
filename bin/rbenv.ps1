@@ -15,17 +15,15 @@
 # <2022-05-02> Create file
 # ---------------------------------------------------------------
 
-<#
-
-Comment:
-
-#>
-
 # Must be at top
 param($cmd)
 
 
 . $PSScriptRoot\..\lib\commands.ps1
+
+
+$available_commands = Rbenv-get-commands
+
 
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
@@ -41,4 +39,16 @@ if ($cmd -eq "init") {
   $env:RBENV_VERSION_GLOBAL = Get-Content $GLOBAL_VERSION_FILE
   $ruby_version_global_path = "$env:RBENV_ROOT\$env:RBENV_VERSION_GLOBAL\bin"
   $env:PATH += ";$ruby_version_global_path"
+}
+
+elseif ( @($null, '--help', '/?') -contains $cmd -or $args[0] -contains '-h') {
+   exec 'help' $args 
+}
+
+elseif ($commands -contains $cmd) {
+   exec $cmd $args 
+}
+
+else {
+  "rbenv: '$cmd' isn't a rbenv command. See 'rbenv help'."; exit 1 
 }
