@@ -21,7 +21,7 @@ function get_all_installed_versions {
 
 # Read the global.txt file
 function get_global_version() {
-    Get-Content $GLOBAL_VERSION_FILE | Out-Host
+    Get-Content $GLOBAL_VERSION_FILE
 }
 
 
