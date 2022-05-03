@@ -1,3 +1,6 @@
+# Usage: rbenv install <version>
+# Summary: Install a Ruby version using RubyInstaller2
+
 # ---------------------------------------------------------------
 # File          : rbenv-install.ps1
 # Authors       : ccmywish <ccmywish@qq.com>

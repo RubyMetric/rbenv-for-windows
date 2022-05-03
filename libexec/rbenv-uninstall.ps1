@@ -1,3 +1,6 @@
+# Usage: rbenv uninstall <version>
+# Summary: Uninstall a specific Ruby version
+
 # ---------------------------------------------------------------
 # File          : rbenv-uninstall.ps1
 # Authors       : ccmywish <ccmywish@qq.com>

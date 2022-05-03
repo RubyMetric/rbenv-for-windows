@@ -1,3 +1,6 @@
+# Usage: rbenv versions
+# Summary: List installed Ruby versions
+
 # ---------------------------------------------------------------
 # File          : rbenv-versions.ps1
 # Authors       : ccmywish <ccmywish@qq.com>
