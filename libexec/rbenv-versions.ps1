@@ -4,7 +4,7 @@
 function all_installed_versions {
     (Get-ChildItem ($env:RBENV_ROOT)) `
         # + (Get-ChildItem "$rbenvdir\shims") `
-        | Where-Object { $_.name -match '\d{1,2}\.\d{1,3}\.\d{1,4}.*?$' }
+        | Where-Object { $_.name -match '\d{1,}\.\d{1,}\.\d{1,}-\d{1,}.*?$' }
 }
 
 function list_installed_versions {
