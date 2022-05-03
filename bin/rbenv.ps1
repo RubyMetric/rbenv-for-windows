@@ -18,11 +18,11 @@
 # Must be at top
 param($cmd)
 
-
+. $PSScriptRoot\..\lib\core.ps1
 . $PSScriptRoot\..\lib\commands.ps1
 
 
-$available_commands = Rbenv-get-commands
+$available_commands = get_commands
 
 
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
@@ -42,13 +42,13 @@ if ($cmd -eq "init") {
 }
 
 elseif ( @($null, '--help', '/?') -contains $cmd -or $args[0] -contains '-h') {
-   exec 'help' $args 
+   command_exec 'help' $args
 }
 
-elseif ($commands -contains $cmd) {
-   exec $cmd $args 
+elseif ($available_commands -contains $cmd) {
+   command_exec $cmd $args
 }
 
 else {
-  "rbenv: '$cmd' isn't a rbenv command. See 'rbenv help'."; exit 1 
+  "rbenv: '$cmd' isn't a rbenv command. See 'rbenv help'."; exit 1
 }
