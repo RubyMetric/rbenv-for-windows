@@ -8,24 +8,15 @@
 #
 #               rbenv for Windows
 #
-# ----------
-# Changelog:
-#
-# ~> v0.1.0
-# <2022-05-02> Create file
 # ---------------------------------------------------------------
 
-# Must be at top
 param($cmd)
 
 . $PSScriptRoot\..\lib\core.ps1
 . $PSScriptRoot\..\lib\commands.ps1
-
+. $PSScriptRoot\..\lib\version.ps1
 
 $available_commands = get_commands
-
-
-$GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
 
 if ($cmd -eq "init") {

@@ -3,13 +3,14 @@
 
 param($cmd)
 
-function get_global_version() {
-    Get-Content $GLOBAL_VERSION_FILE | Out-Host
-}
-
 
 function set_global_version($version) {
     $shimsdir = "$env:RBENV_ROOT\shims"
+
+    if (-Not $(get_all_installed_versions) -contains $version ) {
+        Write-Error "rbenv: version $version not installed"
+        exit 1
+    }
 
     if (Test-Path $shimsdir) {
         # remove read-only attribute on link
@@ -19,7 +20,7 @@ function set_global_version($version) {
         Remove-Item $shimsdir -Recurse -Force -ErrorAction Stop
     }
 
-    New-Item -Path $shimsdir -ItemType Junction -Value $version | Out-Null
+    New-Item -Path $shimsdir -ItemType Junction -Value "$env:RBENV_ROOT\$version" | Out-Null
     $version | Out-File $GLOBAL_VERSION_FILE
 }
 

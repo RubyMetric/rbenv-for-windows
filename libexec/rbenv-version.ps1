@@ -15,4 +15,4 @@ function print_global_version {
     }
 }
 
-print_global_version
+get_current_version
