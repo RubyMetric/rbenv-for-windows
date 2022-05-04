@@ -3,21 +3,32 @@ $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 $THIS_SHELL_VERSION = $NULL
 
 
-# Try to get system Ruby first before adding
-# default modifications to path. This code works
-# because 'rbenv.ps1' sources this file at the top.
+# Try to get system Ruby first
+#
+# This code works because
+#   1. 'rbenv.ps1' sources this file at the top before
+#       adding default modifications to path.
+#   2. system Ruby installed by GUI RubyInstaller will
+#       add path to very top, it's be searched first
+#
 $system_ruby = $(Get-Command ruby)
-if ($system_ruby) {
-    Write-Host "system(v$($system_ruby.Version)  $($system_ruby.Source))"
-} else {
-    Write-Host "rbenv: No Ruby installed on your system"
-    Write-Host "       Try use rbenv install <version>"
+
+# This occurs when system Ruby is just installed
+# before path starts to work
+# Lead to false positive
+if ($system_ruby.Source  -like "$env:RBENV_ROOT*") {
+    $system_ruby = $null
 }
 
 
 
+####################
+#    Functions
+####################
+
 # Read all dir names in the RBENV_ROOT
 function get_all_installed_versions {
+
     # System.IO.DirectoryInfo
     $versions = (Get-ChildItem ($env:RBENV_ROOT)) `
                 # + (Get-ChildItem "$rbenvdir\shims") `
@@ -25,9 +36,15 @@ function get_all_installed_versions {
 
     # foreach ($ver in $versions) { $ver.Name }
 
-    $versions = $versions | ForEach-Object {
+    $versions = $versions | Sort-Object -Descending | ForEach-Object {
         $_.Name
     }
+
+    if ($system_ruby) {
+        $versions = [Collections.ArrayList] $versions
+        $versions.Insert(0, "system (v$($system_ruby.Version)  $($system_ruby.Source))")
+    }
+
     $versions
 }
 
