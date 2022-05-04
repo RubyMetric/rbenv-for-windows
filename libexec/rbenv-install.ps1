@@ -297,7 +297,10 @@ function download_rubyinstaller($version) {
 
 
 function install_msys2 {
-    download_msys2
+    $path = download_msys2
+    Write-Host "Installing..."
+    & $path in --confirm-command --accept-messages --root $env:RBENV_ROOT\msys64
+    success "MSYS2 was installed successfully!"
 }
 
 
@@ -310,11 +313,11 @@ function install_rubyinstaller($version) {
         $path = download_rubyinstaller $version
         $dir_in_7z = strip_ext (fname $path)
 
-        Write-Host "Installing ..."
+        Write-Host "Installing..."
         Expand-7zipArchive $path $env:RBENV_ROOT
 
         Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"
-        success "Install $version success!"
+        success "$version was installed successfully!"
     }
 }
 

@@ -2,7 +2,7 @@
 # File          : rbenv.ps1
 # Authors       : ccmywish <ccmywish@qq.com>
 # Created on    : <2022-05-02>
-# Last modified : <2022-05-03>
+# Last modified : <2022-05-04>
 #
 # rbenv:
 #
