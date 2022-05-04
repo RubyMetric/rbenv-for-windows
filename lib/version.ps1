@@ -3,6 +3,19 @@ $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 $THIS_SHELL_VERSION = $NULL
 
 
+# Try to get system Ruby first before adding
+# default modifications to path. This code works
+# because 'rbenv.ps1' sources this file at the top.
+$system_ruby = $(Get-Command ruby)
+if ($system_ruby) {
+    Write-Host "system(v$($system_ruby.Version)  $($system_ruby.Source))"
+} else {
+    Write-Host "rbenv: No Ruby installed on your system"
+    Write-Host "       Try use rbenv install <version>"
+}
+
+
+
 # Read all dir names in the RBENV_ROOT
 function get_all_installed_versions {
     # System.IO.DirectoryInfo

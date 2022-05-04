@@ -14,10 +14,12 @@ param($cmd)
 
 . $PSScriptRoot\..\lib\core.ps1
 . $PSScriptRoot\..\lib\commands.ps1
+
+# Here check the System Ruby and load other useful functions
 . $PSScriptRoot\..\lib\version.ps1
 
-$available_commands = get_commands
 
+$available_commands = get_commands
 
 if ($cmd -eq "init") {
 
