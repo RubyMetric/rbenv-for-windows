@@ -13,7 +13,8 @@ function update_rbenv {
 
 
 function update_msys2 {
-    ridk exec "pacman -Syu"
+    # ridk exec "pacman -Syu"
+    ridk install 2
 }
 
 
