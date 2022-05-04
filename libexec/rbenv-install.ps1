@@ -255,8 +255,34 @@ function download_with_cache($url, $cache_name, $to = $null) {
 # And we don't want to depend on other softwares too.
 #
 # We offer the best way to coordinate with RubyInstaller2
+# ------------------------------------------------------------------
+#
+# The user will download in three ways
+#   1. Download directly from official MSYS2 official repos
+#
+#   2. User uses a self assigned mirror
+#           $env:RBENV_USE_MSYS2_MIRROR = "https://abc.com"
+#
+#   3. User uses our authenticated mirrors directly
+#           $env:RBENV_USE_MSYS2_MIRROR = "CN"  # e.g. For Chinese users
+#
+# See share/msys2-mirrors.ps1
 function download_msys2 {
-    $url = "https://repo.msys2.org/distrib/msys2-x86_64-latest.exe"
+    # Get our mirror list
+    . $PSScriptRoot\..\share\msys2-mirrors.ps1
+
+    $mir = $env:RBENV_USE_MSYS2_MIRROR
+    if ($mir) {
+        if ($mir -contains "http" ) { $site_url = $mir }
+        else { $site_url = $RBENV_MSYS2_MIRRORS["$mir"] }
+        info "Using mirror for downloading MSYS2: "
+        info "$site_url"
+    } else {
+        $site_url = $RBENV_MSYS2_MIRRORS['Default']
+    }
+
+    $relative = "/distrib/msys2-x86_64-latest.exe"
+    $url = $site_url + $relative
     $cache_name = "msys2-x86_64-latest.exe"
 
     return download_with_cache $url $cache_name
@@ -267,23 +293,25 @@ function download_msys2 {
 #   1. Download directly from official RubyInstaller2 Github release
 #
 #   2. User uses a self assigned mirror
-#           $env:RBENV_USER_MIRROR = "https://abc.com/def-<version>"
+#           $env:RBENV_USE_RUBY_MIRROR = "https://abc.com/abc-<version>"
 #
 #   3. User uses our authenticated mirrors directly
-#           $env:RBENV_USER_MIRROR = "CN"  # e.g. For Chinese users
+#           $env:RBENV_USE_RUBY_MIRROR = "CN"  # e.g. For Chinese users
 #
-# See share/mirrors.ps1
+# See share/ruby-mirrors.ps1
 function download_rubyinstaller($version) {
     # Get our mirror list
-    . $PSScriptRoot\..\share\mirrors.ps1
+    . $PSScriptRoot\..\share\ruby-mirrors.ps1
 
-    $mir = $env:RBENV_USE_MIRROR
+    $mir = $env:RBENV_USE_RUBY_MIRROR
     if ($mir) {
         if ($mir -contains "http" ) { $site_url = $mir }
-        else { $site_url = $RBENV_MIRRORS["$mir"]  }
+        else { $site_url = $RBENV_RUBY_MIRRORS["$mir"] }
+        info "Using mirror for downloading RubyInstaller2: "
+        info "$site_url"
 
     } else {
-        $site_url = $RBENV_MIRRORS['Default']
+        $site_url = $RBENV_RUBY_MIRRORS['Default']
     }
 
     $url = $site_url -replace '<version>', $version
