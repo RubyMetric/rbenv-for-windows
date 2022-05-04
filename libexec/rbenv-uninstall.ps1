@@ -1,26 +1,25 @@
 # Usage: rbenv uninstall <version>
 # Summary: Uninstall a specific Ruby version
 
-# ---------------------------------------------------------------
-# File          : rbenv-uninstall.ps1
-# Authors       : ccmywish <ccmywish@qq.com>
-# Created on    : <2022-05-02>
-# Last modified : <2022-05-02>
-#
-# rbenv-uninstall:
-#
-#   It removes RubyInstaller2 or msys64.
-#
-# ----------
-# Changelog:
-#
-# ~> v0.1.0
-# <2022-05-02> Create file
-# ---------------------------------------------------------------
 
-<#
+param($cmd)
 
-Comment:
 
-#>
+function uninstall_rubyinstaller($version) {
+
+    if (-not $(get_all_installed_versions) -contains $version) {
+        warn "version $version wasn't installed."
+    } else {
+        Write-Host "Deleting..."
+        Remove-Item -Recurse -Force "$env:RBENV_ROOT\$version"
+        success "version $version was uninstalled."
+    }
+}
+
+
+if (!$cmd) {
+    rbenv help uninstall
+} else {
+    uninstall_rubyinstaller($cmd)
+}
 
