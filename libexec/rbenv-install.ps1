@@ -4,20 +4,19 @@
 
 # Usage: rbenv install <version>
 # Summary: Install a Ruby version using RubyInstaller2
+# Help: rbenv install 3.1.2-1  => Install RubyInstaller 3.1.2-1
+# rbenv install 3.1.2    => Install the latest packaged version of 3.1.2
+# rbenv install msys     => Install latest MSYS2, must-have for Gem with C extension
+# rbenv install msys2    => same with 'install msys'
 
+
+param($cmd)
 
 # e.g.
 # Scoop/1.0 (+http://scoop.sh/) PowerShell/7.2 (Windows NT 10.0; Win64; x64; Core)
 function Get-UserAgent() {
     return "Scoop/1.0 (+http://scoop.sh/) PowerShell/$($PSVersionTable.PSVersion.Major).$($PSVersionTable.PSVersion.Minor) (Windows NT $([System.Environment]::OSVersion.Version.Major).$([System.Environment]::OSVersion.Version.Minor); $(if($env:PROCESSOR_ARCHITECTURE -eq 'AMD64'){'Win64; x64; '})$(if($env:PROCESSOR_ARCHITEW6432 -eq 'AMD64'){'WOW64; '})$PSEdition)"
 }
-
-
-# paths
-function fname($path) { split-path $path -leaf }
-function strip_ext($fname) { $fname -replace '\.[^\.]*$', '' }
-function strip_filename($path) { $path -replace [regex]::escape((fname $path)) }
-function strip_fragment($url) { $url -replace (new-object uri $url).fragment }
 
 
 function cookie_header($cookies) {
@@ -28,6 +27,47 @@ function cookie_header($cookies) {
     }
 
     [string]::join(';', $vals)
+}
+
+
+# used in dl_progress
+function dl_progress_output($url, $read, $total, $console) {
+    $filename = url_remote_filename $url
+
+    # calculate current percentage done
+    $p = [math]::Round($read / $total * 100, 0)
+
+    # pre-generate LHS and RHS of progress string
+    # so we know how much space we have
+    $left  = "$filename ($(filesize $total))"
+    $right = [string]::Format("{0,3}%", $p)
+
+    # calculate remaining width for progress bar
+    $midwidth  = $console.BufferSize.Width - ($left.Length + $right.Length + 8)
+
+    # calculate how many characters are completed
+    $completed = [math]::Abs([math]::Round(($p / 100) * $midwidth, 0) - 1)
+
+    # generate dashes to symbolise completed
+    if ($completed -gt 1) {
+        $dashes = [string]::Join("", ((1..$completed) | ForEach-Object {"="}))
+    }
+
+    # this is why we calculate $completed - 1 above
+    $dashes += switch($p) {
+        100 {"="}
+        default {">"}
+    }
+
+    # the remaining characters are filled with spaces
+    $spaces = switch($dashes.Length) {
+        $midwidth {[string]::Empty}
+        default {
+            [string]::Join("", ((1..($midwidth - $dashes.Length)) | ForEach-Object {" "}))
+        }
+    }
+
+    "$left [$dashes$spaces] $right"
 }
 
 
@@ -157,12 +197,7 @@ function dl($url, $to, $cookies, $progress) {
 }
 
 
-# call-seq:
-# download
-#   dl
-#     dl_onProgress (inner defined)
-#       dl_progress (show progress)
-function download($url, $to, $cookies) {
+function download($url, $to, $cookies = $null) {
     # True of False
     $progress = [console]::isoutputredirected -eq $false -and
         $host.name -ne 'Windows PowerShell ISE Host'
@@ -177,15 +212,89 @@ function download($url, $to, $cookies) {
 }
 
 
-# Download the lates x64 msys2
+# call-seq:
+# download_with_cache (reuse cache)
+#   download (try)
+#     dl (real download work)
+#       dl_onProgress (inner defined)
+#         dl_progress (show progress)
+#           dl_progress_output (real progress work)
+function download_with_cache($url, $cache_name, $to = $null) {
+
+    $RBENV_CACHE_DIR = "$env:RBENV_ROOT\cache"
+
+    $cached = "$RBENV_CACHE_DIR\$cache_name"
+
+    if(!(Test-Path $cached)) {
+        ensure_path $RBENV_CACHE_DIR | Out-Null
+        # We don't use cookies
+        download $url "$cached.download"
+        Move-Item "$cached.download" $cached -force
+    } else {
+        write-host "Loading $(url_remote_filename $url) from cache"
+    }
+
+    if (!($null -eq $to)) {
+        Copy-Item $cached $to
+    }
+}
+
+
+# Download the latest x64 msys2
 # Sorry, I don't have time to support x86 version
 # If you want, just fork it
 #
-# Why we don't use scoop to install msys2?
+# Why we don't use scoop to install msys2 directly?
 # I must say, if you directly install via scoop,
 # RubyInstaller will cause more time to find it, that's too bad.
+# And we don't want to depend on other softwares too.
 #
 # We offer the best way to coordinate with RubyInstaller2
 function download_msys2 {
-   $url =  "https://repo.msys2.org/distrib/msys2-x86_64-latest.exe"
+   $url = "https://repo.msys2.org/distrib/msys2-x86_64-latest.exe"
+   $cache_name = "msys2-x86_64-latest.exe"
+
+   download_with_cache $url $cache_name
+}
+
+
+# The user will download in three ways
+#   1. Download directly from official RubyInstaller2 Github release
+#
+#   2. User uses a self assigned mirror
+#           $env:RBENV_USER_MIRROR = "https://abc.com/def-<version>"
+#
+#   3. User uses our authenticated mirrors directly
+#           $env:RBENV_USER_MIRROR = "CN"  # e.g. For Chinese users
+#
+# See share/mirrors.ps1
+function download_rubyinstaller($version) {
+    # Get our mirror list
+    . $PSScriptRoot\..\share\mirrors.ps1
+
+    $mir = $env:RBENV_USE_MIRROR
+    if ($mir) {
+        if ($mir -contains "http" ) { $site_url = $mir }
+        else { $site_url = $RBENV_MIRRORS["$mir"]  }
+
+    } else {
+        $site_url = $RBENV_MIRRORS['Default']
+    }
+
+    $url = $site_url -replace '<version>', $version
+
+    $cache_name = "rubyinstaller-$version-x64.7z"
+    $url += "/$cache_name"
+
+    # Write-Host "$url"
+    download_with_cache $url $cache_name
+}
+
+
+if (!$cmd) {
+    rbenv help install
+} elseif ($cmd -eq "msys" -or $cmd -eq "msys2" ) {
+    download_msys2
+} else {
+    download_rubyinstaller($cmd)
 }
