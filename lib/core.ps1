@@ -1,3 +1,7 @@
+# rbenv patch to
+#    https://github.com/ScoopInstaller/Scoop/blob/master/lib/core.ps1
+#
+
 function ensure_path($dir) {
     if(!(test-path $dir)) { mkdir $dir > $null }
     resolve-path $dir
@@ -60,4 +64,87 @@ function filesize($length) {
     } else {
         "$($length) B"
     }
+}
+
+
+function Invoke-ExternalCommand {
+    [CmdletBinding(DefaultParameterSetName = "Default")]
+    [OutputType([Boolean])]
+    param (
+        [Parameter(Mandatory = $true,
+                   Position = 0)]
+        [Alias("Path")]
+        [ValidateNotNullOrEmpty()]
+        [String]
+        $FilePath,
+        [Parameter(Position = 1)]
+        [Alias("Args")]
+        [String[]]
+        $ArgumentList,
+        [Parameter(ParameterSetName = "UseShellExecute")]
+        [Switch]
+        $RunAs,
+        [Alias("Msg")]
+        [String]
+        $Activity,
+        [Alias("cec")]
+        [Hashtable]
+        $ContinueExitCodes,
+        [Parameter(ParameterSetName = "Default")]
+        [Alias("Log")]
+        [String]
+        $LogPath
+    )
+    if ($Activity) {
+        Write-Host "$Activity " -NoNewline
+    }
+    $Process = New-Object System.Diagnostics.Process
+    $Process.StartInfo.FileName = $FilePath
+    $Process.StartInfo.Arguments = ($ArgumentList | Select-Object -Unique) -join ' '
+    $Process.StartInfo.UseShellExecute = $false
+    if ($LogPath) {
+        if ($FilePath -match '(^|\W)msiexec($|\W)') {
+            $Process.StartInfo.Arguments += " /lwe `"$LogPath`""
+        } else {
+            $Process.StartInfo.RedirectStandardOutput = $true
+            $Process.StartInfo.RedirectStandardError = $true
+        }
+    }
+    if ($RunAs) {
+        $Process.StartInfo.UseShellExecute = $true
+        $Process.StartInfo.Verb = 'RunAs'
+    }
+    try {
+        $Process.Start() | Out-Null
+    } catch {
+        if ($Activity) {
+            Write-Host "error." -ForegroundColor DarkRed
+        }
+        error $_.Exception.Message
+        return $false
+    }
+    if ($LogPath -and ($FilePath -notmatch '(^|\W)msiexec($|\W)')) {
+        Out-File -FilePath $LogPath -Encoding Default -Append -InputObject $Process.StandardOutput.ReadToEnd()
+        Out-File -FilePath $LogPath -Encoding Default -Append -InputObject $Process.StandardError.ReadToEnd()
+    }
+    $Process.WaitForExit()
+    if ($Process.ExitCode -ne 0) {
+        if ($ContinueExitCodes -and ($ContinueExitCodes.ContainsKey($Process.ExitCode))) {
+            if ($Activity) {
+                Write-Host "done." -ForegroundColor DarkYellow
+            }
+            warn $ContinueExitCodes[$Process.ExitCode]
+            return $true
+        } else {
+            if ($Activity) {
+                Write-Host "error." -ForegroundColor DarkRed
+            }
+            error "Exit code was $($Process.ExitCode)!"
+            return $false
+        }
+    }
+    if ($Activity) {
+        Write-Host "done." -ForegroundColor Green
+    }
+    return $true
 }

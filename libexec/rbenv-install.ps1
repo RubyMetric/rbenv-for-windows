@@ -236,12 +236,17 @@ function download_with_cache($url, $cache_name, $to = $null) {
 
     if (!($null -eq $to)) {
         Copy-Item $cached $to
+        return $to
     }
+
+    return $cached
 }
 
 
 # Download the latest x64 msys2
-# Sorry, I don't have time to support x86 version
+# The 64-bit version msys2 is able to build both 32-bit and 64-bit packages
+#
+# Sorry, I don't have time to support using x86 msys2
 # If you want, just fork it
 #
 # Why we don't use scoop to install msys2 directly?
@@ -251,10 +256,10 @@ function download_with_cache($url, $cache_name, $to = $null) {
 #
 # We offer the best way to coordinate with RubyInstaller2
 function download_msys2 {
-   $url = "https://repo.msys2.org/distrib/msys2-x86_64-latest.exe"
-   $cache_name = "msys2-x86_64-latest.exe"
+    $url = "https://repo.msys2.org/distrib/msys2-x86_64-latest.exe"
+    $cache_name = "msys2-x86_64-latest.exe"
 
-   download_with_cache $url $cache_name
+    return download_with_cache $url $cache_name
 }
 
 
@@ -287,14 +292,37 @@ function download_rubyinstaller($version) {
     $url += "/$cache_name"
 
     # Write-Host "$url"
-    download_with_cache $url $cache_name
+    return download_with_cache $url $cache_name
+}
+
+
+function install_msys2 {
+    download_msys2
+}
+
+
+function install_rubyinstaller($version) {
+    . $PSScriptRoot\..\lib\decompress.ps1
+
+    if ($(get_all_installed_versions) -contains $version) {
+        warn "version $version is already installed."
+    } else {
+        $path = download_rubyinstaller $version
+        $dir_in_7z = strip_ext (fname $path)
+
+        Write-Host "Installing ..."
+        Expand-7zipArchive $path $env:RBENV_ROOT
+
+        Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"
+        success "Install $version success!"
+    }
 }
 
 
 if (!$cmd) {
     rbenv help install
 } elseif ($cmd -eq "msys" -or $cmd -eq "msys2" ) {
-    download_msys2
+    install_msys2
 } else {
-    download_rubyinstaller($cmd)
+    install_rubyinstaller($cmd)
 }
