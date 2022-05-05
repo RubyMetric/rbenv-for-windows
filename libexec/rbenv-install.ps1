@@ -243,47 +243,66 @@ function download_with_cache($url, $cache_name, $to = $null) {
 }
 
 
-# Download the latest x64 msys2
-# The 64-bit version msys2 is able to build both 32-bit and 64-bit packages
+# Download the latest x64 MSYS2 built into official RubyInstaller-devkit
 #
-# Sorry, I don't have time to support using x86 msys2
-# If you want, just fork it
+# The 64-bit version MSYS2 is able to build both 32-bit and 64-bit packages
 #
-# Why we don't use scoop to install msys2 directly?
-# I must say, if you directly install via scoop,
-# RubyInstaller will cause more time to find it, that's too bad.
-# And we don't want to depend on other softwares too.
+#
+#
+# Sorry, I don't have time to support using x86 MSYS2
+# If you want, think about how to improve and fork it
+#
+#
+#
+# FAQ:
+# Q: Why we don't use scoop to install msys2 directly?
+# A:
+#   1. I must say, if you directly install it via scoop,
+#      RubyInstaller2 will cause more time to find it,
+#      that's too bad.
+#   2. We don't want to depend on other softwares too.
+#   3. A pure MSYS2 installation will let user download
+#      dependencies locally, which will cause more time
+#      and may cause other issues.
+#   4. Reuse the work results of RubyInstaller build
+#      process. oneclick/RubyInstaller2 has already done
+#      lots of trivial works for users to setup MSYS2.
+#      Everyone can thus get the same(with upstream) and
+#      a quitely stable envrionment.
 #
 # We offer the best way to coordinate with RubyInstaller2
 # ------------------------------------------------------------------
 #
-# The user will download in three ways
-#   1. Download directly from official MSYS2 official repos
-#
-#   2. User uses a self assigned mirror
-#           $env:RBENV_USE_MSYS2_MIRROR = "https://abc.com"
-#
-#   3. User uses our authenticated mirrors directly
-#           $env:RBENV_USE_MSYS2_MIRROR = "CN"  # e.g. For Chinese users
-#
-# See share/msys2-mirrors.ps1
+# See share/mirrors.ps1
 function download_msys2 {
     # Get our mirror list
-    . $PSScriptRoot\..\share\msys2-mirrors.ps1
+    . $PSScriptRoot\..\share\mirrors.ps1
 
-    $mir = $env:RBENV_USE_MSYS2_MIRROR
+    $mir = $env:RBENV_USE_MIRROR
     if ($mir) {
         if ($mir -contains "http" ) { $site_url = $mir }
-        else { $site_url = $RBENV_MSYS2_MIRRORS["$mir"] }
-        info "Using mirror for downloading MSYS2: "
+        else { $site_url = $RBENV_MIRRORS["$mir"] }
+        info "Using mirror for downloading RubyInstaller-devkit(MSYS2): "
         info "$site_url"
     } else {
-        $site_url = $RBENV_MSYS2_MIRRORS['Default']
+        $site_url = $RBENV_MIRRORS['Default']
     }
 
-    $relative = "/distrib/msys2-x86_64-latest.exe"
-    $url = $site_url + $relative
-    $cache_name = "msys2-x86_64-latest.exe"
+
+    $all = get_all_installed_versions
+
+    # use latest stable build, rather than head
+    $version = $null
+    foreach ($i in $all) {
+        if ($i -eq 'head' ) { continue }
+        $version = $i
+        break
+    }
+
+    $url = $site_url -replace '<version>', $version
+
+    $cache_name = "rubyinstaller-devkit-$version-x64.exe"
+    $url += "/$cache_name"
 
     return download_with_cache $url $cache_name
 }
@@ -293,25 +312,25 @@ function download_msys2 {
 #   1. Download directly from official RubyInstaller2 Github release
 #
 #   2. User uses a self assigned mirror
-#           $env:RBENV_USE_RUBY_MIRROR = "https://abc.com/abc-<version>"
+#           $env:RBENV_USE_MIRROR = "https://abc.com/abc-<version>"
 #
 #   3. User uses our authenticated mirrors directly
-#           $env:RBENV_USE_RUBY_MIRROR = "CN"  # e.g. For Chinese users
+#           $env:RBENV_USE_MIRROR = "CN"  # e.g. For Chinese users
 #
-# See share/ruby-mirrors.ps1
+# See share/mirrors.ps1
 function download_rubyinstaller($version) {
     # Get our mirror list
-    . $PSScriptRoot\..\share\ruby-mirrors.ps1
+    . $PSScriptRoot\..\share\mirrors.ps1
 
-    $mir = $env:RBENV_USE_RUBY_MIRROR
+    $mir = $env:RBENV_USE_MIRROR
     if ($mir) {
         if ($mir -contains "http" ) { $site_url = $mir }
-        else { $site_url = $RBENV_RUBY_MIRRORS["$mir"] }
-        info "Using mirror for downloading RubyInstaller2: "
+        else { $site_url = $RBENV_MIRRORS["$mir"] }
+        info "Using mirror for downloading RubyInstaller.7z: "
         info "$site_url"
 
     } else {
-        $site_url = $RBENV_RUBY_MIRRORS['Default']
+        $site_url = $RBENV_MIRRORS['Default']
     }
 
     $url = $site_url -replace '<version>', $version
@@ -326,8 +345,19 @@ function download_rubyinstaller($version) {
 
 function install_msys2 {
     $path = download_msys2
-    Write-Host "Installing..."
-    & $path in --confirm-command --accept-messages --root $env:RBENV_ROOT\msys64
+
+    # e.g. rubyinstaller-3.1.2-1-x64
+    $target = fname $path
+    Write-Host "Installing $target(MSYS2) ..."
+
+    $target_dir = "Ruby-x64"
+
+    # No /tasks=assocfiles,modpath,defaultutf8
+    # We just want MSYS2 inside it, so use a portable way!
+    & $path "/verysilent" "/dir=$env:RBENV_ROOT\$target_dir"
+
+    Move-Item -Recurse "$env:RBENV_ROOT\$target_dir\msys64" "$env:RBENV_ROOT"
+
     success "MSYS2 was installed successfully!"
 }
 
