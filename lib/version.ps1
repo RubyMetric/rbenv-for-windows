@@ -42,7 +42,7 @@ function get_all_installed_versions {
 
     if ($system_ruby) {
         $versions = [Collections.ArrayList] $versions
-        $versions.Insert(0, "system (v$($system_ruby.Version)  $($system_ruby.Source))")
+        $versions.Insert(0, "system  (v$($system_ruby.Version)  $($system_ruby.Source))")
     }
 
     $versions
@@ -68,19 +68,22 @@ function get_local_version {
 
 # Read the global variable
 function get_this_shell_version {
-    $THIS_SHELL_VERSION
+    $env:RBENV_VERSION
 }
 
 
-function get_current_version {
+function get_current_version_with_setmsg {
     # Check rbenv shell
     if ($cur_ver = get_this_shell_version) {
-        return $cur_ver
+
+        $setmsg = "(set by `$env:RBENV_VERSION environment variable)"
+        return $cur_ver, $setmsg
 
     # Check rbenv local
     } elseif ($cur_ver = get_local_version) {
         if (get_all_installed_versions -contains $cur_ver) {
-            return $cur_ver
+            $setmsg = "(set by $PWD\.ruby-version)"
+            return $cur_ver, $setmsg
         } else {
             Write-Error "rbenv: version $cur_ver is not installed"
         }
@@ -88,10 +91,11 @@ function get_current_version {
     # Check rbenv global
     } elseif ($cur_ver = get_global_version) {
         if (!$cur_ver) {
-            Write-Error "rbenv: No Ruby installed on your system"
-            Write-Error "       Try use rbenv install <version>"
+            Write-Error -f darkyellow "rbenv: No Ruby installed on your system"
+            Write-Error -f darkyellow "       Try use rbenv install <version>"
         } else {
-            return $cur_ver
+            $setmsg = "(set by $env:RBENV_ROOT\global.txt)"
+            return $cur_ver, $setmsg
         }
     }
 }

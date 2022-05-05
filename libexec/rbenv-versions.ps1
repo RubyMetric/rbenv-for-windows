@@ -10,11 +10,11 @@ function list_installed_and_current_versions {
         exit
     }
 
-    $version  = "$(get_current_version)"
+    $version, $setmsg = get_current_version_with_setmsg
 
     foreach ($ver in $versions) {
         if ($ver -eq $version) {
-            Write-Host "* $ver"
+            Write-Host "* $ver $setmsg"
         } else {
             Write-Host "  $ver"
         }

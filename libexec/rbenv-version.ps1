@@ -1,12 +1,11 @@
 # Usage: rbenv version
 # Summary: Show the current Ruby version and its origin
 
-function print_global_version {
-    if (! $env:RBENV_VERSION_GLOBAL) {
+function print_current_version_with_setmsg {
+    $cur_ver, $setmsg = get_current_version_with_setmsg
 
-    } else {
-        Write-Host $env:RBENV_VERSION_GLOBAL
-    }
+    Write-Host "$cur_ver $setmsg"
 }
 
-get_current_version
+
+print_current_version_with_setmsg
