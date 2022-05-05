@@ -1,6 +1,7 @@
 # ---------------------------------------------------------------
 # File          : rbenv.ps1
 # Authors       : ccmywish <ccmywish@qq.com>
+#                 Scoop Contributoers
 # Created on    : <2022-05-02>
 # Last modified : <2022-05-05>
 #
@@ -8,6 +9,14 @@
 #
 #               rbenv for Windows
 #
+# -------
+# Note:
+#
+#   I reuse a lot of code pieces from
+#
+#   <https://github.com/ScoopInstaller/Scoop>
+#
+#   Its license is "The Unlicense"
 # ---------------------------------------------------------------
 
 param($cmd)

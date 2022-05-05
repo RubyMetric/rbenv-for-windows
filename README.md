@@ -16,6 +16,12 @@ I need your help guys!
 
 <br>
 
+## NOTE
+
+At early stage, not available for users. But It's portable, be bold to try it first!
+
+<br>
+
 ## Install
 
 ```PowerShell
