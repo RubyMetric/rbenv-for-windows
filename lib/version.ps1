@@ -44,7 +44,7 @@ function auto_fix_version_for_installed($ver) {
             if ($idx -eq 0) { return $i }
         }
     }
-    Write-Host -f darkyellow "rbenv: version $ver not installed"
+    warn "rbenv: version $ver not installed"
     exit
 }
 
@@ -67,7 +67,7 @@ function auto_fix_version_for_remote($ver) {
         }
     }
 
-    Write-Host -f darkyellow "rbenv: version $ver not found"
+    warn "rbenv: version $ver not found"
     exit
 }
 
@@ -96,7 +96,7 @@ function get_all_installed_versions {
 
     if ($system_ruby) {
         $versions = [Collections.ArrayList] $versions
-        $versions.Insert(0, "system  (v$($system_ruby.Version)  $($system_ruby.Source))")
+        $versions.Insert(0, "system")
     }
 
     $versions
@@ -139,14 +139,14 @@ function get_current_version_with_setmsg {
             $setmsg = "(set by $PWD\.ruby-version)"
             return $cur_ver, $setmsg
         } else {
-            Write-Error "rbenv: version $cur_ver is not installed"
+            warn "rbenv: version $cur_ver is not installed"
         }
 
     # Check rbenv global
     } elseif ($cur_ver = get_global_version) {
         if (!$cur_ver) {
-            Write-Error -f darkyellow "rbenv: No Ruby installed on your system"
-            Write-Error -f darkyellow "       Try use rbenv install <version>"
+            warn "rbenv: No Ruby installed on your system"
+            warn "       Try use rbenv install <version>"
         } else {
             $setmsg = "(set by $env:RBENV_ROOT\global.txt)"
             return $cur_ver, $setmsg
