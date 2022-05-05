@@ -21,6 +21,8 @@ param($cmd)
 
 function set_this_shell_version($version) {
 
+    $version = auto_fix_version_for_installed $version
+
     # if already set
     if ($env:RBENV_VERSION) {
         unset_this_shell_version

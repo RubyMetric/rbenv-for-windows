@@ -335,13 +335,15 @@ function install_msys2 {
 function install_rubyinstaller($version) {
     . $PSScriptRoot\..\lib\decompress.ps1
 
+    $version = auto_fix_version_for_remote $version
+
     if ($(get_all_installed_versions) -contains $version) {
         warn "version $version is already installed."
     } else {
         $path = download_rubyinstaller $version
         $dir_in_7z = strip_ext (fname $path)
 
-        Write-Host "Installing..."
+        Write-Host "Installing $version..."
         Expand-7zipArchive $path $env:RBENV_ROOT
 
         Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"

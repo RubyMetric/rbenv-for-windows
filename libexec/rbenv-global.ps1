@@ -5,12 +5,10 @@ param($cmd)
 
 
 function set_global_version($version) {
-    $shimsdir = "$env:RBENV_ROOT\shims"
 
-    if (-Not $(get_all_installed_versions) -contains $version ) {
-        Write-Error "rbenv: version $version not installed"
-        exit 1
-    }
+    $version = auto_fix_version_for_installed $version
+
+    $shimsdir = "$env:RBENV_ROOT\shims"
 
     if (Test-Path $shimsdir) {
         # remove read-only attribute on link

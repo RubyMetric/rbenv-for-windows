@@ -1,6 +1,6 @@
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 # $LOCAL_VERSION_FILE  = $NULL
-$THIS_SHELL_VERSION = $NULL
+$env:RBENV_VERSION = $NULL
 
 
 # Try to get system Ruby first
@@ -25,6 +25,60 @@ if ($system_ruby.Source  -like "$env:RBENV_ROOT*") {
 ####################
 #    Functions
 ####################
+
+# Auto fix version number to get close to installed versions
+#
+# commands using this:
+# rbenv-global
+# rbenv-local
+# rbenv-shell
+# rbenv-uninstall
+function auto_fix_version_for_installed($ver) {
+    $versions = get_all_installed_versions
+
+    if ($versions -contains $ver) {
+        return $ver
+    } else {
+        foreach ($i in $versions)  {
+            $idx = $i.IndexOf($ver)
+            if ($idx -eq 0) { return $i }
+        }
+    }
+    Write-Host -f darkyellow "rbenv: version $ver not installed"
+    exit
+}
+
+
+# Auto fix version number to get close to all remote versions
+# i.e. versions list
+#
+# commands using this:
+# rbenv-install
+#
+function auto_fix_version_for_remote($ver) {
+    $versions = get_all_remote_versions
+
+    if ($versions -contains $ver) {
+        return $ver
+    } else {
+        foreach ($i in $versions)  {
+            $idx = $i.IndexOf($ver)
+            if ($idx -eq 0) { return $i }
+        }
+    }
+
+    Write-Host -f darkyellow "rbenv: version $ver not found"
+    exit
+}
+
+
+# Read versions list
+function get_all_remote_versions {
+    $versions = Get-Content $PSScriptRoot\..\share\versions.txt
+    $versions = $versions -split "`n"
+    $versions
+}
+
 
 # Read all dir names in the RBENV_ROOT
 function get_all_installed_versions {

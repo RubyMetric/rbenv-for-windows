@@ -7,13 +7,12 @@ param($cmd)
 
 function uninstall_rubyinstaller($version) {
 
-    if (-not $(get_all_installed_versions) -contains $version) {
-        warn "version $version wasn't installed."
-    } else {
-        Write-Host "Deleting..."
-        Remove-Item -Recurse -Force "$env:RBENV_ROOT\$version"
-        success "version $version was uninstalled."
-    }
+    $version = auto_fix_version_for_installed $version
+
+    Write-Host "Deleting $version..."
+    Remove-Item -Recurse -Force "$env:RBENV_ROOT\$version"
+    success "version $version was uninstalled."
+
 }
 
 
