@@ -1,15 +1,20 @@
 # Usage: rbenv shell [<version>]
 # Summary: Sets a shell-specific Ruby version
 # Help: rbenv shell <version>
+# rbenv shell -
 # rbenv shell --unset
 #
 # Sets a shell-specific Ruby version by setting the `RBENV_VERSION' environment variable in your shell. This version overrides local application-specific versions and the global version.
 #
-# With `--unset`, the `RBENV_VERSION` environment variable gets unset, restoring the environment to the state before the first `rbenv shell` call.
+# With `-` or `--unset`, the `RBENV_VERSION` environment variable gets unset, restoring the environment to the state before the first `rbenv shell` call.
 
 
-# Sorry, don't have time to support
+# Note,
 # rbenv shell -
+# is equal to
+# rbenv shell --set
+#
+
 
 param($cmd)
 
@@ -46,7 +51,7 @@ function unset_this_shell_version {
 
 if (!$cmd) {
     rbenv help shell
-} elseif ($cmd -eq "--unset") {
+} elseif ($cmd -eq "--unset" -or $cmd -eq '-') {
     unset_this_shell_version
 } else {
     set_this_shell_version($cmd)
