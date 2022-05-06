@@ -32,26 +32,23 @@ $available_commands = get_commands
 
 if ($cmd -eq "init") {
 
-  $env:PATH += ";$env:RBENV_ROOT\rbenv\bin"
-  $env:PATH += ";$env:RBENV_ROOT\shims\bin"
+    $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
+    $env:PATH = $rbenv_path_first + $env:PATH
 
-  If (-Not (Test-Path $GLOBAL_VERSION_FILE) ) {
-    New-Item $GLOBAL_VERSION_FILE
-  }
 
-  $env:RBENV_VERSION_GLOBAL = Get-Content $GLOBAL_VERSION_FILE
-  $ruby_version_global_path = "$env:RBENV_ROOT\$env:RBENV_VERSION_GLOBAL\bin"
-  # $env:PATH += ";$ruby_version_global_path"
+    if (-Not (Test-Path $GLOBAL_VERSION_FILE) ) {
+        New-Item $GLOBAL_VERSION_FILE
+    }
 }
 
 elseif ( @($null, '--help', '/?') -contains $cmd -or $args[0] -contains '-h') {
-   command_exec 'help' $args
+    command_exec 'help' $args
 }
 
 elseif ($available_commands -contains $cmd) {
-   command_exec $cmd $args
+    command_exec $cmd $args
 }
 
 else {
-  "rbenv: '$cmd' isn't a rbenv command. See 'rbenv help'."; exit 1
+    "rbenv: '$cmd' isn't a rbenv command. See 'rbenv help'."; exit 1
 }

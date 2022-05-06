@@ -10,7 +10,7 @@ Manage multiple Rubies on Windows.
 
 I need your help guys!
 
-1. [rbenv local: How to check .ruby-version automatically](https://github.com/ccmywish/rbenv-for-windows/issues/2)
+1. We can't have a good prompt using `starship`
 2. [Need upstream support for devkit in 7zip archive](https://github.com/ccmywish/rbenv-for-windows/issues/3)
 
 
