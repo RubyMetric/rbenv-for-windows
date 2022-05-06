@@ -153,3 +153,21 @@ function get_current_version_with_setmsg {
         }
     }
 }
+
+
+# This is called by
+# 1. rehash script
+# 2. `rbenv which` command
+#
+# Here, $cmd is a Gem or Ruby's executable name
+function get_executable_location_by_version ($cmd, $version) {
+    if (-not $cmd.EndsWith('.bat')) {
+        $cmd = $cmd + '.bat'
+    }
+
+    if ($version -eq 'system') {
+
+    } else {
+        "$env:RBENV_ROOT\$version\bin\$cmd"
+    }
+}

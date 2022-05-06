@@ -26,5 +26,5 @@ function set_global_version($version) {
 if (! $cmd) {
   get_global_version
 } else {
-  set_global_version($cmd)
+  set_global_version $cmd
 }
