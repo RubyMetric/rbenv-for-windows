@@ -18,7 +18,12 @@ function set_global_version($version) {
         Remove-Item $shimsdir -Recurse -Force -ErrorAction Stop
     }
 
-    New-Item -Path $shimsdir -ItemType Junction -Value "$env:RBENV_ROOT\$version" | Out-Null
+    if ($version -eq 'system') {
+        New-Item -Path $shimsdir -ItemType Junction -Value "$($SYSTEM_RUBY['Path'])\bin" | Out-Null
+    } else {
+        New-Item -Path $shimsdir -ItemType Junction -Value "$env:RBENV_ROOT\$version" | Out-Null
+    }
+
     $version | Out-File $GLOBAL_VERSION_FILE
 }
 
