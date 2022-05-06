@@ -11,14 +11,14 @@ $env:RBENV_VERSION = $NULL
 #   2. system Ruby installed by GUI RubyInstaller will
 #       add path to very top, it's be searched first
 #
-$system_ruby = $(Get-Command ruby)
+# $system_ruby = $(Get-Command ruby)
 
 # This occurs when system Ruby is just installed
 # before path starts to work
 # Lead to false positive
-if ($system_ruby.Source  -like "$env:RBENV_ROOT*") {
-    $system_ruby = $null
-}
+#if ($system_ruby.Source  -like "$env:RBENV_ROOT*") {
+# $system_ruby = $null
+#}
 
 
 
@@ -33,6 +33,7 @@ if ($system_ruby.Source  -like "$env:RBENV_ROOT*") {
 # rbenv-local
 # rbenv-shell
 # rbenv-uninstall
+#
 function auto_fix_version_for_installed($ver) {
     $versions = get_all_installed_versions
 
@@ -155,9 +156,10 @@ function get_current_version_with_setmsg {
 }
 
 
-# This is called by
-# 1. rehash script
-# 2. `rbenv which` command
+# This is called
+#
+# 1. directly by the rehash script
+# 2. indirectly by command rbenv which`
 #
 # Here, $cmd is a Gem or Ruby's executable name
 function get_executable_location_by_version ($cmd, $version) {
@@ -169,5 +171,26 @@ function get_executable_location_by_version ($cmd, $version) {
 
     } else {
         "$env:RBENV_ROOT\$version\bin\$cmd"
+    }
+}
+
+
+function get_rubyexe_location_by_version ($exe, $version) {
+    if (-not $exe.EndsWith('.exe')) {
+        $exe = $exe + '.exe'
+    }
+
+    if ($version -eq 'system') {
+
+    } else {
+        if ($exe -eq 'ruby.exe') {
+            "$env:RBENV_ROOT\$version\bin\ruby.exe"
+        } elseif ($exe -eq 'rubyw.exe') {
+            "$env:RBENV_ROOT\$version\bin\rubyw.exe"
+        } else {
+            Write-Host "This condition shouldn't be triggered at present"
+            Write-Host "Because we only need to return ruby.exe and rubyw.exe"
+            "$env:RBENV_ROOT\$version\bin\$exe"
+        }
     }
 }
