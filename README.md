@@ -4,6 +4,10 @@
 
 Manage multiple Rubies on Windows.
 
+If you are curious how I make it work, you can read two sections
+1. [How does it work?](#HowDoesItWork)
+2. [FAQ for developers and maintainers](#FAQforDevs)
+
 <br>
 
 ## What difficulties we have met?
@@ -85,6 +89,7 @@ However, before `3.1.0-1`, we have to download rubyinstaller-devkit-<version>.7z
 
 <br>
 
+[#HowDoesItWork]
 ## How does it work?
 
 We are a little different with how `rbenv` works. Surely, we have shims too, but our shims folder is always pointing to the global version.
@@ -153,6 +158,37 @@ name | default | description
 `$env:RBENV_VERSION` | N/A | Specifies the Ruby version to be used in a shell. <br> **This variable is set by command `rbenv shell`, not yourself!**
 `$env:RBENV_ROOT` | `C:\Ruby-on-Windows` | Defines the directory under which MSYS2, Ruby versions, shims and rbenv itself reside.
 `$env:RBENV_SYSTEM_RUBY` | No this if you don't have a Ruby installed by RubyInstaller GUI | <br> **This variable is set automatically when your terminal start, not set yourself!**
+
+
+<br>
+
+[#FAQforDevs]
+## FAQ for developers and maintainers
+
+> Q: Why multiple Rubis can share one MSYS2?
+
+A: It's decided by RubyInstaller's tool: `ridk`, it's automatically loaded every time you use Ruby.
+
+`ridk` has determined how you choose MSYS2, in this order:
+
+1. MSYS2 inside Ruby dir
+2. MSYS2 beside Ruby dir **(That's how `rbenv` works!)**
+3. C:\msys64
+4. Other ways including `scoop`
+5. ...
+
+We place a MSYS2 beside all Rubies, so every Ruby can share it. Hence I call this MSYS2 **The shared MSYS2**.
+
+> Q: If `rbenv global system`, shims have changed, am I still using the shared MSYS2 ?
+
+A: No, it won't use the shared MSYS2, instead it will search the order for its own MSYS2.
+
+E.g. if your system ruby is installed in `C:\Rubyx31-64`, it will search MSYS2 via
+
+1. MSYS2 inside Ruby dir => `C:\Rubyx31-64\msys64`
+2. MSYS2 beside Ruby dir => `C:\msys64`
+3. `C:\msys64`
+4. Others like the above order
 
 <br>
 
