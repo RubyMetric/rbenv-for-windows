@@ -18,7 +18,7 @@ I need your help guys!
 
 ## NOTE
 
-At early stage, not available for users. But It's portable, be bold to try it first!
+At middle stage, still not available for users. But It's portable, be bold to try it first!
 
 <br>
 
@@ -59,7 +59,14 @@ rbenv global 3.0.0-1
 # Check global version
 rbenv global
 
-rbenv shell 3.1.2-1
+# Set local version
+rbenv local 3.1.2-1
+
+# Check versions
+rbenv versions
+
+# Set ruby version in this shell
+rbenv shell 3.0.0-1
 
 # Show current version
 rbenv version
@@ -135,12 +142,11 @@ Like `rbenv` we also don't hook on changing location. We use shims too. Our shim
 
 ## Environment Variables
 
-- `RBENV_ROOT`: Ruby-on-Windows
-
 name | default | description
 -----|---------|------------
-`$env:RBENV_VERSION` | | Specifies the Ruby version to be used in a shell. <br> **This variable is set by command, not yourself!**
+`$env:RBENV_VERSION` | N/A | Specifies the Ruby version to be used in a shell. <br> **This variable is set by command `rbenv shell`, not yourself!**
 `$env:RBENV_ROOT` | `C:\Ruby-on-Windows` | Defines the directory under which MSYS2, Ruby versions, shims and rbenv itself reside.
+`$env:RBENV_SYSTEM_RUBY` | No this if you don't have a Ruby installed by RubyInstaller GUI | <br> **This variable is set automatically when your terminal start, not set yourself!**
 
 <br>
 
