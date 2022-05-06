@@ -20,6 +20,18 @@
 param($cmd)
 
 
+# The init process only does one things:
+#
+# => Add two paths at the front of the user PATH
+#
+if ($cmd -eq "init") {
+    $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
+    $env:PATH = $rbenv_path_first + $env:PATH
+    # return instantly so that rbenv doesn't delay the user startup too much
+    return
+}
+
+
 ########################################
 #       Inner global variables
 ########################################
@@ -29,7 +41,7 @@ $RBENV_VERSION       = "rbenv v0.1.0"
 
 # [Hash]
 # Ruby directly installed by RubyInstaller2 GUI
-# ${ version ; path }
+# ${ Version ; Path }
 $SYSTEM_RUBY         = $NULL
 
 # [String]
@@ -50,33 +62,7 @@ $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 ####################
 $available_commands = get_commands
 
-# The init process does two things:
-# 1. Add two paths at the front of the user PATH
-# 2. Record the system Ruby
-#
-if ($cmd -eq "init") {
-
-    $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
-    $env:PATH = $rbenv_path_first + $env:PATH
-
-    if (-Not (Test-Path $GLOBAL_VERSION_FILE) ) {
-        # Defined at the top
-        New-Item $GLOBAL_VERSION_FILE
-    }
-
-    # HKEY_CURRENT_USER
-    $install_keys = "HKCU:SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\"
-    # RubyInstaller is at the lase really
-    $keys = (Get-ChildItem $install_keys) | Sort-Object -Descending
-    foreach ($key in $keys) {
-        if($key.Name.StartsWith('RubyInstaller')) {
-            $SYSTEM_RUBY = @{ version = $key.DisplayVersion; path = $key.InstallLocation }
-            break
-        }
-    }
-}
-
-elseif ( @('-v', '--version') -contains $cmd -or $args[0] -contains '-v') {
+if ( @('-v', '--version') -contains $cmd -or $args[0] -contains '-v') {
     # Defined at the top of this file
     $RBENV_VERSION
 }
