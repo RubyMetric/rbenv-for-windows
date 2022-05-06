@@ -4,19 +4,6 @@
 # rbenv rehash version => rehash all for a specific version
 #
 
-<# How does this work?
-
-1. when rbenv shell is set
-
-    Running a command will search path, now, the $env:RBENV_VERSION has set.
-    It make the specified version's bin path at the top.
-
-2. when rbenv global is set
-
-
-
-#>
-
 param($cmd)
 
 $GEM_REHASH_TEMPLATE = @'

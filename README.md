@@ -85,6 +85,8 @@ There are three kind 'versions'
 2. local version  (set by `$PWD\.ruby-version`)
 3. shell version (set by `$env:RBENV_VERSION`)
 
+<br>
+
 ### global version
 
 After you setup `rbenv` your `path` will be:
