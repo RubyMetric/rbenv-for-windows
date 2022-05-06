@@ -5,7 +5,6 @@
 # Created on    : <2022-05-02>
 # Last modified : <2022-05-06>
 #
-# rbenv:
 #
 #               rbenv for Windows
 #
@@ -21,8 +20,17 @@
 
 param($cmd)
 
-$RBENV_VERSION = "rbenv v0.1.0"
+# Inner global variables
+#
+# [String]
+$RBENV_VERSION       = "rbenv v0.1.0"
+# [Hash]
+$SYSTEM_RUBY         = $NULL
+# [String]
+$GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
+
+# source our libs
 . $PSScriptRoot\..\lib\core.ps1
 . $PSScriptRoot\..\lib\commands.ps1
 . $PSScriptRoot\..\lib\version.ps1
@@ -36,8 +44,19 @@ if ($cmd -eq "init") {
     $env:PATH = $rbenv_path_first + $env:PATH
 
     if (-Not (Test-Path $GLOBAL_VERSION_FILE) ) {
-        # Defined in lib/version.ps1
+        # Defined at the top
         New-Item $GLOBAL_VERSION_FILE
+    }
+
+    # HKEY_CURRENT_USER
+    $install_keys = "HKCU:SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\"
+    # RubyInstaller is at the lase really
+    $keys = (Get-ChildItem $install_keys) | Sort-Object -Descending
+    foreach ($key in $keys) {
+        if($key.Name.StartsWith('RubyInstaller')) {
+            $SYSTEM_RUBY = @{ version = $key.DisplayVersion; path = $key.InstallLocation }
+            break
+        }
     }
 }
 

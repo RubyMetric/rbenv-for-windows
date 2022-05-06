@@ -1,35 +1,10 @@
-$GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
-
-# Try to get system Ruby first
-#
-# This code works because
-#   1. 'rbenv.ps1' sources this file at the top before
-#       adding default modifications to path.
-#   2. system Ruby installed by GUI RubyInstaller will
-#       add path to very top, it's be searched first
-#
-# $system_ruby = $(Get-Command ruby)
-
-# This occurs when system Ruby is just installed
-# before path starts to work
-# Lead to false positive
-#if ($system_ruby.Source  -like "$env:RBENV_ROOT*") {
-# $system_ruby = $null
-#}
-
-
-
-####################
-#    Functions
-####################
-
 # Auto fix version number to get close to installed versions
 #
 # commands using this:
-# rbenv-global
-# rbenv-local
-# rbenv-shell
-# rbenv-uninstall
+# 1. rbenv-global
+# 2. rbenv-local
+# 3. rbenv-shell
+# 4. rbenv-uninstall
 #
 function auto_fix_version_for_installed($ver) {
     $versions = get_all_installed_versions
@@ -51,7 +26,7 @@ function auto_fix_version_for_installed($ver) {
 # i.e. versions list
 #
 # commands using this:
-# rbenv-install
+# 1. rbenv-install
 #
 function auto_fix_version_for_remote($ver) {
     $versions = get_all_remote_versions
@@ -92,7 +67,7 @@ function get_all_installed_versions {
         $_.Name
     }
 
-    if ($system_ruby) {
+    if ($SYSTEM_RUBY) {
         $versions = [Collections.ArrayList] $versions
         $versions.Insert(0, "system")
     }
