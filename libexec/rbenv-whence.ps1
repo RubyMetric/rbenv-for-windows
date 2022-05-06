@@ -25,13 +25,14 @@ function list_who_has ($name) {
 
     foreach ($ver in $versions) {
         if ($ver -eq 'system') {
-            continue
+            $_, $where = get_system_ruby_version_and_path
+            $where = "$where\bin"
         } else {
             $where = "$env:RBENV_ROOT\$ver\bin"
-            $who = try_suffix $where $name
-            if ($who) { $whos += $who }
-            else { continue }
         }
+        $who = try_suffix $where $name
+        if ($who) { $whos += $who }
+        else { continue }
     }
 
     if ($whos.Count -gt 0) {

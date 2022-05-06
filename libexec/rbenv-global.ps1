@@ -3,7 +3,6 @@
 
 param($cmd)
 
-
 function set_global_version($version) {
 
     $version = auto_fix_version_for_installed $version
@@ -19,11 +18,12 @@ function set_global_version($version) {
     }
 
     if ($version -eq 'system') {
-        New-Item -Path $shimsdir -ItemType Junction -Value "$($SYSTEM_RUBY['Path'])\bin" | Out-Null
+        $_, $path = get_system_ruby_version_and_path
+        $path
     } else {
-        New-Item -Path $shimsdir -ItemType Junction -Value "$env:RBENV_ROOT\$version" | Out-Null
+        $path = "$env:RBENV_ROOT\$version"
     }
-
+    New-Item -Path $shimsdir -ItemType Junction -Value $path | Out-Null
     $version | Out-File $GLOBAL_VERSION_FILE
 }
 

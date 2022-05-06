@@ -26,12 +26,6 @@ param($cmd)
 # rbenv's own version
 $RBENV_VERSION       = "rbenv v0.1.0"
 
-# [Hash]
-# Ruby directly installed by RubyInstaller2 GUI
-# ${ Version ; Path }
-# Only assigned in 'rbenv init'
-# $env:RBENV_SYSTEM_RUBY
-
 # [String]
 # Where we check the global version
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
@@ -69,13 +63,21 @@ if ($cmd -eq "init") {
     } else {
 
         if ($keys.Count -gt 1) {
-            warn "rbenv: Only one system Ruby is support, but you've installed $($keys.Count)"
+            $msg = "rbenv: Only one system Ruby is support, but you've installed $($keys.Count)"
+            write-host -f darkyellow $msg
         }
-        if ($k = $keys[0]) {
-            $SYSTEM_RUBY = @{
-                Version = $k.GetValue('DisplayVersion') ;
-                Path    = $k.GetValue('InstallLocation')
-            }
+        if ($keys[0]) {
+            $k = $keys[0]
+            # NOTE!!!
+            # $env: variable are only types of String!
+            # You can't assign it a hash, array!!!
+            # So we hack it to a string split by '<=>'
+            # e.g.
+            #   3.1.2-1<=>C:\Ruby31-x64\
+            #
+            $s_rb_ver  = $k.GetValue('DisplayVersion')
+            $s_rb_path = $k.GetValue('InstallLocation')
+            $env:RBENV_SYSTEM_RUBY = "$s_rb_ver<=>$s_rb_path"
         }
     }
 
@@ -87,6 +89,9 @@ if ($cmd -eq "init") {
 ####################
 #  source our libs
 ####################
+# All sub commands will go here hence using our libs, so that
+# there is no need to load lib in every sub command file.
+
 . $PSScriptRoot\..\lib\core.ps1
 . $PSScriptRoot\..\lib\commands.ps1
 . $PSScriptRoot\..\lib\version.ps1

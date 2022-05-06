@@ -1,3 +1,8 @@
+function get_system_ruby_version_and_path {
+    $env:RBENV_SYSTEM_RUBY -split '<=>'
+}
+
+
 # Auto fix version number to get close to installed versions
 #
 # commands using this:
@@ -67,7 +72,7 @@ function get_all_installed_versions {
         $_.Name
     }
 
-    if ($SYSTEM_RUBY) {
+    if ($env:RBENV_SYSTEM_RUBY) {
         $versions = [Collections.ArrayList] $versions
         $versions.Insert(0, "system")
     }
@@ -132,14 +137,15 @@ function get_current_version_with_setmsg {
 # 1. directly by the rehash script
 # 2. indirectly by command 'rbenv which'
 #
-# Here, $cmd is a Gem's  executable name
+# Here, $cmd is a Gem's executable name
 function get_gem_bin_location_by_version ($cmd, $version) {
     if (-not $cmd.EndsWith('.bat')) {
         $cmd = $cmd + '.bat'
     }
 
     if ($version -eq 'system') {
-
+        $_, $s_rb_path =  get_system_ruby_version_and_path
+        "$s_rb_path\bin\$cmd"
     } else {
         "$env:RBENV_ROOT\$version\bin\$cmd"
     }
@@ -151,22 +157,17 @@ function get_gem_bin_location_by_version ($cmd, $version) {
 # 1. directly by the rehash script
 # 2. indirectly by command 'rbenv which'
 #
+# Now, only two exe files should be called by this
+# 'ruby.exe' and 'rubyw.exe'
 function get_ruby_exe_location_by_version ($exe, $version) {
     if (-not $exe.EndsWith('.exe')) {
         $exe = $exe + '.exe'
     }
 
     if ($version -eq 'system') {
-
+        $_, $s_rb_path =  get_system_ruby_version_and_path
+        "$s_rb_path\bin\$exe"
     } else {
-        if ($exe -eq 'ruby.exe') {
-            "$env:RBENV_ROOT\$version\bin\ruby.exe"
-        } elseif ($exe -eq 'rubyw.exe') {
-            "$env:RBENV_ROOT\$version\bin\rubyw.exe"
-        } else {
-            Write-Host "This condition shouldn't be triggered at present"
-            Write-Host "Because we only need to return ruby.exe and rubyw.exe"
-            "$env:RBENV_ROOT\$version\bin\$exe"
-        }
+        "$env:RBENV_ROOT\$version\bin\$exe"
     }
 }
