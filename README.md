@@ -81,6 +81,17 @@ rbenv uninstall 3.1.2
 rbenv update
 ```
 
+Not easy to download on Github? Use a mirror!
+
+```PowerShell
+# Use a custom mirror
+$env:RBENV_USE_MIRROR = "https://abc.com/abc-<version>"
+
+# see share/mirros.ps1
+# I have pre-defined a mirror for you guys
+$env:RBENV_USE_MIRROR = "CN"  # For Chinese users
+```
+
 **Note:**
 
 From `3.1.0-1`, we should download rubyinstaller-<version>.7z directly, no devkit! That's only about less than 15MB. **Every Ruby share one MSYS64!**
