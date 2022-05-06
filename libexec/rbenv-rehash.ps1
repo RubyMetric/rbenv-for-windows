@@ -25,7 +25,7 @@ if ($null -eq $version) {
 
 } else {
   # echo "version $version"
-  $bat = get_executable_location_by_version "$executable_bat" $version
+  $bat = get_gem_bin_location_by_version "$executable_bat" $version
 
   & $bat $args
 }
@@ -50,7 +50,7 @@ if ($null -eq $version) {
   & $PSScriptRoot\$executable_exe $args
 } else {
   # echo "version $version ruby"
-  $rubyexe = get_rubyexe_location_by_version "$executable_exe" $version
+  $rubyexe = get_ruby_exe_location_by_version "$executable_exe" $version
 
   & $rubyexe $args
 }

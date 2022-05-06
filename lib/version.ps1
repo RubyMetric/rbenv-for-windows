@@ -156,10 +156,10 @@ function get_current_version_with_setmsg {
 # This is called
 #
 # 1. directly by the rehash script
-# 2. indirectly by command rbenv which`
+# 2. indirectly by command 'rbenv which'
 #
-# Here, $cmd is a Gem or Ruby's executable name
-function get_executable_location_by_version ($cmd, $version) {
+# Here, $cmd is a Gem's  executable name
+function get_gem_bin_location_by_version ($cmd, $version) {
     if (-not $cmd.EndsWith('.bat')) {
         $cmd = $cmd + '.bat'
     }
@@ -172,7 +172,12 @@ function get_executable_location_by_version ($cmd, $version) {
 }
 
 
-function get_rubyexe_location_by_version ($exe, $version) {
+# This is called
+#
+# 1. directly by the rehash script
+# 2. indirectly by command 'rbenv which'
+#
+function get_ruby_exe_location_by_version ($exe, $version) {
     if (-not $exe.EndsWith('.exe')) {
         $exe = $exe + '.exe'
     }
