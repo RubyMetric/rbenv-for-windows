@@ -4,8 +4,4 @@
 # Summary: List all available rbenv commands
 
 
-<#
-   rehash      Rehash rbenv shims (run this after installing executables)
-#>
-
 . $PSScriptRoot\rbenv-help.ps1
