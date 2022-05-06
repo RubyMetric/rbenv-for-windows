@@ -19,7 +19,6 @@ function set_global_version($version) {
 
     if ($version -eq 'system') {
         $_, $path = get_system_ruby_version_and_path
-        $path
     } else {
         $path = "$env:RBENV_ROOT\$version"
     }
