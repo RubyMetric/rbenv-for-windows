@@ -1,7 +1,4 @@
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
-# $LOCAL_VERSION_FILE  = $NULL
-$env:RBENV_VERSION = $NULL
-
 
 # Try to get system Ruby first
 #

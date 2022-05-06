@@ -25,9 +25,9 @@ $GEM_REHASH_TEMPLATE = @'
 
 $executable_bat = "<executable_name_dot_bat>"
 
-if ($env:RBENV_VERSON) {
+if ($env:RBENV_VERSION) {
     & $PSScriptRoot\$executable_bat $args
-    return $lastExitCode
+    exit $lastExitCode
 }
 
 $version = get_local_version
@@ -51,9 +51,9 @@ $RUBYEXE_REHASH_TEMPLATE = @'
 
 $executable_exe = "<executable_name_dot_exe>"
 
-if ($env:RBENV_VERSON) {
+if ($env:RBENV_VERSION) {
     & $PSScriptRoot\$executable_exe $args
-    return $lastExitCode
+    exit $lastExitCode
 }
 
 $version = get_local_version
