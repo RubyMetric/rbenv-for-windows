@@ -77,6 +77,12 @@ rbenv uninstall 3.1.2
 rbenv update
 ```
 
+**Note:**
+
+From `3.1.0-1`, we should download rubyinstaller-<version>.7z directly, no devkit! That's only about less than 15MB. **Every Ruby share one MSYS64!**
+
+However, before `3.1.0-1`, we have to download rubyinstaller-devkit-<version>.7z, with devkit! That's about 100MB ... **Every Ruby has their own MSYS64!**
+
 <br>
 
 ## How does it work?

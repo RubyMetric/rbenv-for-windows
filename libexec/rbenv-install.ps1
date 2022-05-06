@@ -318,7 +318,30 @@ function download_msys2 {
 #           $env:RBENV_USE_MIRROR = "CN"  # e.g. For Chinese users
 #
 # See share/mirrors.ps1
-function download_rubyinstaller($version) {
+# ------------------------------------------------------------------
+#
+# From 3.1.0-1, we should download rubyinstaller-<version>.7z directly, no devkit!
+# That's only about less than 15MB. Every Ruby share one MSYS64!
+#
+# However, below 3.1.0-1, we have to download rubyinstaller-devkit-<version>.7z, with devkit!
+# That's about 100MB ... Every Ruby has their own MSYS64!
+#
+# Why?
+#
+# Note that from 3.1.0-1, all Rubies are [x64-mingw-ucrt]
+# before that, all Rubies are [x64-mingw32]
+#
+# The former uses 'ucrt64'  toolchain
+# The latter uses 'mingw64' toolchanin
+#
+# They may not be compatible, for users who just want enjoy everything ready (they can directly
+# build gems with C extensions), we have to do this.
+#
+# In brief:
+#   1. Install whole rubyinstaller-devkit.7z in 'version < 3.1.0-1'
+#   2. Install only  rubyinstaller.7z in 'version >= 3.1.0-1'
+#
+function download_ruby($version) {
     # Get our mirror list
     . $PSScriptRoot\..\share\mirrors.ps1
 
@@ -362,7 +385,7 @@ function install_msys2 {
 }
 
 
-function install_rubyinstaller($version) {
+function install_ruby($version) {
     . $PSScriptRoot\..\lib\decompress.ps1
 
     $version = auto_fix_version_for_remote $version
@@ -370,7 +393,7 @@ function install_rubyinstaller($version) {
     if ($(get_all_installed_versions) -contains $version) {
         warn "version $version is already installed."
     } else {
-        $path = download_rubyinstaller $version
+        $path = download_ruby $version
         $dir_in_7z = strip_ext (fname $path)
 
         Write-Host "Installing $version..."
@@ -387,5 +410,5 @@ if (!$cmd) {
 } elseif ($cmd -eq "msys" -or $cmd -eq "msys2" ) {
     install_msys2
 } else {
-    install_rubyinstaller($cmd)
+    install_ruby($cmd)
 }
