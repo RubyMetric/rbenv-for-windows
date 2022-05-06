@@ -11,33 +11,49 @@
 # -------
 # Note:
 #
-#   I reuse a lot of code pieces from
+#   I reuse a lot of code pieces from [scoop]
 #
-#   <https://github.com/ScoopInstaller/Scoop>
+#   <https://github.com/ScoopInstaller/Scoop> ("The Unlicense")
 #
-#   Its license is "The Unlicense"
 # ---------------------------------------------------------------
 
 param($cmd)
 
-# Inner global variables
-#
+
+########################################
+#       Inner global variables
+########################################
 # [String]
+# rbenv's own version
 $RBENV_VERSION       = "rbenv v0.1.0"
+
 # [Hash]
+# Ruby directly installed by RubyInstaller2 GUI
+# ${ version ; path }
 $SYSTEM_RUBY         = $NULL
+
 # [String]
+# Where we check the global version
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
 
-# source our libs
+####################
+#  source our libs
+####################
 . $PSScriptRoot\..\lib\core.ps1
 . $PSScriptRoot\..\lib\commands.ps1
 . $PSScriptRoot\..\lib\version.ps1
 
 
+####################
+#       main
+####################
 $available_commands = get_commands
 
+# The init process does two things:
+# 1. Add two paths at the front of the user PATH
+# 2. Record the system Ruby
+#
 if ($cmd -eq "init") {
 
     $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
@@ -69,6 +85,7 @@ elseif ( @($null, '--help', '/?') -contains $cmd -or $args[0] -contains '-h') {
     command_exec 'help' $args
 }
 
+# Delegate to sub commands
 elseif ($available_commands -contains $cmd) {
     command_exec $cmd $args
 }
