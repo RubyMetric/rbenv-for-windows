@@ -89,7 +89,7 @@ However, before `3.1.0-1`, we have to download rubyinstaller-devkit-<version>.7z
 
 <br>
 
-[#HowDoesItWork]
+<a id="HowDoesItWork"> </a>
 ## How does it work?
 
 We are a little different with how `rbenv` works. Surely, we have shims too, but our shims folder is always pointing to the global version.
@@ -159,10 +159,9 @@ name | default | description
 `$env:RBENV_ROOT` | `C:\Ruby-on-Windows` | Defines the directory under which MSYS2, Ruby versions, shims and rbenv itself reside.
 `$env:RBENV_SYSTEM_RUBY` | No this if you don't have a Ruby installed by RubyInstaller GUI | <br> **This variable is set automatically when your terminal start, not set yourself!**
 
-
 <br>
 
-[#FAQforDevs]
+<a id="FAQforDevs"> </a>
 ## FAQ for developers and maintainers
 
 > Q: Why multiple Rubis can share one MSYS2?
