@@ -1,34 +1,3 @@
-# Always check the system ruby first
-#
-# HKEY_CURRENT_USER
-$install_keys = "HKCU:SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
-# If installed multiple
-# We choose the larger one, so using Descending
-$keys = (Get-Item "$install_keys\RubyInstaller*") | Sort-Object -Descending
-
-if (!$keys) {
-    # no system Ruby at all
-} else {
-
-    if ($keys.Count -gt 1) {
-        warn "rbenv: Only one system Ruby is support, but you've installed $($keys.Count)"
-    }
-    if ($k = $keys[0]) {
-        $SYSTEM_RUBY = @{
-            Version = $k.GetValue('DisplayVersion') ;
-            Path    = $k.GetValue('InstallLocation')
-        }
-    }
-}
-
-
-# Ensure our global.txt file
-if (-Not (Test-Path $GLOBAL_VERSION_FILE) ) {
-    # Defined at the top
-    New-Item $GLOBAL_VERSION_FILE
-}
-
-
 # Auto fix version number to get close to installed versions
 #
 # commands using this:

@@ -19,19 +19,6 @@
 
 param($cmd)
 
-
-# The init process only does one things:
-#
-# => Add two paths at the front of the user PATH
-#
-if ($cmd -eq "init") {
-    $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
-    $env:PATH = $rbenv_path_first + $env:PATH
-    # return instantly so that rbenv doesn't delay the user startup too much
-    return
-}
-
-
 ########################################
 #       Inner global variables
 ########################################
@@ -42,11 +29,59 @@ $RBENV_VERSION       = "rbenv v0.1.0"
 # [Hash]
 # Ruby directly installed by RubyInstaller2 GUI
 # ${ Version ; Path }
-$SYSTEM_RUBY         = $NULL
+# Only assigned in 'rbenv init'
+# $env:RBENV_SYSTEM_RUBY
 
 # [String]
 # Where we check the global version
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
+
+
+
+# The init process does three things:
+#
+# 1. Add two paths at the front of the user PATH (almost no delay)
+# 2. Ensure global.txt (   1ms    delay)
+# 3. Check system Ruby (10ms~20ms delay)
+#
+if ($cmd -eq "init") {
+    $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
+    $env:PATH = $rbenv_path_first + $env:PATH
+
+    # Ensure our global.txt file
+    if (-Not (Test-Path $GLOBAL_VERSION_FILE) ) {
+        # Defined at the top
+        New-Item $GLOBAL_VERSION_FILE
+    }
+
+    # Always check the system ruby first
+    # Note that We only want to check it one time for sub commands to reuse,
+    # hence no repetitive overhead.
+    #
+    # HKEY_CURRENT_USER
+    $install_keys = "HKCU:SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+    # If installed multiple
+    # We choose the larger one, so using Descending
+    $keys = (Get-Item "$install_keys\RubyInstaller*") | Sort-Object -Descending
+
+    if (!$keys) {
+        # no system Ruby at all
+    } else {
+
+        if ($keys.Count -gt 1) {
+            warn "rbenv: Only one system Ruby is support, but you've installed $($keys.Count)"
+        }
+        if ($k = $keys[0]) {
+            $SYSTEM_RUBY = @{
+                Version = $k.GetValue('DisplayVersion') ;
+                Path    = $k.GetValue('InstallLocation')
+            }
+        }
+    }
+
+    # return instantly so that rbenv doesn't delay the user startup too much
+    return
+}
 
 
 ####################
