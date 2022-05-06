@@ -17,7 +17,7 @@ function list_installed_and_current_versions {
             Write-Host "* $ver $setmsg"
         } elseif ($ver -eq "system") {
             $s_rb_ver, $s_rb_path  = get_system_ruby_version_and_path
-            Write-Host "  system  ($s_rb_ver  $s_rb_path)"
+            Write-Host "  system  ($s_rb_ver $s_rb_path)"
         } else {
             Write-Host "  $ver"
         }

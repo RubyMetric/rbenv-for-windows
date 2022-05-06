@@ -1,5 +1,6 @@
 function get_system_ruby_version_and_path {
-    $env:RBENV_SYSTEM_RUBY -split '<=>'
+    $version, $path = $env:RBENV_SYSTEM_RUBY -split '<=>'
+    return $version, $path.TrimEnd('\')
 }
 
 
