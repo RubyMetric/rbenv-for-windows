@@ -280,7 +280,7 @@ function download_msys2 {
 
     $mir = $env:RBENV_USE_MIRROR
     if ($mir) {
-        if ($mir -contains "http" ) { $site_url = $mir }
+        if ($mir -contains "http" ) { $site_url = $mir.TrimEnd('/') }
         else { $site_url = $RBENV_MIRRORS["$mir"] }
         info "Using mirror for downloading RubyInstaller-devkit(MSYS2): "
         info "$site_url"
@@ -348,7 +348,7 @@ function download_ruby($version) {
 
     $mir = $env:RBENV_USE_MIRROR
     if ($mir) {
-        if ($mir -contains "http" ) { $site_url = $mir }
+        if ($mir -contains "http" ) { $site_url = $mir.TrimEnd('/') }
         else { $site_url = $RBENV_MIRRORS["$mir"] }
         info "Using mirror for downloading RubyInstaller.7z: "
         info "$site_url"
