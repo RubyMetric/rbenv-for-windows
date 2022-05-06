@@ -304,6 +304,7 @@ function download_msys2 {
     $cache_name = "rubyinstaller-devkit-$version-x64.exe"
     $url += "/$cache_name"
 
+    Write-Host "Begin downloading ..."
     return download_with_cache $url $cache_name
 }
 
@@ -362,6 +363,7 @@ function download_ruby($version) {
     $url += "/$cache_name"
 
     # Write-Host "$url"
+    Write-Host "Begin downloading ..."
     return download_with_cache $url $cache_name
 }
 
