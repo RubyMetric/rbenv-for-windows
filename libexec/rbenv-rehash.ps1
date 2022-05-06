@@ -95,8 +95,9 @@ function rehash_all ($where) {
     success "rbenv: success rehash all for $where"
 }
 
-
 if (!$cmd) {
+
+    $cur_ver, $_ = get_current_version_with_setmsg
     $where = "$env:RBENV_ROOT\shims\bin"
     rehash_all $where
 } else {

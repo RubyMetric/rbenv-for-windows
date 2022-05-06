@@ -143,7 +143,6 @@ So every time you change global version, you will directly get what `$env:RBENV_
 If we execute the command `rbenv shell 3.1.2`, we will get a new environment variable `$env:RBEVN_VERSION = 3.1.2`, and now your path will be:
 
 ```PowerShell
-$env:
 $env:RBENV_ROOT\3.1.2\bin
 
 $env:RBENV_ROOT\rbenv\bin
