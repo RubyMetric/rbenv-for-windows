@@ -110,6 +110,7 @@ function get_this_shell_version {
 }
 
 
+# (current_version  set_by_xxx)
 function get_current_version_with_setmsg {
     # Check rbenv shell
     if ($cur_ver = get_this_shell_version) {
@@ -138,10 +139,7 @@ function get_current_version_with_setmsg {
 }
 
 
-# This is called
-#
-# 1. directly by the rehash script
-# 2. indirectly by command 'rbenv which'
+# This is called by 'get_executable_location'
 #
 # Here, $cmd is a Gem's executable name
 function get_gem_bin_location_by_version ($cmd, $version) {
@@ -158,10 +156,7 @@ function get_gem_bin_location_by_version ($cmd, $version) {
 }
 
 
-# This is called
-#
-# 1. directly by the rehash script
-# 2. indirectly by command 'rbenv which'
+# This is called by 'get_executable_location'
 #
 # Now, only two exe files should be called by this
 # 'ruby.exe' and 'rubyw.exe'
@@ -182,7 +177,7 @@ function get_ruby_exe_location_by_version ($exe, $version) {
 # used by
 # 1. command 'rbenv which' (13~18ms)
 #    $cmd is a executable name
-# 2. rehash script         (6~10ms)
+# 2. rehash script         (6~8ms)
 #    $cmd is a path
 function get_executable_location ($cmd) {
 
