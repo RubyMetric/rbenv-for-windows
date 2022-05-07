@@ -13,7 +13,7 @@ If you are curious how I make it work, you can read two sections
 
 ## What difficulties we have met?
 
-1. We can't have a good prompt using `starship`
+1. [We can't have a good prompt using `starship`](https://github.com/ccmywish/rbenv-for-windows/issues/4)
 2. [Need upstream support for devkit in 7zip archive](https://github.com/ccmywish/rbenv-for-windows/issues/3)
 
 The second difficulty can be solved mostly if upstream can directly support it.
