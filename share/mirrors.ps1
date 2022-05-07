@@ -9,6 +9,11 @@
 # 2. For RubyInstaller.7z
 # https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.2-1/rubyinstaller-3.1.2-1-x64.7z
 #
+# 3. For head version
+# https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-head/rubyinstaller-head-x64.7z
+#
+# NOTE that, the CN mirror doesn't support head version
+#
 
 $RBENV_MIRRORS = @{
     Default = "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-<version>"

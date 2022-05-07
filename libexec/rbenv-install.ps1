@@ -4,10 +4,12 @@
 
 # Usage: rbenv install <version>
 # Summary: Install a Ruby version using RubyInstaller2
-# Help: rbenv install 3.1.2-1  => Install RubyInstaller 3.1.2-1
+# Help: rbenv install head     => Install the daily-updated version of the Ruby dev branch
+# rbenv install 3.1.2-1  => Install RubyInstaller 3.1.2-1
 # rbenv install 3.1.2    => Install the latest packaged version of 3.1.2
 # rbenv install msys     => Install latest MSYS2, must-have for Gem with C extension
 # rbenv install msys2    => same with 'install msys'
+# rbenv install devkit   => same with 'install msys'
 
 
 param($cmd)
@@ -362,6 +364,11 @@ function download_ruby($version) {
     $cache_name = "rubyinstaller-$version-x64.7z"
     $url += "/$cache_name"
 
+    if ($version -eq 'head') {
+        warn "rbenv: The 'head' version can only be downloaded from Github"
+        $url = "https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-head/rubyinstaller-head-x64.7z"
+    }
+
     # Write-Host "$url"
     Write-Host "Begin downloading ..."
     return download_with_cache $url $cache_name
@@ -398,18 +405,23 @@ function install_ruby($version) {
         $path = download_ruby $version
         $dir_in_7z = strip_ext (fname $path)
 
-        Write-Host "Installing $version..."
+        Write-Host "Installing $version ..."
         Expand-7zipArchive $path $env:RBENV_ROOT
 
         Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"
-        success "$version was installed successfully!"
+        success "version '$version' was installed successfully!"
+    }
+
+    if ($version -eq 'head') {
+        Remove-Item $path
+        success "success remove the 'head' version cache"
     }
 }
 
 
 if (!$cmd) {
     rbenv help install
-} elseif ($cmd -eq "msys" -or $cmd -eq "msys2" ) {
+} elseif ($cmd -eq "msys" -or $cmd -eq "msys2" -or $cmd -eq "devkit" ) {
     install_msys2
 } else {
     install_ruby($cmd)

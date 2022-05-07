@@ -3,7 +3,7 @@
 # Authors       : ccmywish <ccmywish@qq.com>
 #                 Scoop Contributoers
 # Created on    : <2022-05-02>
-# Last modified : <2022-05-07>
+# Last modified : <2022-05-08>
 #
 #
 #               rbenv for Windows
