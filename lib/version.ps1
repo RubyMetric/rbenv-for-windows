@@ -32,6 +32,8 @@ function auto_fix_version_for_installed($ver) {
         return $ver
     } else {
         foreach ($i in $versions)  {
+            $i = [string] $i
+            $ver = [string] $ver
             $idx = $i.IndexOf($ver)
             if ($idx -eq 0) { return $i }
         }
@@ -54,6 +56,8 @@ function auto_fix_version_for_remote($ver) {
         return $ver
     } else {
         foreach ($i in $versions)  {
+            $i = [string] $i
+            $ver = [string] $ver
             $idx = $i.IndexOf($ver)
             if ($idx -eq 0) { return $i }
         }

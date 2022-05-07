@@ -45,6 +45,14 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 
 ## Usage
 
+**Note:** You can omit many numbers when you specify a version!
+
+Try use
+- `rbenv global 3`
+- `rbenv local 2.`
+- `rbenv install 3.1`
+
+
 ```PowerShell
 # Install Ruby 3.1.2-1
 rbenv install 3.1.2
