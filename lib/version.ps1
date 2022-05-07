@@ -1,3 +1,8 @@
+# redefine the $GLOBAL_VERSION_FILE
+# So that rehash script can directly uses it
+$GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
+
+
 function get_system_ruby_version_and_path {
     $version, $path = $env:RBENV_SYSTEM_RUBY -split '<=>'
     return $version, $path.TrimEnd('\')
@@ -170,5 +175,32 @@ function get_ruby_exe_location_by_version ($exe, $version) {
         "$s_rb_path\bin\$exe"
     } else {
         "$env:RBENV_ROOT\$version\bin\$exe"
+    }
+}
+
+
+# used by
+# 1. command 'rbenv which' (13~18ms)
+#    $cmd is a executable name
+# 2. rehash script         (6~10ms)
+#    $cmd is a path
+function get_executable_location ($cmd) {
+
+    if ($cmd.Contains(':')) {
+        # $PSCommandPath must have a : to represent drive
+        # So this condition is used by rehash script
+        # E.g.
+        # C:Ruby-on-Windows\shims\bin\cr.ps1
+        $f = fname $cmd
+        # Now cr.ps1
+        $cmd = strip_ext $f
+    }
+
+    $version, $_ = get_current_version_with_setmsg
+
+    if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
+        get_ruby_exe_location_by_version $cmd $version
+    } else {
+        get_gem_bin_location_by_version  $cmd $version
     }
 }

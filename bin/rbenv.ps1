@@ -3,7 +3,7 @@
 # Authors       : ccmywish <ccmywish@qq.com>
 #                 Scoop Contributoers
 # Created on    : <2022-05-02>
-# Last modified : <2022-05-06>
+# Last modified : <2022-05-07>
 #
 #
 #               rbenv for Windows
@@ -28,6 +28,10 @@ $RBENV_VERSION       = "rbenv v0.1.0"
 
 # [String]
 # Where we check the global version
+#
+# Note that We redefined it at lib\version.ps1, because
+# rehash script will directly uses it. We don't want it
+# to be $env variable.
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
 
