@@ -107,7 +107,7 @@ function get_local_version {
     if (Test-Path $local_version_file) {
         return Get-Content $local_version_file
     } else {
-        return $NULL
+        return $null
     }
 }
 
@@ -159,6 +159,46 @@ function get_bin_path_for_version($version) {
 }
 
 
+# only used in list_who_has
+function try_suffix ($where, $name) {
+
+    $suffixes = @( "bat", "cmd" )
+
+    foreach ($s in $suffixes) {
+        $any = Get-ChildItem $where "$name.$s"
+        if ($any) { return "$where\$name.$s" }
+    }
+    return $null
+}
+
+
+# rbenv whence
+function list_who_has ($name) {
+
+    $versions = get_all_installed_versions
+
+    $whos = @()
+
+    foreach ($ver in $versions) {
+        if ($ver -eq 'system') {
+            $_, $where = get_system_ruby_version_and_path
+            $where = "$where\bin"
+        } else {
+            $where = "$env:RBENV_ROOT\$ver\bin"
+        }
+        $who = try_suffix $where $name
+        if ($who) { $whos += $who }
+        else { continue }
+    }
+
+    if ($whos.Count -gt 0) {
+        return $whos
+    } else {
+        return $null
+    }
+}
+
+
 
 # This is called by 'get_executable_location'
 #
@@ -174,6 +214,13 @@ function get_gem_bin_location_by_version ($cmd, $version) {
     elseif (Test-Path ($cmd + '.cmd')) { return $cmd + '.cmd' }
     else {
         Write-Host "rbenv: $cmd`: command not found"
+
+        $whos = list_who_has $cmd
+
+        if ($whos) {
+            Write-Host "`nThe '$cmd' command exists in these Ruby versions:`n"
+            Write-Output $whos
+        }
         exit -1
     }
 }

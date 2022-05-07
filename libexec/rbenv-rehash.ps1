@@ -56,7 +56,7 @@ function rehash_single_executable ($where, $name) {
 #
 # How can we achieve this? Via two steps:
 # 1. Every time you install a new Ruby version, call 'rehash_version'
-# 2. Every time you install a gem, call 'rehash_single_executable'
+# 2. Every time you install a gem, call 'rehash_single_executable_across_all_versions'
 #
 function rehash_version ($version) {
 

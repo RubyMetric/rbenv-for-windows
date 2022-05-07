@@ -43,7 +43,7 @@ function unset_this_shell_version {
         $arr = $env:PATH.split(';')
         $slicing = - ($arr.Count - 1)
         $env:PATH = $arr[$slicing..-1] -join ';'
-        $env:RBENV_VERSION = $NULL
+        $env:RBENV_VERSION = $null
 
     } else {
         # noop

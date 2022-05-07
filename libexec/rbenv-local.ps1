@@ -17,7 +17,7 @@ function set_local_version($version) {
 
 if (!$cmd) {
     $version = get_local_version
-    if ($version -eq $NULL) {
+    if ($version -eq $null) {
         Write-Host "rbenv: no local version configured for this directory"
     } else {
         $version
