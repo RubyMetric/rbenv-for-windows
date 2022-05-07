@@ -175,7 +175,8 @@ name | default | description
 -----|---------|------------
 `$env:RBENV_VERSION` | N/A | Specifies the Ruby version to be used in a shell. <br> **This variable is set by command `rbenv shell`, not yourself!**
 `$env:RBENV_ROOT` | `C:\Ruby-on-Windows` | Defines the directory under which MSYS2, Ruby versions, shims and rbenv itself reside.
-`$env:RBENV_SYSTEM_RUBY` | No this if you don't have a Ruby installed by RubyInstaller GUI | <br> **This variable is set automatically when your terminal start, not set yourself!**
+`$env:RBENV_SYSTEM_RUBY` | No this if you don't have a Ruby installed by RubyInstaller GUI | **This variable is set automatically when your terminal start, not set yourself!**
+`$env:RUBYLIB` | `$env:RBENV_ROOT\rbenv\share` | **This variable is set automatically when your terminal start, not set yourself!**
 
 <br>
 
