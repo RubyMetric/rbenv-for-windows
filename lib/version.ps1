@@ -2,6 +2,9 @@
 # So that rehash script can directly uses it
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
+# We must source it again, to make our rehash script can directly use it
+. $PSScriptRoot\..\lib\core.ps1
+
 
 function get_system_ruby_version_and_path {
     $version, $path = $env:RBENV_SYSTEM_RUBY -split '<=>'
