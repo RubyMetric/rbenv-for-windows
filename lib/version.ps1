@@ -207,11 +207,12 @@ function get_gem_bin_location_by_version ($cmd, $version) {
 
     $where = get_bin_path_for_version $version
 
-    $cmd = $cmd.TrimEnd('.bat')
-    $cmd = $cmd.TrimEnd('.cmd')
+    # Not use TrimEnd!!
+    $cmd = $cmd -replace '.bat$', ''
+    $cmd = $cmd -replace '.cmd$', ''
 
-    if (Test-Path ($cmd + '.bat')) { return $cmd + '.bat' }
-    elseif (Test-Path ($cmd + '.cmd')) { return $cmd + '.cmd' }
+    if (Test-Path ("$where\$cmd" + '.bat')) { return "$where\$cmd.bat" }
+    elseif (Test-Path ("$where\$cmd" + '.cmd')) { return "$where\$cmd.cmd" }
     else {
         Write-Host "rbenv: $cmd`: command not found"
 
