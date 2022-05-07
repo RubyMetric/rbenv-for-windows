@@ -36,16 +36,21 @@ $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
 
 
-# The init process does four things:
+# The init process does 4 things:
 #
 # 1. Add two paths at the front of the user PATH (almost no delay)
+#    and one path to RUBYLIB
 # 2. Ensure global.txt (   1ms    delay)
 # 3. Check system Ruby (10ms~20ms delay)
 # 4. If has system Ruby, rehash it just only one time (50ms, but only when you first setup rbenv)
 #
+
 if ($cmd -eq "init") {
     $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
     $env:PATH = $rbenv_path_first + $env:PATH
+
+    # For RubyGems plugin to work
+    $env:RUBYLIB += "$env:RBENV_ROOT\rbenv\share"
 
     # Ensure our global.txt file
     if (-Not (Test-Path $GLOBAL_VERSION_FILE) ) {
