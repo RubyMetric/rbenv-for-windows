@@ -97,7 +97,8 @@ function get_all_installed_versions {
 
 # Read the global.txt file
 function get_global_version() {
-    Get-Content $GLOBAL_VERSION_FILE
+    $version = Get-Content $GLOBAL_VERSION_FILE
+    if (!$version) {warn "rbenv: No global version has been set, use rbenv global <version>"}
 }
 
 
