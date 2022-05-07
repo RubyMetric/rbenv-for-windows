@@ -1,10 +1,11 @@
-# Usage: rbenv rehash [<version>]
+# Usage: rbenv rehash [<command>] [<version/gem>]
 # Summary: Rehash rbenv shims (run this after installing executables)
-# Help: rbenv rehash      => rehash existing commands using current global version
-# rbenv rehash gem  => rehash a gem across versions
+# Help: rbenv rehash                => rehash the global version
+# rbenv rehash version xxx    => rehash existing commands for a version
+# rbenv rehash executable xxx => rehash an executable across versions
 #
 
-param($cmd)
+param($cmd, $argument)
 
 
 $REHASH_TEMPLATE = @'
@@ -16,46 +17,97 @@ $executable = get_executable_location $PSCommandPath
 '@
 
 
-# called every time after you install a gem
+# Generate shims for specific name across all versions
 #
-# $gem_name shouldn't have suffix
+# Note that $name shouldn't have suffix
 #
-function rehash_for_a_single_gem ($where, $gem_name) {
-    Set-Content "$where\$gem_name.ps1" $REHASH_TEMPLATE
+# This is called after you install a gem
+function rehash_single_executable_across_all_versions ($name) {
+    $versions = get_all_installed_versions
+
+    foreach ($version in $versions) {
+        $where = get_bin_path_for_version $version
+        Set-Content "$where\$name.ps1" $REHASH_TEMPLATE
+    }
+    success "rbenv: rehash executable $argument for all $($versions.Count) versions"
 }
 
 
-# rehash for ruby.exe and rubyw.exe
-function rehash_for_ruby_exe ($where) {
-    Set-Content "$where\ruby.ps1"   $REHASH_TEMPLATE
-    Set-Content "$where\rubyw.ps1"  $REHASH_TEMPLATE
-    success "rbenv: rehash ruby.exe rubyw.exe"
+# Generate a shim for specific name in specific version
+#
+# Note that $name shouldn't have suffix
+#
+# For 'rehash_version' to use
+function rehash_single_executable ($where, $name) {
+    Set-Content "$where\$name.ps1" $REHASH_TEMPLATE
 }
 
 
-# called every time after you install a new Ruby version
-function rehash_all ($where) {
-    rehash_for_ruby_exe $where
+# Generate shims for a version itself
+#
+#
+# Every time you cd into a dir that has '.ruby-version', you
+# want all shims already exists in current global version
+# so that you can call it directly as if you have changed the ruby
+# version.
+#
+# So we just need to keep the global version dir, i.e. shims dir
+# always have the names that every Ruby has installed to.
+#
+# How can we achieve this? Via two steps:
+# 1. Every time you install a new Ruby version, call 'rehash_version'
+# 2. Every time you install a gem, call 'rehash_single_executable'
+#
+function rehash_version ($version) {
+
+    $version = auto_fix_version_for_installed $version
+
+    $where = get_bin_path_for_version $version
 
     $bats = Get-ChildItem "$where\*.bat" | % { $_.Name}
 
-    # remove .bat suffix
-    $gems = $bats | % { strip_ext $_}
+    # From Ruby 3.1.0-1, all default gems except 'gem.cmd' are xxx.bat
+    # So we still should handle cmds before 3.1.0-1 and for 'gem.cmd'
+    $cmds = Get-ChildItem "$where\*.cmd" | % { $_.Name}
 
-    foreach ($gem in $gems) {
-        rehash_for_a_single_gem $where $gem
+    # 'setrbvars.cmd' and 'ridk.cmd' shouldn't be rehashed
+    $cmds = [Collections.ArrayList]$cmds
+    $cmds.Remove('setrbvars.cmd')
+    $cmds.Remove('ridk.cmd')
+
+
+    # remove .bat suffix
+    $bats = $bats | % { strip_ext $_}
+    # remove .cmd suffix
+    $cmds = $cmds | % { strip_ext $_}
+    # only two exes
+    $exes = @("ruby.exe", "rubyw.exe")
+
+    $executables = $bats + $cmds + $exes
+
+    # echo $executables
+
+    foreach ($exe in $executables) {
+        rehash_single_executable $where $exe
     }
-    success "rbenv: rehash $($gems.Count) gems"
-    success "rbenv: success rehash all for $where"
+    success "rbenv: success rehash $($executables.Count) executables for $version"
 }
 
-if (!$cmd) {
 
-    $cur_ver, $_ = get_current_version_with_setmsg
-    $where = "$env:RBENV_ROOT\shims\bin"
-    rehash_all $where
+if (!$cmd) {
+    # junction is double ended, operations in either dir can affect both two dirs
+    $version = get_global_version
+    rehash_version $version
+
+} elseif ($cmd -eq 'version') {
+    if (!$argument) { rbenv help rehash; return}
+    $version = auto_fix_version_for_installed $argument
+    rehash_version $version
+
+} elseif ($cmd -eq 'executable') {
+    if (!$argument) { rbenv help rehash; return}
+    rehash_single_executable_across_all_versions $argument
+
 } else {
-    $version = auto_fix_version_for_installed $cmd
-    $where = "$env:RBENV_ROOT\$version\bin"
-    rehash_all $where
+    rbenv help rehash
 }

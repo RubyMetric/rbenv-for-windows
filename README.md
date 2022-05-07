@@ -188,6 +188,8 @@ A: It's decided by RubyInstaller's tool: `ridk`, it's automatically loaded every
 
 We place a MSYS2 beside all Rubies, so every Ruby can share it. Hence I call this MSYS2 **The shared MSYS2**.
 
+<br>
+
 > Q: If `rbenv global system`, shims have changed, am I still using the shared MSYS2 ?
 
 A: No, it won't use the shared MSYS2, instead it will search the order for its own MSYS2.
@@ -198,6 +200,19 @@ E.g. if your system ruby is installed in `C:\Rubyx31-64`, it will search MSYS2 v
 2. MSYS2 beside Ruby dir => `C:\msys64`
 3. `C:\msys64`
 4. Others like the above order
+
+<br>
+
+> Q: When to rehash?
+
+First, you should know what rehash will do:
+
+If a gem/ruby.exe got rehashed, then **all installed Rubies** will get a shim.
+
+This is one time one gem way. How to rehash all for a newly installed version? Every time you install a new Ruby, it will call `rbenv rehash version x.x.x`, so it will
+
+1. Search in 3.1.2, collect all that need to be rehashed
+2. rehash them one by one
 
 <br>
 

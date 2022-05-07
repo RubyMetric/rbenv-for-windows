@@ -30,7 +30,7 @@ $RBENV_VERSION       = "rbenv v0.1.0"
 # Where we check the global version
 #
 # Note that We redefined it at lib\version.ps1, because
-# rehash script will directly uses it. We don't want it
+# shim will directly uses it. We don't want it
 # to be $env variable.
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 

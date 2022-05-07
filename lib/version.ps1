@@ -1,6 +1,6 @@
 ########################################
 # The code between the fence is just for
-# rehash script to directly use.
+# shim to directly use.
 
 # redefine the $GLOBAL_VERSION_FILE
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
@@ -147,19 +147,34 @@ function get_current_version_with_setmsg {
 }
 
 
+# return the bin path for specific version
+function get_bin_path_for_version($version) {
+    if ($version -eq 'system') {
+        $_, $where = get_system_ruby_version_and_path
+    } else {
+        $where = "$env:RBENV_ROOT\$version"
+    }
+    $where += "\bin"
+    $where
+}
+
+
+
 # This is called by 'get_executable_location'
 #
 # Here, $cmd is a Gem's executable name
 function get_gem_bin_location_by_version ($cmd, $version) {
-    if (-not $cmd.EndsWith('.bat')) {
-        $cmd = $cmd + '.bat'
-    }
 
-    if ($version -eq 'system') {
-        $_, $s_rb_path =  get_system_ruby_version_and_path
-        "$s_rb_path\bin\$cmd"
-    } else {
-        "$env:RBENV_ROOT\$version\bin\$cmd"
+    $where = get_bin_path_for_version $version
+
+    $cmd = $cmd.TrimEnd('.bat')
+    $cmd = $cmd.TrimEnd('.cmd')
+
+    if (Test-Path ($cmd + '.bat')) { return $cmd + '.bat' }
+    elseif (Test-Path ($cmd + '.cmd')) { return $cmd + '.cmd' }
+    else {
+        Write-Host "rbenv: $cmd`: command not found"
+        exit -1
     }
 }
 
@@ -172,26 +187,22 @@ function get_ruby_exe_location_by_version ($exe, $version) {
     if (-not $exe.EndsWith('.exe')) {
         $exe = $exe + '.exe'
     }
+    $where = get_bin_path_for_version $version
 
-    if ($version -eq 'system') {
-        $_, $s_rb_path =  get_system_ruby_version_and_path
-        "$s_rb_path\bin\$exe"
-    } else {
-        "$env:RBENV_ROOT\$version\bin\$exe"
-    }
+    "$where\$exe"
 }
 
 
 # used by
 # 1. command 'rbenv which' (13~18ms)
 #    $cmd is a executable name
-# 2. rehash script         (6~8ms)
+# 2. shim         (6~8ms)
 #    $cmd is a path
 function get_executable_location ($cmd) {
 
     if ($cmd.Contains(':')) {
         # $PSCommandPath must have a : to represent drive
-        # So this condition is used by rehash script
+        # So this condition is used by shim
         # E.g.
         # C:Ruby-on-Windows\shims\bin\cr.ps1
         $f = fname $cmd
