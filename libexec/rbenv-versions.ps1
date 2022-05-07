@@ -18,6 +18,9 @@ function list_installed_and_current_versions {
         } elseif ($ver -eq "system") {
             $s_rb_ver, $s_rb_path  = get_system_ruby_version_and_path
             Write-Host "  system  ($s_rb_ver $s_rb_path)"
+        } elseif ($ver -eq "head") {
+            $ct = (Get-Item "$env:RBENV_ROOT\head").CreationTime.ToString("yyyy-MM-dd HH:mm:ss")
+            Write-Host "  head    (Installed on $ct)"
         } else {
             Write-Host "  $ver"
         }
