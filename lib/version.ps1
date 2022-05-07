@@ -1,9 +1,14 @@
+########################################
+# The code between the fence is just for
+# rehash script to directly use.
+
 # redefine the $GLOBAL_VERSION_FILE
-# So that rehash script can directly uses it
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
-# We must source it again, to make our rehash script can directly use it
+# We must source it again
 . $PSScriptRoot\..\lib\core.ps1
+########################################
+
 
 
 function get_system_ruby_version_and_path {
