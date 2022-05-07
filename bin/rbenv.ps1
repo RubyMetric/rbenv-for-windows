@@ -36,11 +36,12 @@ $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
 
 
-# The init process does three things:
+# The init process does four things:
 #
 # 1. Add two paths at the front of the user PATH (almost no delay)
 # 2. Ensure global.txt (   1ms    delay)
 # 3. Check system Ruby (10ms~20ms delay)
+# 4. If has system Ruby, rehash it just only one time (50ms, but only when you first setup rbenv)
 #
 if ($cmd -eq "init") {
     $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
@@ -80,8 +81,13 @@ if ($cmd -eq "init") {
             #   3.1.2-1<=>C:\Ruby31-x64\
             #
             $s_rb_ver  = $k.GetValue('DisplayVersion')
-            $s_rb_path = $k.GetValue('InstallLocation')
+            $s_rb_path = $k.GetValue('InstallLocation').TrimEnd('\')
             $env:RBENV_SYSTEM_RUBY = "$s_rb_ver<=>$s_rb_path"
+
+            # Last thing, rehash it if not been rehashed
+            if (Test-Path "$s_rb_path\bin\ruby.ps1") {
+                rbenv rehash version system
+            }
         }
     }
 
