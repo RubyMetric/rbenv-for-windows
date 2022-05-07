@@ -5,6 +5,8 @@
 # Usage: rbenv install <version>
 # Summary: Install a Ruby version using RubyInstaller2
 # Help: rbenv install head     => Install the daily-updated version of the Ruby dev branch
+# rbenv install -l       => List recent versions
+# rbenv install -a       => List all versions
 # rbenv install 3.1.2-1  => Install RubyInstaller 3.1.2-1
 # rbenv install 3.1.2    => Install the latest packaged version of 3.1.2
 # rbenv install msys     => Install latest MSYS2, must-have for Gem with C extension
@@ -419,10 +421,24 @@ function install_ruby($version) {
 }
 
 
-if (!$cmd) {
+
+if ($args[0] -eq '-l' -or $args[0] -eq '--list') {
+    $versions = get_all_remote_versions
+    $versions[0..10]
+}
+
+elseif ($args[0] -eq '-a' -or $args[0] -eq '--all') {
+    get_all_remote_versions
+}
+
+elseif (!$cmd) {
     rbenv help install
-} elseif ($cmd -eq "msys" -or $cmd -eq "msys2" -or $cmd -eq "devkit" ) {
+}
+
+elseif ($cmd -eq "msys" -or $cmd -eq "msys2" -or $cmd -eq "devkit" ) {
     install_msys2
-} else {
+}
+
+else {
     install_ruby($cmd)
 }

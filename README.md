@@ -5,6 +5,7 @@
 Manage multiple Rubies on Windows.
 
 If you are curious how I make it work, you can read two sections
+
 1. [How does it work?](#HowDoesItWork)
 2. [FAQ for developers and maintainers](#FAQforDevs)
 
@@ -12,11 +13,17 @@ If you are curious how I make it work, you can read two sections
 
 ## What difficulties we have met?
 
-I need your help guys!
-
 1. We can't have a good prompt using `starship`
 2. [Need upstream support for devkit in 7zip archive](https://github.com/ccmywish/rbenv-for-windows/issues/3)
 
+The second difficulty can be solved mostly if upstream can directly support it.
+
+The first difficulty is caused by shims used by `rbenv local`, I can't find a good way to solve this. In order for `prompt` like `starshiip` to work, I make the `rbenv global` using another mechanism.
+
+In brief, the current implementation has two drawbacks:
+
+1. When changing into a dir that has '.ruby-version', you will use the correct version, but your `prompt` will still display the wrong version.
+2. To solve drawback 1, `rbenv global` can work great with `prompt`, but introduces another drawback: You can't change global version while running a Ruby-related process on that version.
 
 <br>
 
@@ -52,8 +59,16 @@ Try use
 - `rbenv local 2.`
 - `rbenv install 3.1`
 
-
 ```PowerShell
+# List recent Ruby versions
+rbenv install -l
+
+# List all Ruby versions
+rbenv install -a
+
+# Hooray! So easy to try Ruby dev branch!
+rbenv install head
+
 # Install Ruby 3.1.2-1
 rbenv install 3.1.2
 
