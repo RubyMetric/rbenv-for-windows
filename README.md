@@ -37,7 +37,7 @@ Hi, hello
 
 <br>
 
-## What's the relationship between RubyInstaller2 and rbenv?
+## What's the relationship between rbenv and RubyInstaller2
 
 [rbenv](https://github.com/rbenv/rbenv) works on Unix-like systems in a native way (using Bash), it uses the plugin [ruby-build](https://github.com/rbenv/ruby-build) to download CRuby source code and compile, then install. `rbenv` does a great job! I really want it to run on my Windows.
 
@@ -312,6 +312,13 @@ This is one time one gem way. How to rehash all for a newly installed version? E
 
 1. Search in `x.x.x`, collect all that need to be rehashed
 2. rehash them one by one
+
+So, when to rehash (automatically, not user's behaviors)?
+
+1. After `gem install xxx`
+2. After `install a new Ruby version
+3. After `rbenv global xxx` (This is a compromise as mentioned before)
+4. After detecting a system Ruby
 
 <br>
 
