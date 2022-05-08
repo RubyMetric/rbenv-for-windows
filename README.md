@@ -31,6 +31,12 @@ Hi, hello
 
 <br>
 
+## Screenshot
+
+![screenshot](images/screenshot.png)
+
+<br>
+
 ## What's the relationship between RubyInstaller2 and rbenv?
 
 [rbenv](https://github.com/rbenv/rbenv) works on Unix-like systems in a native way (using Bash), it uses the plugin [ruby-build](https://github.com/rbenv/ruby-build) to download CRuby source code and compile, then install. `rbenv` does a great job! I really want it to run on my Windows.
