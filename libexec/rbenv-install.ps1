@@ -254,7 +254,11 @@ function remove_ruby_registry_info($version) {
     $install_keys = "HKCU:SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
     $keys = (Get-Item "$install_keys\RubyInstaller*")
     foreach ($k in $keys) {
-        if ($k.GetValue("DisplayVersion") -eq $version) { Remove-Item $k }
+        if ($k.GetValue("DisplayVersion") -eq $version) {
+            # Remove-Item $k # This is wrong
+            $k | Remove-Item
+            success "rbenv: remove version $version registry info "
+        }
     }
 }
 
@@ -391,7 +395,7 @@ function download_ruby_with_msys2($version) {
     $url += "/$cache_name"
 
     Write-Host "Begin downloading ..."
-    info "$site_url"
+    info "$url"
     return download_with_cache $url $cache_name
 }
 
@@ -401,13 +405,27 @@ function download_ruby_with_msys2($version) {
 # For versions < 3.1.0-1
 function install_ruby_with_msys2($version) {
     $path = download_ruby_with_msys2 $version
-    $dir_in_7z = strip_ext (fname $path)
 
-    Write-Host "Installing $version ..."
-    Expand-7zipArchive $path $env:RBENV_ROOT
+    # e.g. rubyinstaller-devkit-3.1.2-1-x64
+    $target = fname $path
+    Write-Host "Installing $target ..."
 
-    Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"
+    $version = $target | Select-String $(version_match_regexp)
+
+    $version = $version.Matches[0].value
+
+    # No /tasks=assocfiles,modpath,defaultutf8
+    # the defaultutf8 will register a env var 'RUBYOPT': -Eutf-8
+    # Use a portable way!
+    $ArgList = @("/verysilent", "/dir=$env:RBENV_ROOT\$version", "/tasts=defaultutf8")
+    $Status = Invoke-ExternalCommand $path $ArgList
+    if (!$Status) {
+        abort "Failed to install to $version"
+    }
+
     rbenv rehash version $version
+    remove_ruby_registry_info $version
+
     success "version '$version' with devkit was installed successfully!"
 }
 

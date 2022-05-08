@@ -15,10 +15,10 @@
 # NOTE that, the CN mirror doesn't support head version
 #
 
+# Notice!!! The url RubyInstall is in upper case!!!
 $RBENV_MIRRORS = @{
-    Default = "https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-<version>"
+    Default = "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-<version>"
 
     # For Chinese users
-    # Notice!!! The url RubyInstall is in upper case!!!
     CN = "https://mirror.sjtu.edu.cn/github-release/oneclick/rubyinstaller2/releases/download/RubyInstaller-<version>"
 }

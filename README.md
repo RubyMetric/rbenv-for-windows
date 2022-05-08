@@ -45,6 +45,10 @@ Hi, hello
 
     Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on, because of my extremely lack of time in next recent years for developing. If you want to support it, consider to be a maintainer please! Thank you!
 
+4. We don't support old versions that have a little different leading URL
+
+    Very small URL changes will make our work double, I don't have time for it. So keep URLs convention stable is very important. Luckily, these exceptions are very old Ruby versions (part of 2.4, 2.5 series) built by RubyInstaller, don't worry! See [share/README.md](./share/README.md) for details.
+
 <br>
 
 **In brief, the current implementation has two drawbacks:**
