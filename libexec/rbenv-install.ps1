@@ -260,108 +260,6 @@ function remove_ruby_registry_info($version) {
 
 
 
-# Download the latest x64 MSYS2 built into official RubyInstaller-devkit
-#
-# The 64-bit version MSYS2 is able to build both 32-bit and 64-bit packages
-#
-#
-# Sorry, I don't have time to support using x86 MSYS2
-# If you want, think about how to improve and fork it
-#
-#
-# So why we don't use scoop to install msys2 directly?
-#
-#   1. I must say, if you directly install it via scoop,
-#      RubyInstaller2 will cause more time to find it,
-#      that's too bad.
-#   2. We don't want to depend on other softwares too.
-#   3. A pure MSYS2 installation will let user download
-#      dependencies locally, which will cause more time
-#      and may cause other issues.
-#   4. Reuse the work results of RubyInstaller build
-#      process. oneclick/RubyInstaller2 has already done
-#      lots of trivial works for users to setup MSYS2.
-#      Everyone can thus get the same(with upstream) and
-#      a quitely stable envrionment.
-#
-# We offer the best way to coordinate with RubyInstaller2
-# ------------------------------------------------------------------
-#
-# See share/mirrors.ps1
-function download_shared_msys2 {
-    # Get our mirror list
-    . $PSScriptRoot\..\share\mirrors.ps1
-
-    $mir = $env:RBENV_USE_MIRROR
-    if ($mir) {
-        if ($mir -contains "http" ) { $site_url = $mir.TrimEnd('/') }
-        else { $site_url = $RBENV_MIRRORS["$mir"] }
-        info "Using mirror for downloading RubyInstaller-devkit(MSYS2): "
-    } else {
-        $site_url = $RBENV_MIRRORS['Default']
-    }
-
-    $all = get_all_remote_versions
-    $installed = get_all_installed_versions
-
-    # use latest stable build, rather than head, rather than what has been installed
-    $version = $null
-    foreach ($i in $all) {
-        if ($i -eq 'head' ) { continue }
-        if ($installed -contains $i) { continue }
-        $version = $i
-        break
-    }
-
-    $url = $site_url -replace '<version>', $version
-
-    $cache_name = "rubyinstaller-devkit-$version-x64.exe"
-    $url += "/$cache_name"
-
-    Write-Host "Begin downloading ..."
-    info "$site_url"
-    return download_with_cache $url $cache_name
-}
-
-
-function install_shared_msys2 {
-
-    if (Test-Path "$env:RBENV_ROOT\msys64") {
-        warn "rbenv: Already exists the shared msys64 ("$env:RBENV_ROOT\msys64")"
-        exit
-    }
-
-    $path = download_shared_msys2
-
-    # e.g. rubyinstaller-devkit-3.1.2-1-x64
-    $target = fname $path
-    Write-Host "Installing $target(MSYS2) ..."
-
-    $version = $target | Select-String $(version_match_regexp)
-
-    $version = $version.Matches[0].value
-
-    # No /tasks=assocfiles,modpath,defaultutf8
-    # the defaultutf8 will register a env var 'RUBYOPT': -Eutf-8
-    # Use a portable way!
-    $ArgList = @("/verysilent", "/dir=$env:RBENV_ROOT\$version")
-    $Status = Invoke-ExternalCommand $path $ArgList
-    if (!$Status) {
-        abort "Failed to install to $version"
-    }
-
-    Write-Host "Moving the shared MSYS2 ..."
-    Move-Item -Recurse "$env:RBENV_ROOT\$version\msys64" "$env:RBENV_ROOT"
-
-    rbenv rehash version $version
-
-    remove_ruby_registry_info $version
-
-    success "The shared MSYS2 was installed successfully!"
-    success "In addition, version '$version' was installed for you!"
-}
-
-
 
 # The user will download in three ways
 #   1. Download directly from official RubyInstaller2 Github release
@@ -461,9 +359,9 @@ function install_ruby($version) {
     Expand-7zipArchive $path $env:RBENV_ROOT
 
     Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"
-    success "version '$version' was installed successfully!"
 
     rbenv rehash version $version
+    success "version '$version' was installed successfully!"
 
     if ($version -eq 'head') {
         Remove-Item $path
@@ -472,9 +370,131 @@ function install_ruby($version) {
 }
 
 
-function install_ruby_with_msys2($version) {
 
+# Only called by install_ruby_with_msys2
+function download_ruby_with_msys2($version) {
+        # Get our mirror list
+    . $PSScriptRoot\..\share\mirrors.ps1
+
+    $mir = $env:RBENV_USE_MIRROR
+    if ($mir) {
+        if ($mir -contains "http" ) { $site_url = $mir.TrimEnd('/') }
+        else { $site_url = $RBENV_MIRRORS["$mir"] }
+        info "Using mirror for downloading RubyInstaller-devkit(MSYS2): "
+    } else {
+        $site_url = $RBENV_MIRRORS['Default']
+    }
+
+    $url = $site_url -replace '<version>', $version
+
+    $cache_name = "rubyinstaller-devkit-$version-x64.exe"
+    $url += "/$cache_name"
+
+    Write-Host "Begin downloading ..."
+    info "$site_url"
+    return download_with_cache $url $cache_name
 }
+
+
+
+# Only called by install_ruby
+# For versions < 3.1.0-1
+function install_ruby_with_msys2($version) {
+    $path = download_ruby_with_msys2 $version
+    $dir_in_7z = strip_ext (fname $path)
+
+    Write-Host "Installing $version ..."
+    Expand-7zipArchive $path $env:RBENV_ROOT
+
+    Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"
+    rbenv rehash version $version
+    success "version '$version' with devkit was installed successfully!"
+}
+
+
+# Download the latest x64 MSYS2 built into official RubyInstaller-devkit
+#
+# The 64-bit version MSYS2 is able to build both 32-bit and 64-bit packages
+#
+#
+# Sorry, I don't have time to support using x86 MSYS2
+# If you want, think about how to improve and fork it
+#
+#
+# So why we don't use scoop to install msys2 directly?
+#
+#   1. I must say, if you directly install it via scoop,
+#      RubyInstaller2 will cause more time to find it,
+#      that's too bad.
+#   2. We don't want to depend on other softwares too.
+#   3. A pure MSYS2 installation will let user download
+#      dependencies locally, which will cause more time
+#      and may cause other issues.
+#   4. Reuse the work results of RubyInstaller build
+#      process. oneclick/RubyInstaller2 has already done
+#      lots of trivial works for users to setup MSYS2.
+#      Everyone can thus get the same(with upstream) and
+#      a quitely stable envrionment.
+#
+# We offer the best way to coordinate with RubyInstaller2
+# ------------------------------------------------------------------
+#
+# See share/mirrors.ps1
+function download_shared_msys2 {
+    $all = get_all_remote_versions
+    $installed = get_all_installed_versions
+
+    # use latest stable build, rather than head, rather than what has been installed
+    $version = $null
+    foreach ($i in $all) {
+        if ($i -eq 'head' ) { continue }
+        if ($installed -contains $i) { continue }
+        $version = $i
+        break
+    }
+    return download_ruby_with_msys2 $version
+}
+
+
+function install_shared_msys2 {
+
+    if (Test-Path "$env:RBENV_ROOT\msys64") {
+        warn "rbenv: Already exists the shared msys64 ("$env:RBENV_ROOT\msys64")"
+        exit
+    }
+
+    $path = download_shared_msys2
+
+    # e.g. rubyinstaller-devkit-3.1.2-1-x64
+    $target = fname $path
+    Write-Host "Installing $target(MSYS2) ..."
+
+    $version = $target | Select-String $(version_match_regexp)
+
+    $version = $version.Matches[0].value
+
+    # No /tasks=assocfiles,modpath,defaultutf8
+    # the defaultutf8 will register a env var 'RUBYOPT': -Eutf-8
+    # Use a portable way!
+    $ArgList = @("/verysilent", "/dir=$env:RBENV_ROOT\$version")
+    $Status = Invoke-ExternalCommand $path $ArgList
+    if (!$Status) {
+        abort "Failed to install to $version"
+    }
+
+    Write-Host "Moving the shared MSYS2 ..."
+    Move-Item -Recurse "$env:RBENV_ROOT\$version\msys64" "$env:RBENV_ROOT"
+
+    rbenv rehash version $version
+
+    remove_ruby_registry_info $version
+
+    success "The shared MSYS2 was installed successfully!"
+    success "In addition, version '$version' was installed for you!"
+}
+
+
+
 
 
 # Hi, dear maintainers, you may be wondering how I decide to download.
