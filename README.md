@@ -1,7 +1,10 @@
 <div align="center">
+
 <h1 align="center">rbenv for Windows</h1>
 
 [![Join the chat at https://gitter.im/rbenv-for-windows/community](https://badges.gitter.im/rbenv-for-windows/community.svg)](https://gitter.im/rbenv-for-windows/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[![License](https://img.shields.io/github/license/ccmywish/rbenv-for-windows.svg)](https://github.com/ccmywish/rbenv-for-windows/blob/main/LICENSE)
 
 Manage multiple Rubies on Windows.
 
