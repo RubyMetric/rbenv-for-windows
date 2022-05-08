@@ -98,7 +98,7 @@ Our `rbenv-for-windows` works on Windows, also in a native way (using PowerShell
 It's portable, be bold to try it!
 
 ```PowerShell
-mkdir -p "C:\Ruby-on-Windows"
+mkdir "C:\Ruby-on-Windows"
 git clone -c "C:\Ruby-on-Windows" "https://github.com/ccmywish/rbenv-for-windows" rbenv
 ```
 
