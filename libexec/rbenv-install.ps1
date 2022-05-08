@@ -500,7 +500,7 @@ function install_shared_msys2 {
     }
 
     Write-Host "Moving the shared MSYS2 ..."
-    Move-Item -Recurse "$env:RBENV_ROOT\$version\msys64" "$env:RBENV_ROOT"
+    Move-Item "$env:RBENV_ROOT\$version\msys64" "$env:RBENV_ROOT"
 
     rbenv rehash version $version
 

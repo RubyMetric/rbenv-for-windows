@@ -98,8 +98,8 @@ if ($cmd -eq "init") {
     }
 
     if (-Not (Test-Path "$env:RBENV_ROOT\msys64")) {
-        warn "rbenv: Seems you have just installed rbenv, let me install MSYS2 for you"
-        warn "       MSYS2 is must-have if you want to install gems with C extensions"
+        Write-Host -f DarkYellow "Seems you have just installed rbenv, auto install MSYS2 for you"
+        Write-Host -f DarkYellow "MSYS2 is must-have if you want to install gems with C extensions"
 
         rbenv install msys
     }

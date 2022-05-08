@@ -4,6 +4,7 @@
 # rbenv update rbenv    => Update rbenv itself
 # rbenv update msys     => Update msys2
 # rbenv update msys2    => Same with 'update msys'
+# rbenv update devkit   => Same with 'update msys'
 
 param($cmd)
 
@@ -22,7 +23,7 @@ if (! $cmd) {
     update_rbenv
 } elseif ($cmd -eq 'rbenv') {
     update_rbenv
-} elseif ($cmd -eq 'msys' -or $cmd -eq 'msys2' ) {
+} elseif ($cmd -eq 'msys' -or $cmd -eq 'msys2' -or $cmd -eq 'devkit' ) {
     update_msys2
 } else {
     rbenv help update
