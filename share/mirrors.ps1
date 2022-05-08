@@ -16,8 +16,9 @@
 #
 
 $RBENV_MIRRORS = @{
-    Default = "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-<version>"
+    Default = "https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-<version>"
 
     # For Chinese users
+    # Notice!!! The url RubyInstall is in upper case!!!
     CN = "https://mirror.sjtu.edu.cn/github-release/oneclick/rubyinstaller2/releases/download/RubyInstaller-<version>"
 }

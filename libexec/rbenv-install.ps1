@@ -297,7 +297,6 @@ function download_shared_msys2 {
         if ($mir -contains "http" ) { $site_url = $mir.TrimEnd('/') }
         else { $site_url = $RBENV_MIRRORS["$mir"] }
         info "Using mirror for downloading RubyInstaller-devkit(MSYS2): "
-        info "$site_url"
     } else {
         $site_url = $RBENV_MIRRORS['Default']
     }
@@ -320,6 +319,7 @@ function download_shared_msys2 {
     $url += "/$cache_name"
 
     Write-Host "Begin downloading ..."
+    info "$site_url"
     return download_with_cache $url $cache_name
 }
 
@@ -404,8 +404,7 @@ function download_ruby($version) {
     if ($mir) {
         if ($mir -contains "http" ) { $site_url = $mir.TrimEnd('/') }
         else { $site_url = $RBENV_MIRRORS["$mir"] }
-        info "Using mirror for downloading RubyInstaller.7z: "
-        info "$site_url"
+        info "Using mirror for downloading RubyInstaller.7z "
 
     } else {
         $site_url = $RBENV_MIRRORS['Default']
@@ -421,8 +420,8 @@ function download_ruby($version) {
         $url = "https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-head/rubyinstaller-head-x64.7z"
     }
 
-    # Write-Host "$url"
     Write-Host "Begin downloading ..."
+    info "=> $url"
     return download_with_cache $url $cache_name
 }
 
@@ -434,24 +433,49 @@ function install_ruby($version) {
 
     if ($(get_all_installed_versions) -contains $version) {
         warn "version $version is already installed."
-    } else {
-        $path = download_ruby $version
-        $dir_in_7z = strip_ext (fname $path)
-
-        Write-Host "Installing $version ..."
-        Expand-7zipArchive $path $env:RBENV_ROOT
-
-        Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"
-        success "version '$version' was installed successfully!"
-
-        rbenv rehash version $version
+        exit
     }
+
+
+    if ($version -lt '3.1.0-1') {
+        warn "version < '3.1.0-1' need mingw64 toolchain (Not compatible with our shared MSYS2's ucrt64 toolchain)"
+        warn "Only full version can make you install a gem with C extensions`n"
+
+        Write-Host "  1. Lite version $version (less than 15MB) [Default]"
+        Write-Host "  2. Full version $version-with-devkit? (at least 130MB)`n"
+
+        $choice = Read-Host -Prompt "Which one?"
+        # Not $null, but ""
+        if ("" -eq $choice -or $choice -eq 1) {
+            # go on
+        } else {
+            install_ruby_with_msys2 $version
+            exit
+        }
+    }
+
+    $path = download_ruby $version
+    $dir_in_7z = strip_ext (fname $path)
+
+    Write-Host "Installing $version ..."
+    Expand-7zipArchive $path $env:RBENV_ROOT
+
+    Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"
+    success "version '$version' was installed successfully!"
+
+    rbenv rehash version $version
 
     if ($version -eq 'head') {
         Remove-Item $path
         success "success remove the 'head' version cache"
     }
 }
+
+
+function install_ruby_with_msys2($version) {
+
+}
+
 
 # Hi, dear maintainers, you may be wondering how I decide to download.
 #
