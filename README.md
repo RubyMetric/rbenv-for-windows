@@ -238,7 +238,7 @@ name | default | description
 
 > Q: Why multiple Rubis can share one MSYS2?
 
-A: It's decided by RubyInstaller's tool: `ridk`, it's automatically loaded every time you use Ruby.
+It's decided by RubyInstaller's tool: `ridk`, it's automatically loaded every time you use Ruby.
 
 `ridk` has determined how you choose MSYS2, in this order:
 
@@ -248,13 +248,13 @@ A: It's decided by RubyInstaller's tool: `ridk`, it's automatically loaded every
 4. Other ways including `scoop`
 5. ...
 
-We place a MSYS2 beside all Rubies, so every Ruby can share it. Hence I call this MSYS2 **The shared MSYS2**.
+We place a MSYS2 beside all Rubies, so every Ruby can share it. Hence I call this MSYS2 **the shared MSYS2**.
 
 <br>
 
 > Q: If `rbenv global system`, shims have changed, am I still using the shared MSYS2 ?
 
-A: No, it won't use the shared MSYS2, instead it will search the order for its own MSYS2.
+No, it won't use the shared MSYS2, instead it will search the order for its own MSYS2.
 
 E.g. if your system ruby is installed in `C:\Rubyx31-64`, it will search MSYS2 via
 
