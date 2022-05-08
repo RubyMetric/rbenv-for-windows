@@ -24,6 +24,10 @@ function set_global_version($version) {
     }
     New-Item -Path $shimsdir -ItemType Junction -Value $path | Out-Null
     $version | Out-File $GLOBAL_VERSION_FILE
+
+    # As the share/rubygems_plugins.rb says
+    # This is a compromise for Bundler's failure on triggering the post-install hook
+    rbenv rehash version $version
 }
 
 
