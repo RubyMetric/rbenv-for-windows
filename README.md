@@ -1,8 +1,11 @@
-# rbenv for Windows
+<div align="center">
+<h1 align="center">rbenv for Windows</h1>
 
 [![Join the chat at https://gitter.im/rbenv-for-windows/community](https://badges.gitter.im/rbenv-for-windows/community.svg)](https://gitter.im/rbenv-for-windows/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Manage multiple Rubies on Windows.
+    Manage multiple Rubies on Windows.
+</div>
+
 
 If you are curious how I make it work, you can read two sections
 
@@ -11,14 +14,21 @@ If you are curious how I make it work, you can read two sections
 
 <br>
 
-## What difficulties we have met?
+## Known issues
 
-1. [We can't have a good prompt using `starship`](https://github.com/ccmywish/rbenv-for-windows/issues/4)
-2. [Need upstream support for devkit in 7zip archive](https://github.com/ccmywish/rbenv-for-windows/issues/3)
+1. [Need upstream support for devkit in 7zip archive](https://github.com/ccmywish/rbenv-for-windows/issues/3)
 
-The second difficulty can be solved mostly if upstream can directly support it.
+    This can be solved mostly if upstream can directly support it.
 
-The first difficulty is caused by shims used by `rbenv local`, I can't find a good way to solve this. In order for `prompt` like `starshiip` to work, I make the `rbenv global` using another mechanism.
+2. [We can't have a good prompt using `starship`](https://github.com/ccmywish/rbenv-for-windows/issues/4)
+
+    This is caused by shims used by `rbenv local`, I can't find a good way to solve this. In order for `prompt` like `starshiip` to work, I make the `rbenv global` using another mechanism.
+
+3. We only support CRuby, x64 versions, no plan to
+
+    Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on, because of my extremely lack of time in next recent years for developing, if you want to support it, consider to be a maintainer please! Thank you!
+
+<br>
 
 In brief, the current implementation has two drawbacks:
 
@@ -27,20 +37,24 @@ In brief, the current implementation has two drawbacks:
 
 <br>
 
-## NOTE
+## Requirements
 
-At middle stage, still not available for users. But It's portable, be bold to try it first!
+- Windows 7 SP1+ / Windows Server 2008+
+- PowerShell 5 (or later, include PowerShell Core) and .NET Framework 4.5 (or later)
+- PowerShell must be enabled for your user account e.g. Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 <br>
 
 ## Install
+
+It's portable, be bold to try it!
 
 ```PowerShell
 mkdir -p "C:\Ruby-on-Windows"
 git clone -C "C:\Ruby-on-Windows" "https://github.com/ccmywish/rbenv-for-windows" rbenv
 ```
 
-In your $profile, you should add theses:
+In your `$profile`, you should add theses:
 
 ```PowerShell
 # rbenv for Windows
