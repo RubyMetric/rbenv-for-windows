@@ -99,7 +99,7 @@ It's portable, be bold to try it!
 
 ```PowerShell
 mkdir -p "C:\Ruby-on-Windows"
-git clone -C "C:\Ruby-on-Windows" "https://github.com/ccmywish/rbenv-for-windows" rbenv
+git clone -c "C:\Ruby-on-Windows" "https://github.com/ccmywish/rbenv-for-windows" rbenv
 ```
 
 In your `$profile`, you should add theses:
