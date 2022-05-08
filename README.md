@@ -31,6 +31,16 @@ Hi, hello
 
 <br>
 
+## What's the relationship between RubyInstaller2 and rbenv?
+
+[rbenv](https://github.com/rbenv/rbenv) works on Unix-like systems in a native way (using Bash), it uses the plugin [ruby-build](https://github.com/rbenv/ruby-build) to download CRuby source code and compile, then install. `rbenv` does a great job! I really want it to run on my Windows.
+
+Our `rbenv-for-windows` works on Windows, also in a native way (using PowerShell), we use the great and battle-tested [RubyInstaller2](https://github.com/oneclick/rubyinstaller2) directly to install the binary, it hence saves your time.
+
+`rbenv-for-windows` is trying to make commands compatible with `rbenv`, which can make you feel consistent in different systems. During early stage of development I'm making it work without reading the source code of `rbenv`, but later when I have to implement `rbenv local` feature, I ask the `rbenv`'s author for help, finally also introduced the concept of shims, but a little differently.
+
+<br>
+
 ## Known issues
 
 1. [Need upstream support for devkit in 7zip archive](https://github.com/ccmywish/rbenv-for-windows/issues/3)
