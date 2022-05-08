@@ -82,7 +82,7 @@ function get_all_installed_versions {
     $versions = (Get-ChildItem ($env:RBENV_ROOT)) `
                 # + (Get-ChildItem "$rbenvdir\shims") `
                 | Where-Object {
-                    $_.Name -match '\d{1,}\.\d{1,}\.\d{1,}-\d{1,}.*?$' -or $_.Name -eq 'head'
+                    $_.Name -match $(version_match_regexp) -or $_.Name -eq 'head'
                 }
 
     # foreach ($ver in $versions) { $ver.Name }

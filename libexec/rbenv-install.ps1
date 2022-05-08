@@ -292,13 +292,14 @@ function download_msys2 {
         $site_url = $RBENV_MIRRORS['Default']
     }
 
+    $all = get_all_remote_versions
+    $installed = get_all_installed_versions
 
-    $all = get_all_installed_versions
-
-    # use latest stable build, rather than head
+    # use latest stable build, rather than head, rather than what has been installed
     $version = $null
     foreach ($i in $all) {
         if ($i -eq 'head' ) { continue }
+        if ($installed -contains $i) { continue }
         $version = $i
         break
     }
@@ -380,19 +381,26 @@ function download_ruby($version) {
 function install_msys2 {
     $path = download_msys2
 
-    # e.g. rubyinstaller-3.1.2-1-x64
+    # e.g. rubyinstaller-devkit-3.1.2-1-x64
     $target = fname $path
     Write-Host "Installing $target(MSYS2) ..."
 
-    $target_dir = "Ruby-x64"
+    $version = $target | Select-String $(version_match_regexp)
+
+    $version = $version.Matches[0].value
 
     # No /tasks=assocfiles,modpath,defaultutf8
-    # We just want MSYS2 inside it, so use a portable way!
-    & $path "/verysilent" "/dir=$env:RBENV_ROOT\$target_dir"
+    # Use a portable way!
+    $ArgList = @("/verysilent", "/dir=$env:RBENV_ROOT\$version")
+    $Status = Invoke-ExternalCommand $path $ArgList
+    if (!$Status) {
+        abort "Failed to install to $version"
+    }
 
-    Move-Item -Recurse "$env:RBENV_ROOT\$target_dir\msys64" "$env:RBENV_ROOT"
+    Move-Item -Recurse "$env:RBENV_ROOT\$version\msys64" "$env:RBENV_ROOT"
 
     success "MSYS2 was installed successfully!"
+    success "In addition, version '$version' was installed for you!"
 }
 
 
@@ -421,6 +429,27 @@ function install_ruby($version) {
         success "success remove the 'head' version cache"
     }
 }
+
+# Hi, dear maintainers, you may be wondering how I decide to download.
+#
+#              -- if version >= 3.1.0-1, just download rubyinstaller.7z
+# install_ruby |
+#              -- if version < 3.1.0-1,  we want a rubyinstaller-devkit.7z. But at present,
+#                 the upstream doesn't offer this. So we will prompt for user, let the user
+#                 decide a lite version or a full version (with MSYS2). If latter, we need
+#                 to download rubyinstaller-devkit.exe and install it, then remove its #                 modification to the registry (prevent it to be a system Ruby)
+#
+# install_msys2 -
+#                It will not download a pure msys2. Instead, we will download a latest but
+#                not head version of rubyinstaller-devkit.exe. Install it, and move the
+#                msys64 dir out of it to be the shared MSYS2. Then remove its modification to #                the registry (prevent it to be a system Ruby)
+#
+#
+# As you can see, we must deal with registry, this is hacking.
+# So once the upstream can offer help, we will live a happy maintaining life.
+#
+# See:  https://github.com/oneclick/rubyinstaller2/issues/281
+#
 
 
 

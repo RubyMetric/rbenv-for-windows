@@ -46,9 +46,12 @@ function Expand-7zipArchive {
     }
     $Status = Invoke-ExternalCommand $7zPath $ArgList -LogPath $LogPath
     if (!$Status) {
-        abort "Failed to extract files from $Path.`nLog file:`n  $(friendly_path $LogPath)`n$(new_issue_msg $app $bucket 'decompress error')"
+        abort "Failed to extract files from $Path.`nLog file:`n  $LogPath`n 'decompress error')"
     }
     if (!$IsTar -and $ExtractDir) {
+        # scoop use robocopy here, but we don't want to use it.
+        error "rbenv: if you see this line, please issue to rbenv-on-windows"
+        error "We won't go here really"
         movedir "$DestinationPath\$ExtractDir" $DestinationPath | Out-Null
     }
     if (Test-Path $LogPath) {
