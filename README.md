@@ -107,10 +107,12 @@ In your `$profile`, you should add theses:
 ```PowerShell
 # rbenv for Windows
 $env:RBENV_ROOT = "C:\Ruby-on-Windows"
-& "$env:RBENV_ROOT\rbenv\bin\rbenv.ps1" init
 
 # I have pre-defined a mirror for you guys, see share/mirros.ps1
+# Note, this must be placed before 'init'
 $env:RBENV_USE_MIRROR = "CN"  # For Chinese users
+
+& "$env:RBENV_ROOT\rbenv\bin\rbenv.ps1" init
 ```
 
 <br>
@@ -184,6 +186,7 @@ $env:RBENV_USE_MIRROR = "https://abc.com/abc-<version>"
 
 # see share/mirros.ps1
 # I have pre-defined a mirror for you guys
+# Note, this must be placed before 'init'
 $env:RBENV_USE_MIRROR = "CN"  # For Chinese users
 ```
 
