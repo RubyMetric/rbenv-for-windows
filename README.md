@@ -35,21 +35,21 @@ Hi, hello
 
 1. [Need upstream support for devkit in 7zip archive](https://github.com/ccmywish/rbenv-for-windows/issues/3)
 
-    This can make download/install process much easier, and can be solved mostly if upstream can directly support it.
+    This can make download/install MSYS2 devkit process much easier, and can be solved mostly if upstream can directly support it.
 
 2. [We can't have a good prompt using `starship`](https://github.com/ccmywish/rbenv-for-windows/issues/4)
 
-    This is caused by shims used by `rbenv local`, I can't find a good way to solve this. In order for `prompt` like `starshiip` to work, I make the `rbenv global` using another mechanism.
+    This is caused by shims used by `rbenv local`, I can't find a good way to solve this. In order for `prompt` like `starshiip` to work, I make the `rbenv global` use another mechanism.
 
 3. We only support CRuby, x64 versions
 
-    Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on, because of my extremely lack of time in next recent years for developing, if you want to support it, consider to be a maintainer please! Thank you!
+    Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on, because of my extremely lack of time in next recent years for developing. If you want to support it, consider to be a maintainer please! Thank you!
 
 <br>
 
 **In brief, the current implementation has two drawbacks:**
 
-1. When changing into a dir that has '.ruby-version', you will use the correct version, but your `prompt` will still display the wrong version.
+1. When changing into a dir that has `.ruby-version`, you will use the correct version, but your `prompt` will still display the wrong version.
 2. To solve drawback 1, `rbenv global` can work great with `prompt`, but introduces another drawback: You can't change global version while running a Ruby-related process on that version.
 
 <br>
