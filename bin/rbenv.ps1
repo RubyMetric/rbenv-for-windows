@@ -56,7 +56,7 @@ if ($cmd -eq "init") {
     # Ensure our global.txt file
     if (-Not (Test-Path $GLOBAL_VERSION_FILE) ) {
         # Defined at the top
-        New-Item $GLOBAL_VERSION_FILE
+        New-Item $GLOBAL_VERSION_FILE | Out-Null
     }
 
     # Always check the system ruby first
