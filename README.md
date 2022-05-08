@@ -7,7 +7,11 @@
 </div>
 
 
-If you are curious how I make it work, you can read two sections
+嗨, 你好
+
+Hi, hello
+
+**If you are curious how I make it work, you can read the two sections**
 
 1. [How does it work?](#HowDoesItWork)
 2. [FAQ for developers and maintainers](#FAQforDevs)
@@ -18,7 +22,7 @@ If you are curious how I make it work, you can read two sections
 
 1. [Need upstream support for devkit in 7zip archive](https://github.com/ccmywish/rbenv-for-windows/issues/3)
 
-    This can be solved mostly if upstream can directly support it.
+    This can make download/install process much easier, and can be solved mostly if upstream can directly support it.
 
 2. [We can't have a good prompt using `starship`](https://github.com/ccmywish/rbenv-for-windows/issues/4)
 
@@ -40,8 +44,8 @@ In brief, the current implementation has two drawbacks:
 ## Requirements
 
 - Windows 7 SP1+ / Windows Server 2008+
-- PowerShell 5 (or later, include PowerShell Core) and .NET Framework 4.5 (or later)
-- PowerShell must be enabled for your user account e.g. Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+- [PowerShell 5](https://aka.ms/wmf5download) (or later, include [PowerShell Core](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-windows?view=powershell-6)) and [.NET Framework 4.5](https://www.microsoft.com/net/download) (or later)
+- PowerShell must be enabled for your user account e.g. `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 
 <br>
 
@@ -91,6 +95,10 @@ rbenv install 3.0.0-1
 # Install devkit
 # We need upstream support to implement this!
 rbenv install msys
+# or
+rbenv install msys2
+# or
+rbenv install devkit
 
 # List all installed versions
 rbenv versions
@@ -106,11 +114,14 @@ rbenv local 3.1.2-1
 # Check versions
 rbenv versions
 
-# Set ruby version in this shell
+# Set Ruby version in this shell
 rbenv shell 3.0.0-1
 
 # Show current version
 rbenv version
+
+# Unset Ruby version in this shell
+rbenv shell --unset
 
 rbenv uninstall 3.1.2
 
