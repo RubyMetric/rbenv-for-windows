@@ -412,6 +412,8 @@ function install_ruby($version) {
 
         Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"
         success "version '$version' was installed successfully!"
+
+        rbenv rehash version $version
     }
 
     if ($version -eq 'head') {

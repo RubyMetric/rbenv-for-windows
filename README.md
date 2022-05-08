@@ -273,7 +273,7 @@ If a gem/ruby.exe got rehashed, then **all installed Rubies** will get a shim.
 
 This is one time one gem way. How to rehash all for a newly installed version? Every time you install a new Ruby, it will call `rbenv rehash version x.x.x`, so it will
 
-1. Search in 3.1.2, collect all that need to be rehashed
+1. Search in `x.x.x`, collect all that need to be rehashed
 2. rehash them one by one
 
 <br>
