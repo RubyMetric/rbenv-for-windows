@@ -109,6 +109,10 @@ function get_global_version() {
 
 
 # Read the .ruby-version file
+# Guess why I don't want it to find the Git root directory?
+# Because it's too slow: causing another 28ms to delay
+# I really don't want it
+#
 function get_local_version {
     $local_version_file = "$PWD\.ruby-version"
     if (Test-Path $local_version_file) {
