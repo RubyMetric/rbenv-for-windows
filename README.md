@@ -41,7 +41,7 @@ Hi, hello
 
     This is caused by shims used by `rbenv local`, I can't find a good way to solve this. In order for `prompt` like `starshiip` to work, I make the `rbenv global` using another mechanism.
 
-3. We only support CRuby, x64 versions, no plan to
+3. We only support CRuby, x64 versions
 
     Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on, because of my extremely lack of time in next recent years for developing, if you want to support it, consider to be a maintainer please! Thank you!
 
