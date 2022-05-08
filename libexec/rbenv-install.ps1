@@ -9,7 +9,7 @@
 # rbenv install -a       => List all versions
 # rbenv install 3.1.2-1  => Install RubyInstaller 3.1.2-1
 # rbenv install 3.1.2    => Install the latest packaged version of 3.1.2
-# rbenv install msys     => Install latest MSYS2, must-have for Gem with C extension
+# rbenv install msys     => Install shared MSYS2(latest), must-have for Gem with C extension
 # rbenv install msys2    => same with 'install msys'
 # rbenv install devkit   => same with 'install msys'
 
@@ -247,20 +247,30 @@ function download_with_cache($url, $cache_name, $to = $null) {
 }
 
 
+
+# Prevent it to be system Ruby
+function remove_ruby_registry_info($version) {
+    # HKEY_CURRENT_USER
+    $install_keys = "HKCU:SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+    $keys = (Get-Item "$install_keys\RubyInstaller*")
+    foreach ($k in $keys) {
+        if ($k.GetValue("DisplayVersion") -eq $version) { Remove-Item $k }
+    }
+}
+
+
+
 # Download the latest x64 MSYS2 built into official RubyInstaller-devkit
 #
 # The 64-bit version MSYS2 is able to build both 32-bit and 64-bit packages
-#
 #
 #
 # Sorry, I don't have time to support using x86 MSYS2
 # If you want, think about how to improve and fork it
 #
 #
+# So why we don't use scoop to install msys2 directly?
 #
-# FAQ:
-# Q: Why we don't use scoop to install msys2 directly?
-# A:
 #   1. I must say, if you directly install it via scoop,
 #      RubyInstaller2 will cause more time to find it,
 #      that's too bad.
@@ -278,7 +288,7 @@ function download_with_cache($url, $cache_name, $to = $null) {
 # ------------------------------------------------------------------
 #
 # See share/mirrors.ps1
-function download_msys2 {
+function download_shared_msys2 {
     # Get our mirror list
     . $PSScriptRoot\..\share\mirrors.ps1
 
@@ -312,6 +322,45 @@ function download_msys2 {
     Write-Host "Begin downloading ..."
     return download_with_cache $url $cache_name
 }
+
+
+function install_shared_msys2 {
+
+    if (Test-Path "$env:RBENV_ROOT\msys64") {
+        warn "rbenv: Already exists the shared msys64 ("$env:RBENV_ROOT\msys64")"
+        exit
+    }
+
+    $path = download_shared_msys2
+
+    # e.g. rubyinstaller-devkit-3.1.2-1-x64
+    $target = fname $path
+    Write-Host "Installing $target(MSYS2) ..."
+
+    $version = $target | Select-String $(version_match_regexp)
+
+    $version = $version.Matches[0].value
+
+    # No /tasks=assocfiles,modpath,defaultutf8
+    # the defaultutf8 will register a env var 'RUBYOPT': -Eutf-8
+    # Use a portable way!
+    $ArgList = @("/verysilent", "/dir=$env:RBENV_ROOT\$version")
+    $Status = Invoke-ExternalCommand $path $ArgList
+    if (!$Status) {
+        abort "Failed to install to $version"
+    }
+
+    Write-Host "Moving the shared MSYS2 ..."
+    Move-Item -Recurse "$env:RBENV_ROOT\$version\msys64" "$env:RBENV_ROOT"
+
+    rbenv rehash version $version
+
+    remove_ruby_registry_info $version
+
+    success "The shared MSYS2 was installed successfully!"
+    success "In addition, version '$version' was installed for you!"
+}
+
 
 
 # The user will download in three ways
@@ -378,32 +427,6 @@ function download_ruby($version) {
 }
 
 
-function install_msys2 {
-    $path = download_msys2
-
-    # e.g. rubyinstaller-devkit-3.1.2-1-x64
-    $target = fname $path
-    Write-Host "Installing $target(MSYS2) ..."
-
-    $version = $target | Select-String $(version_match_regexp)
-
-    $version = $version.Matches[0].value
-
-    # No /tasks=assocfiles,modpath,defaultutf8
-    # Use a portable way!
-    $ArgList = @("/verysilent", "/dir=$env:RBENV_ROOT\$version")
-    $Status = Invoke-ExternalCommand $path $ArgList
-    if (!$Status) {
-        abort "Failed to install to $version"
-    }
-
-    Move-Item -Recurse "$env:RBENV_ROOT\$version\msys64" "$env:RBENV_ROOT"
-
-    success "MSYS2 was installed successfully!"
-    success "In addition, version '$version' was installed for you!"
-}
-
-
 function install_ruby($version) {
     . $PSScriptRoot\..\lib\decompress.ps1
 
@@ -439,7 +462,7 @@ function install_ruby($version) {
 #                 decide a lite version or a full version (with MSYS2). If latter, we need
 #                 to download rubyinstaller-devkit.exe and install it, then remove its #                 modification to the registry (prevent it to be a system Ruby)
 #
-# install_msys2 -
+# install_shared_msys2 -
 #                It will not download a pure msys2. Instead, we will download a latest but
 #                not head version of rubyinstaller-devkit.exe. Install it, and move the
 #                msys64 dir out of it to be the shared MSYS2. Then remove its modification to #                the registry (prevent it to be a system Ruby)
@@ -467,7 +490,7 @@ elseif (!$cmd) {
 }
 
 elseif ($cmd -eq "msys" -or $cmd -eq "msys2" -or $cmd -eq "devkit" ) {
-    install_msys2
+    install_shared_msys2
 }
 
 else {
