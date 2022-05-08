@@ -2,6 +2,18 @@
 
 <h1 align="center">rbenv for Windows</h1>
 
+<p>
+
+<a href="https://gitter.im/ScoopInstaller/Scoop">
+    <img src="https://badges.gitter.im/ScoopInstaller/Scoop.png" alt="Gitter Chat" />
+</a>
+
+<a href="https://github.com/ScoopInstaller/Scoop/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/ScoopInstaller/Scoop.svg" alt="License" />
+</a>
+
+</p>
+
 [![Join the chat at https://gitter.im/rbenv-for-windows/community](https://badges.gitter.im/rbenv-for-windows/community.svg)](https://gitter.im/rbenv-for-windows/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![License](https://img.shields.io/github/license/ccmywish/rbenv-for-windows.svg)](https://github.com/ccmywish/rbenv-for-windows/blob/main/LICENSE)
