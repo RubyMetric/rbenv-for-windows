@@ -92,6 +92,7 @@ function get_all_installed_versions {
     }
 
     if ($env:RBENV_SYSTEM_RUBY) {
+        if ($versions.Count -eq 0) { $versions = @() }
         $versions = [Collections.ArrayList] $versions
         $versions.Insert(0, "system")
     }
