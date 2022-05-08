@@ -3,9 +3,11 @@
 
 [![Join the chat at https://gitter.im/rbenv-for-windows/community](https://badges.gitter.im/rbenv-for-windows/community.svg)](https://gitter.im/rbenv-for-windows/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-    Manage multiple Rubies on Windows.
+Manage multiple Rubies on Windows.
+
 </div>
 
+<br>
 
 嗨, 你好
 
@@ -34,7 +36,7 @@ Hi, hello
 
 <br>
 
-In brief, the current implementation has two drawbacks:
+**In brief, the current implementation has two drawbacks:**
 
 1. When changing into a dir that has '.ruby-version', you will use the correct version, but your `prompt` will still display the wrong version.
 2. To solve drawback 1, `rbenv global` can work great with `prompt`, but introduces another drawback: You can't change global version while running a Ruby-related process on that version.
