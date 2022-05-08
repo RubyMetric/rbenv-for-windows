@@ -91,6 +91,9 @@ In your `$profile`, you should add theses:
 # rbenv for Windows
 $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 & "$env:RBENV_ROOT\rbenv\bin\rbenv.ps1" init
+
+# I have pre-defined a mirror for you guys, see share/mirros.ps1
+$env:RBENV_USE_MIRROR = "CN"  # For Chinese users
 ```
 
 <br>
