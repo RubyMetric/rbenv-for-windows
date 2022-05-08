@@ -36,13 +36,14 @@ $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
 
 
-# The init process does 4 things:
+# The init process does 5 things:
 #
 # 1. Add two paths at the front of the user PATH (almost no delay)
 #    and one path to RUBYLIB
 # 2. Ensure global.txt (   1ms    delay)
 # 3. Check system Ruby (10ms~20ms delay)
 # 4. If has system Ruby, rehash it just only one time (50ms, but only when you first setup rbenv)
+# 5. If no the shared MSYS2, install it
 #
 
 if ($cmd -eq "init") {
@@ -94,6 +95,13 @@ if ($cmd -eq "init") {
                 rbenv rehash version system
             }
         }
+    }
+
+    if (-Not (Test-Path "$env:RBENV_ROOT\msys64")) {
+        warn "rbenv: Seems you have just installed rbenv, let me install MSYS2 for you"
+        warn "       MSYS2 is must-have if you want to install gems with C extensions"
+
+        rbenv install msys
     }
 
     # return instantly so that rbenv doesn't delay the user startup too much
