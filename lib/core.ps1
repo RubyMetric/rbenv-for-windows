@@ -152,5 +152,6 @@ function Invoke-ExternalCommand {
 
 
 function version_match_regexp {
-    '\d{1,}\.\d{1,}\.\d{1,}-\d{1,}.*?$'
+    # '\d{1,}\.\d{1,}\.\d{1,}-\d{1,}.*?$'
+    '\d{1,}\.\d{1,}\.\d{1,}-\d{1,}'
 }

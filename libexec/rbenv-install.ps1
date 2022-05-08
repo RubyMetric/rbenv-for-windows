@@ -338,7 +338,6 @@ function install_ruby($version) {
         exit
     }
 
-
     if ($version -lt '3.1.0-1') {
         warn "version < '3.1.0-1' need mingw64 toolchain (Not compatible with our shared MSYS2's ucrt64 toolchain)"
         warn "Only full version can make you install a gem with C extensions`n"
@@ -395,7 +394,7 @@ function download_ruby_with_msys2($version) {
     $url += "/$cache_name"
 
     Write-Host "Begin downloading ..."
-    info "$url"
+    info "=> $url"
     return download_with_cache $url $cache_name
 }
 
