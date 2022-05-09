@@ -61,7 +61,7 @@ Our `rbenv-for-windows` works on Windows, also in a native way (using PowerShell
 
 <br>
 
-**Carefully speaking, there are five obvious issues:**
+**Carefully speaking, there are four obvious issues:**
 
 1. [We can't have a good prompt using `starship`](https://github.com/ccmywish/rbenv-for-windows/issues/4)
 
@@ -71,15 +71,11 @@ Our `rbenv-for-windows` works on Windows, also in a native way (using PowerShell
 
     As a compromise, I only have to `rbenv rehash version xxx` after you `rbenv global xxx`
 
-3. [Need upstream support for devkit in 7zip archive](https://github.com/ccmywish/rbenv-for-windows/issues/3)
-
-    This can make download/install MSYS2 devkit process much easier, and can be solved mostly if upstream can directly support it.
-
-4. We only support CRuby, x64 versions
+3. We only support CRuby, x64 versions
 
     Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on, because of my extremely lack of time in next recent years for developing. If you want to support it, consider to be a maintainer please! Thank you!
 
-5. We don't support old versions that have a little different leading URL
+4. We don't support old versions that have a little different leading URL
 
     Very small URL changes will make our work double, I don't have time for it. So keep URLs convention stable is very important. Luckily, these exceptions are very old Ruby versions (part of 2.4, 2.5 series) built by RubyInstaller, don't worry! See [share/README.md](./share/README.md) for details.
 
@@ -142,7 +138,9 @@ rbenv install 3.1.2
 rbenv install 3.0.0-1
 
 # Install devkit
-# We need upstream support to implement this!
+
+# No need to run it by yourself now,
+# It will run automatically when first setup rbenv
 rbenv install msys
 # or
 rbenv install msys2
