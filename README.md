@@ -314,9 +314,10 @@ This is one time one gem way. How to rehash all for a newly installed version? E
 So, when to rehash (automatically, not user's behaviors)?
 
 1. After `gem install xxx`
-2. After `install a new Ruby version
-3. After `rbenv global xxx` (This is a compromise as mentioned before)
-4. After detecting a system Ruby
+2. After `bundle install` (This hook doesn't work, please help if you can)
+3. After installing a new Ruby version
+4. After `rbenv global xxx` (This is a compromise as mentioned before)
+5. After detecting a system Ruby
 
 <br>
 
