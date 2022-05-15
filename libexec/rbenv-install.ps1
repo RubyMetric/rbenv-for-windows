@@ -521,12 +521,14 @@ function install_shared_msys2 {
 #              -- if version < 3.1.0-1,  we want a rubyinstaller-devkit.7z. But at present,
 #                 the upstream doesn't offer this. So we will prompt for user, let the user
 #                 decide a lite version or a full version (with MSYS2). If latter, we need
-#                 to download rubyinstaller-devkit.exe and install it, then remove its #                 modification to the registry (prevent it to be a system Ruby)
+#                 to download rubyinstaller-devkit.exe and install it, then remove its
+#                 modification to the registry (prevent it to be a system Ruby)
 #
 # install_shared_msys2 -
 #                It will not download a pure msys2. Instead, we will download a latest but
 #                not head version of rubyinstaller-devkit.exe. Install it, and move the
-#                msys64 dir out of it to be the shared MSYS2. Then remove its modification to #                the registry (prevent it to be a system Ruby)
+#                msys64 dir out of it to be the shared MSYS2. Then remove its modification to
+#                the registry (prevent it to be a system Ruby)
 #
 #
 # As you can see, we must deal with registry, this is hacking.
