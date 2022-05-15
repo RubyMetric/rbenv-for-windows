@@ -65,7 +65,7 @@ Our `rbenv-for-windows` works on Windows, also in a native way (using PowerShell
 
 1. [We can't have a good prompt using `starship`](https://github.com/ccmywish/rbenv-for-windows/issues/4)
 
-    This is caused by shims used by `rbenv local`, I can't find a good way to solve this. In order for `prompt` like `starshiip` to work, I make the `rbenv global` use another mechanism.
+    This is caused by shims used by `rbenv local`, I can't find a good way to solve this. In order for `prompt` like `starship` to work, I make the `rbenv global` use another mechanism.
 
 2. [Bundle install will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5)
 
@@ -104,7 +104,7 @@ In your `$profile`, you should add theses:
 # rbenv for Windows
 $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 
-# I have pre-defined a mirror for you guys, see share/mirros.ps1
+# I have pre-defined a mirror for you guys, see share/mirrors.ps1
 # Note, this must be placed before 'init'
 $env:RBENV_USE_MIRROR = "CN"  # For Chinese users
 
@@ -182,7 +182,7 @@ Not easy to download on Github? Use a mirror!
 # Use a custom mirror
 $env:RBENV_USE_MIRROR = "https://abc.com/abc-<version>"
 
-# see share/mirros.ps1
+# see share/mirrors.ps1
 # I have pre-defined a mirror for you guys
 # Note, this must be placed before 'init'
 $env:RBENV_USE_MIRROR = "CN"  # For Chinese users
@@ -236,7 +236,7 @@ So every time you change global version, you will directly get what `$env:RBENV_
 
 ### shell version
 
-If we execute the command `rbenv shell 3.1.2`, we will get a new environment variable `$env:RBEVN_VERSION = 3.1.2`, and now your path will be:
+If we execute the command `rbenv shell 3.1.2`, we will get a new environment variable `$env:RBENV_VERSION = 3.1.2`, and now your path will be:
 
 ```PowerShell
 $env:RBENV_ROOT\3.1.2\bin
@@ -271,7 +271,7 @@ name | default | description
 <a id="FAQforDevs"> </a>
 ## FAQ for developers and maintainers
 
-> Q: Why multiple Rubis can share one MSYS2?
+> Q: Why multiple Rubies can share one MSYS2?
 
 It's decided by RubyInstaller's tool: `ridk`, it's automatically loaded every time you use Ruby.
 

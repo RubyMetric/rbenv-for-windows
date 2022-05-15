@@ -289,7 +289,7 @@ function remove_ruby_registry_info($version) {
 # before that, all Rubies are [x64-mingw32]
 #
 # The former uses 'ucrt64'  toolchain
-# The latter uses 'mingw64' toolchanin
+# The latter uses 'mingw64' toolchain
 #
 # They may not be compatible, for users who just want enjoy everything ready (they can directly
 # build gems with C extensions), we have to do this.
@@ -451,7 +451,7 @@ function install_ruby_with_msys2($version) {
 #      process. oneclick/RubyInstaller2 has already done
 #      lots of trivial works for users to setup MSYS2.
 #      Everyone can thus get the same(with upstream) and
-#      a quitely stable envrionment.
+#      a quite stable environment.
 #
 # We offer the best way to coordinate with RubyInstaller2
 # ------------------------------------------------------------------
