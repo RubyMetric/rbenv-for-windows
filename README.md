@@ -190,9 +190,9 @@ $env:RBENV_USE_MIRROR = "CN"  # For Chinese users
 
 **Note:**
 
-From `3.1.0-1`, we should download rubyinstaller-<version>.7z directly, no devkit! That's only about less than 15MB. **Every Ruby share one MSYS64!**
+From `3.1.0-1`, we should download `rubyinstaller-<version>.7z` directly, no devkit. That's only about 15MB. **Every Ruby shares one MSYS64.**
 
-However, before `3.1.0-1`, we have to download rubyinstaller-devkit-<version>.7z, with devkit! That's about 100MB ... **Every Ruby has their own MSYS64!**
+However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7z`, with devkit. That's about 130MB ... **Every Ruby has their own MSYS64.**
 
 <br>
 
@@ -201,11 +201,11 @@ However, before `3.1.0-1`, we have to download rubyinstaller-devkit-<version>.7z
 
 We are a little different with how `rbenv` works. Surely, we have shims too, but our shims folder is always pointing to the global version.
 
- Every time you use `rbenv global x.x.x`, the shims folder location will not change, but the content of it will change wholly (unlike `rbenv` on Linux, there it will stores shell script to delegate).
+ Every time you use `rbenv global x.x.x`, the shims folder location will not change, but the content of it will change wholly (unlike `rbenv` on Linux, there it will stores shell scripts to delegate).
 
 You are maybe questioning the performance now, we use `junction` in Windows, so there is so little overhead you'll notice, in fact, this leads to about just 10ms delay.
 
-There are three kind 'versions'
+There are three kind of 'versions'
 1. global version (set by `$env:RBENV_ROOT\global.txt`)
 2. local version  (set by `$PWD\.ruby-version`)
 3. shell version (set by `$env:RBENV_VERSION`)
@@ -253,7 +253,7 @@ So in this shell, your env will not be affected with `global version` or `local 
 
 ### local version
 
-Like `rbenv` we also don't hook on changing location. We use shims too. Our shims is directly in every ruby `bin` directory. Every ruby-related command has a `PowerShell` script individually, this script is called `shim`. The script will delegate to the correct version's `bin` directory. **No hack in path at all!**
+Like `rbenv` we also don't hook on changing location. We use shims too. Our shims are directly in every ruby `bin` directory. Every ruby-related command has a `PowerShell` script individually, this script is called `shim`. The script will delegate to the correct version's `bin` directory. **No hack in path at all!**
 
 <br>
 
