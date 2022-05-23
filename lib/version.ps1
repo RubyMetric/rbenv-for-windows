@@ -79,9 +79,7 @@ function get_all_remote_versions {
 # Read all dir names in the RBENV_ROOT
 function get_all_installed_versions {
     # System.IO.DirectoryInfo
-    $versions = (Get-ChildItem ($env:RBENV_ROOT)) `
-                # + (Get-ChildItem "$rbenvdir\shims") `
-                | Where-Object {
+    $versions = (Get-ChildItem ($env:RBENV_ROOT)) | Where-Object {
                     $_.Name -match $(version_match_regexp) -or $_.Name -eq 'head'
                 }
 
