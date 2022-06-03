@@ -8,9 +8,7 @@ function get_commands {
 
 
 function command_files {
-    (Get-ChildItem (relpath '..\libexec')) `
-        # + (Get-ChildItem "$rbenvdir\shims") `
-        | Where-Object { $_.name -match 'rbenv-.*?\.ps1$' }
+    (Get-ChildItem (relpath '..\libexec')) | Where-Object { $_.name -match 'rbenv-.*?\.ps1$' }
 }
 
 
