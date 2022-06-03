@@ -3,7 +3,7 @@
 # Authors       : ccmywish <ccmywish@qq.com>
 #                 Scoop Contributoers
 # Created on    : <2022-05-02>
-# Last modified : <2022-05-08>
+# Last modified : <2022-05-09>
 #
 #
 #               rbenv for Windows
@@ -74,7 +74,7 @@ if ($cmd -eq "init") {
     } else {
 
         if ($keys.Count -gt 1) {
-            $msg = "rbenv: Only one system Ruby is support, but you've installed $($keys.Count)"
+            $msg = "rbenv: Only one system Ruby is supported, but you've installed $($keys.Count)"
             write-host -f darkyellow $msg
         }
         if ($keys[0]) {
