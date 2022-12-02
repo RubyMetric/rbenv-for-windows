@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------
 # File          : rbenv.ps1
 # Authors       : ccmywish <ccmywish@qq.com>
-#                 Scoop Contributoers
+#                 Scoop Contributors
 # Created on    : <2022-05-02>
 # Last modified : <2022-05-09>
 #
@@ -24,7 +24,7 @@ param($cmd)
 ########################################
 # [String]
 # rbenv's own version
-$RBENV_VERSION       = "rbenv v0.1.0"
+$RBENV_VERSION       = "rbenv v1.0.0"
 
 # [String]
 # Where we check the global version
