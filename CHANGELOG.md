@@ -1,6 +1,12 @@
 # Changelog
 
-## [Unreleased](#) (2022-05-02)
+## [Unreleased](#) (2022-12-03)
+
+<br>
+
+## [v1.0.0](#) (2022-05-09)
+
+- Finish
 
 <br>
 
