@@ -1,6 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    RubyInstaller Versions List
+
+
+The whole download link is:
+
+1. For RubyInstaller2-devkit(MSYS2)
+    https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.2-1/rubyinstaller-devkit-3.1.2-1-x64.exe
+
+2. For RubyInstaller.7z
+    https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.2-1/rubyinstaller-3.1.2-1-x64.7z
+
+3. For head version
+    https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-head/rubyinstaller-head-x64.7z
+
+
+NOTE that, the CN mirror doesn't support head version
+-->
+
+
 <Versions>
-    <Version>3.1.3-1</Version>
-    <Hash type="SHA256">c3ab4fa2647ccf74129ca7ccdcf72e7b7d76f4dc26ec30eda5df32529b0693bb</Hash>
-    <URL>https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.3-1/rubyinstaller-devkit-3.1.3-1-x64.exe</URL>
-    <CN-URL>https://mirror.sjtu.edu.cn/github-release/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.3-1/rubyinstaller-devkit-3.1.3-1-x64.exe</CN-URL>
+<Version>
+    <Name>3.1.3-1</Name>
+    <Hash type="SHA256">727080e81cee2146cfd723a5bb6146b1e75327824eb49e0f2dfd5ac11fb150fc</Hash>
+    <!-- https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.3-1/rubyinstaller-3.1.3-1-x64.7z -->
+    <ArchiveURL>default</ArchiveURL>
+    <mirror>
+        <CN>
+            <!-- https://mirror.sjtu.edu.cn/github-release/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.3-1/rubyinstaller-3.1.3-1-x64.7z -->
+            <ArchiveURL>default</ArchiveURL>
+        </CN>
+    </mirror>
+</Version>
+
+
+<Version>
+    <Name>3.1.2-1</Name>
+    <Hash type="SHA256">637039c18dd4ad4a1fed326eed8caca8a686b79cee68bf6b85636bf9ec3a083c</Hash>
+    <ArchiveURL>default</ArchiveURL>
+    <mirror>
+        <CN><ArchiveURL>default</ArchiveURL></CN>
+    </mirror>
+</Version>
+
+
 </Versions>
