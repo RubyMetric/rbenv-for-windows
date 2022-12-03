@@ -4,14 +4,18 @@
 
 RBENV_PS1 = ENV['RBENV_ROOT'] + '\rbenv\bin\rbenv.ps1'
 
+def success(msg)
+  puts "\e[32m" + msg + "\e[0m"
+end
+
 hook = lambda do |installer|
   begin
     # Ignore gems that aren't installed in locations that rbenv searches for binstubs
     if installer.spec.executables.any? &&
-        [Gem.default_bindir, Gem.bindir(Gem.user_dir)].include?(installer.bin_dir)
+      [Gem.default_bindir, Gem.bindir(Gem.user_dir)].include?(installer.bin_dir)
 
       installer.spec.executables.each do |e|
-        puts `pwsh -c "#{RBENV_PS1} rehash executable #{e}"`
+        success `pwsh -c "#{RBENV_PS1} rehash executable #{e}"`
       end
 
     end
@@ -37,9 +41,9 @@ if defined?(Bundler::Installer) && Bundler::Installer.respond_to?(:install) && !
         # To compromise, I have to run `rbenv rehash version xxx` when `rbenv global xxx``
         #
         puts
-        puts "rbenv: Hey, friend! If you see this line, please let me know how you do it."
-        puts "This means you trigger successfully the Bundler post-install hook"
-        puts "This is we really want but Bundler doesn't do for us correctly at present (2022-05-08)"
+        success "rbenv: Hey, friend! If you see this line, please let me know how you do it."
+        success "This means you successfully trigger the Bundler post-install hook on Windows"
+        success "This is what we really want but Bundler doesn't do for us correctly at present (2022-05-08)"
         puts
 
         begin
@@ -57,7 +61,7 @@ if defined?(Bundler::Installer) && Bundler::Installer.respond_to?(:install) && !
           # rehash for current version
           # Our code is correct, because our `rbenv rehash` will rehash the current version
           # So next time, you change global to this version, you really already get what you want in a Gemfile
-          puts `pwsh -c "#{RBENV_PS1} rehash"`
+          success `pwsh -c "#{RBENV_PS1} rehash"`
         end
         result
       end
