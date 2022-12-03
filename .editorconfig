@@ -23,3 +23,6 @@ indent_size = 2
 [{{M,m,GNU}akefile{,.*},*.mak,*.mk}]
 indent_style = tab
 end_of_line = lf
+
+[{*.rb, Gemfile, Rakefile}]
+indent_size = 2
