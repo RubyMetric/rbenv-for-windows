@@ -413,10 +413,12 @@ function install_ruby_with_msys2($version) {
 
     $version = $version.Matches[0].value
 
+    # Ref: https://github.com/oneclick/rubyinstaller2/wiki/FAQ#user-content-silent-install
+
     # No /tasks=assocfiles,modpath,defaultutf8
     # the defaultutf8 will register a env var 'RUBYOPT': -Eutf-8
     # Use a portable way!
-    $ArgList = @("/verysilent", "/dir=$env:RBENV_ROOT\$version", "/tasts=defaultutf8")
+    $ArgList = @("/verysilent", "/dir=$env:RBENV_ROOT\$version", "/tasks=defaultutf8")
     $Status = Invoke-ExternalCommand $path $ArgList
     if (!$Status) {
         abort "Failed to install to $version"
