@@ -280,8 +280,9 @@ function remove_ruby_registry_info($version) {
 # From 3.1.0-1, we should download rubyinstaller-<version>.7z directly, no devkit!
 # That's only about less than 15MB. Every Ruby share one MSYS64!
 #
-# However, below 3.1.0-1, we have to download rubyinstaller-devkit-<version>.7z, with devkit!
-# That's about 100MB ... Every Ruby has their own MSYS64!
+# However, below 3.1.0-1, we have to download rubyinstaller-devkit-<version>.exe.
+# It's an executable installer with devkit!
+# That's about 130MB ... Every Ruby has their own MSYS64!
 #
 # Why?
 #
@@ -295,8 +296,8 @@ function remove_ruby_registry_info($version) {
 # build gems with C extensions), we have to do this.
 #
 # In brief:
-#   1. Install whole rubyinstaller-devkit.7z in 'version < 3.1.0-1'
-#   2. Install only  rubyinstaller.7z in 'version >= 3.1.0-1'
+#   1. Install whole rubyinstaller-devkit.exe when 'version < 3.1.0-1'
+#   2. Install only  rubyinstaller.7z when 'version >= 3.1.0-1'
 #
 function download_ruby($version) {
     # Get our mirror list
@@ -376,7 +377,7 @@ function install_ruby($version) {
 
 # Only called by install_ruby_with_msys2
 function download_ruby_with_msys2($version) {
-        # Get our mirror list
+    # Get our mirror list
     . $PSScriptRoot\..\share\mirrors.ps1
 
     $mir = $env:RBENV_USE_MIRROR
@@ -401,7 +402,7 @@ function download_ruby_with_msys2($version) {
 
 
 # Only called by install_ruby
-# For versions < 3.1.0-1
+# Only for versions < 3.1.0-1
 function install_ruby_with_msys2($version) {
     $path = download_ruby_with_msys2 $version
 
@@ -415,10 +416,18 @@ function install_ruby_with_msys2($version) {
 
     # Ref: https://github.com/oneclick/rubyinstaller2/wiki/FAQ#user-content-silent-install
 
-    # No /tasks=assocfiles,modpath,defaultutf8
-    # the defaultutf8 will register a env var 'RUBYOPT': -Eutf-8
-    # Use a portable way!
-    $ArgList = @("/verysilent", "/dir=$env:RBENV_ROOT\$version", "/tasks=defaultutf8")
+    # 1. No /tasks=assocfiles,modpath
+    # 2. the defaultutf8 will register a env var 'RUBYOPT': -Eutf-8
+
+    $ArgList = @("/verysilent",
+                "/dir=$env:RBENV_ROOT\$version",
+                "/tasks=defaultutf8")
+
+    # Ref: https://github.com/oneclick/rubyinstaller2/wiki/FAQ#q-which-install-mode-should-i-use
+
+    # The installation mode 'currentuser' or '/allusers' is only a feature after 3.2.0-1
+    # But here, we will only use the installer when < 3.1.0-1. Versions > 3.1.0-1 we will directly use 7zip, so there is no need to set to '/currentuser'
+
     $Status = Invoke-ExternalCommand $path $ArgList
     if (!$Status) {
         abort "Failed to install to $version"
