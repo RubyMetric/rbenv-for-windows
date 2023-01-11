@@ -402,7 +402,9 @@ function download_ruby_with_msys2($version) {
 
 
 # Only called by install_ruby
-# Only for versions < 3.1.0-1
+# This function is called when
+# (1) versions < 3.1.0-1
+# (2) firstly install rbenv
 function install_ruby_with_msys2($version) {
     $path = download_ruby_with_msys2 $version
 
@@ -417,16 +419,32 @@ function install_ruby_with_msys2($version) {
     # Ref: https://github.com/oneclick/rubyinstaller2/wiki/FAQ#user-content-silent-install
 
     # 1. No /tasks=assocfiles,modpath
-    # 2. the defaultutf8 will register a env var 'RUBYOPT': -Eutf-8
+    # 2. 'defaultutf8' will register an env var 'RUBYOPT': -Eutf-8
+
 
     $ArgList = @("/verysilent",
                 "/dir=$env:RBENV_ROOT\$version",
                 "/tasks=defaultutf8")
 
-    # Ref: https://github.com/oneclick/rubyinstaller2/wiki/FAQ#q-which-install-mode-should-i-use
+<#
 
-    # The installation mode 'currentuser' or '/allusers' is only a feature after 3.2.0-1
-    # But here, we will only use the installer when < 3.1.0-1. Versions > 3.1.0-1 we will directly use 7zip, so there is no need to set to '/currentuser'
+    Ref: https://github.com/oneclick/rubyinstaller2/wiki/FAQ#q-which-install-mode-should-i-use
+
+    The installation mode '/currentuser' or '/allusers' is only a feature after 3.2.0-1
+
+    But, we will only use the installer when < 3.1.0-1. Versions > 3.1.0-1 we will directly use 7zip, so there is no need to set to '/currentuser'.
+
+    However, there is an exception:
+
+        when users firstly installed `rbenv`, they will go here, so we still need to set to '/currentuser'
+
+#>
+    if ($version -lt '3.2.0-1') {
+        # Go on
+    } else {
+        $ArgList += '/currentuser'
+    }
+
 
     $Status = Invoke-ExternalCommand $path $ArgList
     if (!$Status) {
