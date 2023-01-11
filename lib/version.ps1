@@ -141,6 +141,11 @@ function get_current_version_with_setmsg {
     } elseif ($cur_ver = get_local_version) {
         if (get_all_installed_versions -contains $cur_ver) {
             $setmsg = "(set by $PWD\.ruby-version)"
+
+        # <2023-01-11> We use `rbenv global` as a compromising method
+        # We hope users will run some Ruby commands in the root dir of a project, whenever they cd into a project.
+            rbenv global $cur_ver
+
             return $cur_ver, $setmsg
         } else {
             warn "rbenv: version $cur_ver is not installed"
