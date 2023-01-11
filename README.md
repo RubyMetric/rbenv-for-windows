@@ -24,10 +24,11 @@ Manage multiple Rubies on Windows.
 
 Hi, hello
 
-**If you are curious how I make it work, you can read the two sections**
+**If you're interested in how it works, read these sections for quick and enough information:**
 
-1. [How does it work?](#HowDoesItWork)
-2. [FAQ for developers and maintainers](#FAQforDevs)
+1. [Relation with rbenv and RubyInstaller2](#RelationWithOtherProjects)
+2. [How does it work?](#HowDoesItWork)
+2. [FAQ for maintainers](#FAQforDevs)
 
 <br>
 
@@ -150,7 +151,8 @@ However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7
 
 <br>
 
-## What's the relationship between rbenv and RubyInstaller2
+<a id="RelationWithOtherProjects"> </a>
+## Relation with `rbenv` and `RubyInstaller2`
 
 [rbenv](https://github.com/rbenv/rbenv) works on Unix-like systems in a native way (using Bash), it uses the plugin [ruby-build](https://github.com/rbenv/ruby-build) to download CRuby source code and compile, then install. `rbenv` does a great job! I really want it to run on my Windows.
 
@@ -224,7 +226,7 @@ $env:RBENV_ROOT\shims\bin
 $env:PATH
 ```
 
-So every time you change global version, you will directly get what `$env:RBENV_ROOT\shims\bin` offers you! **No hack in path at all!**
+So every time you change global version, you will directly get what `$env:RBENV_ROOT\shims\bin` offers you!
 
 <br>
 
@@ -247,7 +249,7 @@ So in this shell, your env will not be affected with `global version` or `local 
 
 ### local version
 
-Like `rbenv` we also don't hook on changing location. We use shims too. Our shims are directly in every ruby `bin` directory. Every ruby-related command has a `PowerShell` script individually, this script is called `shim`. The script will delegate to the correct version's `bin` directory. **No hack in path at all!**
+Like `rbenv` we also don't hook on changing location. We use shims too. Our shims are directly in every ruby `bin` directory. Every ruby-related command has a `PowerShell` script individually, this script is called `shim`. The script will delegate to the correct version's `bin` directory.
 
 <br>
 
@@ -263,7 +265,7 @@ name | default | description
 <br>
 
 <a id="FAQforDevs"> </a>
-## FAQ for developers and maintainers
+## FAQ for maintainers
 
 > Q: Why multiple Rubies can share one MSYS2?
 
