@@ -1,6 +1,19 @@
 # Changelog
 
-## [Unreleased](#) (2022-12-03)
+## [Unreleased](#) (2023-01-11)
+
+### New features:
+
+- Change to global version as a compromise when there's a '.ruby-version' file
+- Set '/currentuser' when version >= 3.2.0-1 with MSYS2
+
+### Enhancements:
+
+- 'rbenv local' command removes the RubyInstaller2 suffix when set
+
+### Bug fixes:
+
+- Fix bug on rehash two executables ruby and rubyw: remove .exe suffix
 
 <br>
 
