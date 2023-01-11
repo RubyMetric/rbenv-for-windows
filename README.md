@@ -176,13 +176,11 @@ Our `rbenv-for-windows` works on Windows, also in a native way (using PowerShell
 
     However I make `rbenv global` work great with `prompt` by using `junction`. It **won't lead to the situation**: You can't change global version while running a Ruby-related process on that version.
 
+    Note that from <2023-01-11>, I change the behavior to directly set global version when there is a `.ruby-version` file. This is definitely a compromise, but I think it fits my daily development flow. All you need to do is: **Whenever you cd into a Ruby project, run some Ruby commands like `ruby` or `bundle` in the root directory**, this will change to correct version globally.
+
 2. Bad integration with `Bundler`, [Bundle install will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5).
 
     I don't know if these are bugs of Bundler on Windows, please help this project if you can. As a compromise, I only have to `rbenv rehash version xxx` after you `rbenv global xxx`.
-
-    **I suggest you mainly use `rbenv global` and `rbenv shell` to work, even `bundle exec` will work wrongly if you use `rbenv local`.**
-
-    The main reason I make this project, is just I want to use multiple rubies through CLI, not GUI. So I focus just more on the installation process.
 
 3. We only support CRuby, x64 versions, provided by RubyInstaller2
 

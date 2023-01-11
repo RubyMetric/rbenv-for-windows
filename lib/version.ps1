@@ -144,11 +144,6 @@ function get_current_version_with_setmsg {
     } elseif ($cur_ver = get_local_version) {
         if (get_all_installed_versions -contains $cur_ver) {
             $setmsg = "(set by $PWD\.ruby-version)"
-
-        # <2023-01-11> We use `rbenv global` as a compromising method
-        # We hope users will run some Ruby commands in the root dir of a project, whenever they cd into a project.
-            rbenv global $cur_ver
-
             return $cur_ver, $setmsg
         } else {
             warn "rbenv: version $cur_ver is not installed"
@@ -278,6 +273,18 @@ function get_executable_location ($cmd) {
     }
 
     $version, $_ = get_current_version_with_setmsg
+
+    # <2023-01-11> We use `rbenv global` as a compromising method
+    # We hope users will run some Ruby commands in the root dir of a project, whenever they cd into a project.
+
+    if ($_.Contains(".ruby-version")) {
+        $current_global = get_global_version
+        if (-Not ($version -eq $current_global)) {
+            warn "rbenv: As a compromise, we change to global version"
+            rbenv global $version
+        }
+    }
+
 
     if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
         get_ruby_exe_location_by_version $cmd $version
