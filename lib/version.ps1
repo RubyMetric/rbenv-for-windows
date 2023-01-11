@@ -280,7 +280,7 @@ function get_executable_location ($cmd) {
     if ($_.Contains(".ruby-version")) {
         $current_global = get_global_version
         if (-Not ($version -eq $current_global)) {
-            warn "rbenv: As a compromise, we change to global version"
+            warn "rbenv: As a compromise, we change to global version for '.ruby-version'"
             rbenv global $version
         }
     }
