@@ -37,59 +37,13 @@ Hi, hello
 
 <br>
 
-## What's the relationship between rbenv and RubyInstaller2
+## Install
 
-[rbenv](https://github.com/rbenv/rbenv) works on Unix-like systems in a native way (using Bash), it uses the plugin [ruby-build](https://github.com/rbenv/ruby-build) to download CRuby source code and compile, then install. `rbenv` does a great job! I really want it to run on my Windows.
-
-Our `rbenv-for-windows` works on Windows, also in a native way (using PowerShell), we use the great and battle-tested [RubyInstaller2](https://github.com/oneclick/rubyinstaller2) directly to install the binary, it hence saves your time.
-
-`rbenv-for-windows` is trying to make commands compatible with `rbenv`, which can make you feel consistent in different systems. During early stage of development I'm making it work without reading the source code of `rbenv`, but later when I have to implement `rbenv local` feature, I ask the `rbenv`'s author for help, finally also introduced the concept of shims, but a little differently.
-
-<br>
-
-## Known issues
-
-**In brief, the current implementation has three drawbacks:**
-
-1. When changing into a dir that has `.ruby-version`, you will use the correct version, but your `prompt` will still display the wrong version.
-2. To solve drawback 1, `rbenv global` can work great with `prompt`, but introduces another drawback: You can't change global version while running a Ruby-related process on that version.
-3. Bad integration with `Bundler`, I don't know if these are bugs of Bundler on Windows, please help this project if you can
-
-<br>
-
-**So I suggest you mainly use `rbenv global` and `rbenv shell` to work, even `bundle exec` will work wrongly if you use `rbenv local`. Besides, the main reason I make this project, is just I want to experience many rubies through CLI, not GUI. You may feel the same, because the installation process is really smooth.**
-
-<br>
-
-**Carefully speaking, there are four obvious issues:**
-
-1. [We can't have a good prompt using `starship`](https://github.com/ccmywish/rbenv-for-windows/issues/4)
-
-    This is caused by shims used by `rbenv local`, I can't find a good way to solve this. In order for `prompt` like `starship` to work, I make the `rbenv global` use another mechanism.
-
-2. [Bundle install will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5)
-
-    As a compromise, I only have to `rbenv rehash version xxx` after you `rbenv global xxx`
-
-3. We only support CRuby, x64 versions
-
-    Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on, because of my extremely lack of time in next recent years for developing. If you want to support it, consider to be a maintainer please! Thank you!
-
-4. We don't support old versions that have a little different leading URL
-
-    Very small URL changes will make our work double, I don't have time for it. So keep URLs convention stable is very important. Luckily, these exceptions are very old Ruby versions (part of 2.4, 2.5 series) built by RubyInstaller, don't worry! See [share/README.md](./share/README.md) for details.
-
-<br>
-
-## Requirements
+### Requirements
 
 - Windows 7 SP1+ / Windows Server 2008+
 - [PowerShell 5](https://aka.ms/wmf5download) (or later, include [PowerShell Core](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-windows?view=powershell-6)) and [.NET Framework 4.5](https://www.microsoft.com/net/download) (or later)
 - PowerShell must be enabled for your user account e.g. `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
-
-<br>
-
-## Install
 
 It's portable, be bold to try it!
 
@@ -193,6 +147,46 @@ $env:RBENV_USE_MIRROR = "CN"  # For Chinese users
 From `3.1.0-1`, we should download `rubyinstaller-<version>.7z` directly, no devkit. That's only about 15MB. **Every Ruby shares one MSYS64.**
 
 However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7z`, with devkit. That's about 130MB ... **Every Ruby has their own MSYS64.**
+
+<br>
+
+## What's the relationship between rbenv and RubyInstaller2
+
+[rbenv](https://github.com/rbenv/rbenv) works on Unix-like systems in a native way (using Bash), it uses the plugin [ruby-build](https://github.com/rbenv/ruby-build) to download CRuby source code and compile, then install. `rbenv` does a great job! I really want it to run on my Windows.
+
+Our `rbenv-for-windows` works on Windows, also in a native way (using PowerShell), we use the great and battle-tested [RubyInstaller2](https://github.com/oneclick/rubyinstaller2) directly to install the binary, it hence saves your time.
+
+`rbenv-for-windows` is trying to make commands compatible with `rbenv`, which can make you feel consistent in different systems. During early stage of development I'm making it work without reading the source code of `rbenv`, but later when I have to implement `rbenv local` feature, I ask the `rbenv`'s author for help, finally also introduced the concept of shims, but a little differently.
+
+<br>
+
+## Known issues
+
+**The current implementation has these drawbacks and issues:**
+
+1. When changing into a dir that has `.ruby-version`, you will use the correct version, but your `prompt` will still display the wrong version.
+
+    [We can't have a good prompt using `starship`](https://github.com/ccmywish/rbenv-for-windows/issues/4).
+
+    This is caused by shims used by `rbenv local`, I can't find a good way to solve it.
+
+    However I make `rbenv global` work great with `prompt` by using `junction`. It **won't lead to the situation**: You can't change global version while running a Ruby-related process on that version.
+
+2. Bad integration with `Bundler`, [Bundle install will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5).
+
+    I don't know if these are bugs of Bundler on Windows, please help this project if you can. As a compromise, I only have to `rbenv rehash version xxx` after you `rbenv global xxx`.
+
+    **I suggest you mainly use `rbenv global` and `rbenv shell` to work, even `bundle exec` will work wrongly if you use `rbenv local`.**
+
+    The main reason I make this project, is just I want to use multiple rubies through CLI, not GUI. So I focus just more on the installation process.
+
+3. We only support CRuby, x64 versions, provided by RubyInstaller2
+
+    Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on, because of my extremely lack of time in next recent years for developing. If you want to support it, consider to be a maintainer please! Thank you!
+
+4. We don't support old versions that have a little different leading URL
+
+    Very small URL changes will make our work double, I don't have time for it. So keep URLs convention stable is very important. Luckily, these exceptions are very old Ruby versions (part of 2.4, 2.5 series) built by RubyInstaller, don't worry! See [share/README.md](./share/README.md) for details.
 
 <br>
 
