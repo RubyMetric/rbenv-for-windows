@@ -257,7 +257,7 @@ function remove_ruby_registry_info($version) {
         if ($k.GetValue("DisplayVersion") -eq $version) {
             # Remove-Item $k # This is wrong
             $k | Remove-Item
-            success "rbenv: remove version $version registry info "
+            success "rbenv: Remove version $version registry info "
         }
     }
 }
@@ -365,11 +365,11 @@ function install_ruby($version) {
     Move-Item "$env:RBENV_ROOT\$dir_in_7z" "$env:RBENV_ROOT\$version"
 
     rbenv rehash version $version
-    success "version '$version' was installed successfully!"
+    success "rbenv: Version '$version' was installed successfully!"
 
     if ($version -eq 'head') {
         Remove-Item $path
-        success "success remove the 'head' version cache"
+        success "rbenv: Remove the 'head' version cache"
     }
 }
 
@@ -455,7 +455,7 @@ So the snippet below is unneeded.
     rbenv rehash version $version
     remove_ruby_registry_info $version
 
-    success "version '$version' with devkit was installed successfully!"
+    success "rbenv: Version '$version' with devkit was installed successfully!"
 }
 
 
@@ -549,8 +549,8 @@ When users firstly installed `rbenv`, they will go here,
 
     remove_ruby_registry_info $version
 
-    success "The shared MSYS2 was installed successfully!"
-    success "In addition, the newest version '$version' was installed for you!"
+    success "rbenv: The shared MSYS2 was installed successfully!"
+    success "rbenv: In addition, the newest version '$version' was installed for you!"
 
     # Firstly install, then globally set this newest version instantly
     rbenv global $version

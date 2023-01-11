@@ -11,7 +11,7 @@ function uninstall_rubyinstaller($version) {
 
     Write-Host "Deleting $version..."
     Remove-Item -Recurse -Force "$env:RBENV_ROOT\$version"
-    success "version $version was uninstalled."
+    success "rbenv: Version '$version' was uninstalled."
 
 }
 
