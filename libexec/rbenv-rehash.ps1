@@ -81,7 +81,7 @@ function rehash_version ($version) {
     # remove .cmd suffix
     $cmds = $cmds | % { strip_ext $_}
     # only two exes
-    $exes = @("ruby.exe", "rubyw.exe")
+    $exes = @("ruby", "rubyw")
 
     $executables = $bats + $cmds + $exes
 
