@@ -116,7 +116,10 @@ function get_global_version() {
 function get_local_version {
     $local_version_file = "$PWD\.ruby-version"
     if (Test-Path $local_version_file) {
-        return Get-Content $local_version_file
+        $version = Get-Content $local_version_file
+        # Complete '3.1.3' with the suffix '-1'
+        $version = auto_fix_version_for_installed($version)
+        return $version
     } else {
         return $null
     }

@@ -11,6 +11,13 @@ function set_local_version($version) {
 
     $version = auto_fix_version_for_installed $version
 
+<#
+    To make every Ruby project portable from Windows to *nix, we try to be compatible with `rbenv`
+
+    So, we will remove the version '3.2.0-1' suffix '-1'
+#>
+
+    $version, $suffix = $version.split("-")
     Set-Content $local_version_file $version
 }
 

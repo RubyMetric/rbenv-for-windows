@@ -90,7 +90,7 @@ function rehash_version ($version) {
     foreach ($exe in $executables) {
         rehash_single_executable $where $exe
     }
-    success "rbenv: Rehash $($executables.Count) executables for $version"
+    success "rbenv: Rehash $($executables.Count) executables for '$version'"
 }
 
 
