@@ -9,3 +9,5 @@ function print_current_version_with_setmsg {
 
 
 print_current_version_with_setmsg
+
+ridk version
