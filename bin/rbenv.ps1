@@ -1,9 +1,9 @@
 # ---------------------------------------------------------------
 # File          : rbenv.ps1
 # Authors       : ccmywish <ccmywish@qq.com>
-#                 Scoop Contributors
 # Created on    : <2022-05-02>
-# Last modified : <2023-01-11>
+# Last modified : <2023-01-25>
+# Contributors  : Scoop Contributors
 #
 #
 #               rbenv for Windows
