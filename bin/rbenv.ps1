@@ -37,19 +37,30 @@ $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
 
 <#
-The init process does 6 things:
+The init process does 7 things:
 
-    1. Add two paths at the front of the user PATH (almost no delay)
-       (1.1) rbenv\bin is to delegate all rbenv commands
-       (1.2) shims\bin is to delegate all Ruby commands
-    2. Add one path to RUBYLIB
-    3. Ensure global.txt (   1ms    delay)
-    4. Check system Ruby (10ms~20ms delay)
-    5. If has system Ruby, rehash it just only one time (50ms, but only when you first setup rbenv)
-    6. If no the shared MSYS2, install it
+    1. Set init flag to avoid double init
+    2. Add two paths at the front of the user PATH (almost no delay)
+       (2.1) rbenv\bin is to delegate all rbenv commands
+       (2.2) shims\bin is to delegate all Ruby commands
+    3. Add one path to RUBYLIB
+    4. Ensure global.txt (   1ms    delay)
+    5. Check system Ruby (10ms~20ms delay)
+    6. If has system Ruby, rehash it just only one time (50ms, but only when you first setup rbenv)
+    7. If no the shared MSYS2, install it
 #>
 
 if ($cmd -eq "init") {
+
+    if ($env:RBENV_INIT -eq 1) {
+        # Avoid initializing more than once! This is important, because subshells will
+        # init twice or more, for example in VSCode integrated terminal
+
+        # Write-Host "rbenv: Avoid double init!"
+        return
+    }
+    $env:RBENV_INIT = 1
+
     $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
     $env:PATH = $rbenv_path_first + $env:PATH
 
@@ -78,7 +89,7 @@ if ($cmd -eq "init") {
 
         if ($keys.Count -gt 1) {
             $msg = "rbenv: Only one system Ruby is supported, but you've installed $($keys.Count)"
-            write-host -f darkyellow $msg
+            Write-Host -f darkyellow $msg
         }
         if ($keys[0]) {
             $k = $keys[0]
