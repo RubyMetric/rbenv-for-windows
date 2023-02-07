@@ -2,7 +2,7 @@
 # File          : rbenv.ps1
 # Authors       : ccmywish <ccmywish@qq.com>
 # Created on    : <2022-05-02>
-# Last modified : <2023-01-25>
+# Last modified : <2023-02-07>
 # Contributors  : Scoop Contributors
 #
 #
@@ -24,7 +24,8 @@ param($cmd)
 ########################################
 # [String]
 # rbenv's own version
-$RBENV_VERSION       = "rbenv v1.1.0"
+# Not to conflict with $env:RBENV_VERSION ('rbenv shell' sets it)
+$RBENV_OWN_VERSION       = "rbenv v1.2.0"
 
 # [String]
 # Where we check the global version
@@ -35,16 +36,18 @@ $RBENV_VERSION       = "rbenv v1.1.0"
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
 
+<#
+The init process does 6 things:
 
-# The init process does 5 things:
-#
-# 1. Add two paths at the front of the user PATH (almost no delay)
-#    and one path to RUBYLIB
-# 2. Ensure global.txt (   1ms    delay)
-# 3. Check system Ruby (10ms~20ms delay)
-# 4. If has system Ruby, rehash it just only one time (50ms, but only when you first setup rbenv)
-# 5. If no the shared MSYS2, install it
-#
+    1. Add two paths at the front of the user PATH (almost no delay)
+       (1.1) rbenv\bin is to delegate all rbenv commands
+       (1.2) shims\bin is to delegate all Ruby commands
+    2. Add one path to RUBYLIB
+    3. Ensure global.txt (   1ms    delay)
+    4. Check system Ruby (10ms~20ms delay)
+    5. If has system Ruby, rehash it just only one time (50ms, but only when you first setup rbenv)
+    6. If no the shared MSYS2, install it
+#>
 
 if ($cmd -eq "init") {
     $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
@@ -127,7 +130,7 @@ $available_commands = get_commands
 
 if ( @('-v', '--version') -contains $cmd -or $args[0] -contains '-v') {
     # Defined at the top of this file
-    $RBENV_VERSION
+    $RBENV_OWN_VERSION
 }
 
 elseif ( @($null, '--help', '/?') -contains $cmd -or $args[0] -contains '-h') {
