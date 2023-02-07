@@ -2,6 +2,10 @@
 
 ## [Unreleased](#) (2023-02-07)
 
+### New features:
+
+- Add `$env:RBENV_INIT` to avoid double init
+
 ### Enhancements:
 
 - Rename inner version to avoid conflict with global env variable and annotate better on init process

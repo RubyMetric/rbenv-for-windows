@@ -255,12 +255,26 @@ Like `rbenv` we also don't hook on changing location. We use shims too. Our shim
 
 ## Environment Variables
 
-name | default | description
+### rbenv user defined
+
+name | example | description
 -----|---------|------------
-`$env:RBENV_VERSION` | N/A | Specifies the Ruby version to be used in a shell. <br> **This variable is set by command `rbenv shell`, not yourself!**
-`$env:RBENV_ROOT` | `C:\Ruby-on-Windows` | Defines the directory under which MSYS2, Ruby versions, shims and rbenv itself reside.
+`$env:RBENV_ROOT` | e.g.: `C:\Ruby-on-Windows` | Defines the directory under which MSYS2, Ruby versions, shims and rbenv itself reside.
+`$env:RBENV_USE_MIRROR` | e.g.: `"CN"` | Defines the mirror site for download links.
+
+### rbenv auto defined
+
+name | init value | description
+-----|---------|------------
+`$env:RBENV_INIT` | 1 | To avoid double init. **This variable is set automatically when your terminal start, not set yourself!**
+`$env:RUBYLIB` | `$env:RBENV_ROOT\rbenv\share` | For RubyGems plugin to work. **This variable is set automatically when your terminal start, not set yourself!**
 `$env:RBENV_SYSTEM_RUBY` | No this if you don't have a Ruby installed by RubyInstaller GUI | **This variable is set automatically when your terminal start, not set yourself!**
-`$env:RUBYLIB` | `$env:RBENV_ROOT\rbenv\share` | **This variable is set automatically when your terminal start, not set yourself!**
+
+### rbenv commands defined
+
+name | example | description
+-----|---------|------------
+`$env:RBENV_VERSION` | 3.2.0 | Specifies the Ruby version to be used in a shell. <br> **This variable is set by command `rbenv shell`, not manually!**
 
 <br>
 
