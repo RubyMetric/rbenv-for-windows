@@ -1,6 +1,14 @@
 # Changelog
 
-## [Unreleased](#) (2023-01-11)
+## [Unreleased](#) (2023-02-07)
+
+### Enhancements:
+
+- Rename inner version to avoid conflict with global env variable and annotate better on init process
+
+<br>
+
+## [v1.1.0](#) (2023-01-11)
 
 ### New features:
 
