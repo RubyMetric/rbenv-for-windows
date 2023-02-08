@@ -257,22 +257,10 @@ function get_ruby_exe_location_by_version ($exe, $version) {
 
 
 # used by
-# 1. command 'rbenv which' (13~18ms)
+# command 'rbenv which' (13~18ms)
 #    $cmd is a executable name
-# 2. shim         (6~8ms)
-#    $cmd is a path
+#
 function get_executable_location ($cmd) {
-
-    if ($cmd.Contains(':')) {
-        # $PSCommandPath must have a : to represent drive
-        # So this condition is used by shim
-        # E.g.
-        # C:Ruby-on-Windows\shims\bin\cr.ps1
-        $f = fname $cmd
-        # Now cr.ps1
-        $cmd = strip_ext $f
-    }
-
     $version, $_ = get_current_version_with_setmsg
 
     if ($_.Contains(".ruby-version")) {
@@ -283,7 +271,6 @@ function get_executable_location ($cmd) {
         }
     }
 
-
     if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
         get_ruby_exe_location_by_version $cmd $version
     } else {
@@ -292,9 +279,15 @@ function get_executable_location ($cmd) {
 }
 
 
-# Function added in <2023-02-09> to bypass .bat or .cmd delegator
+# Function:
+#   Added in <2023-02-09> to bypass '.bat' and '.cmd' delegator
+#   We only need to check Ruby version, no need to check a single gem's version
 #
-# We only need to check Ruby version, no need to check a single gem's version
+# Time:
+#   This function is only (6~8ms) to run
+#
+# Arguments:
+#   $cmd is a $PSCommandPath
 function get_shim_execution ($cmd_path) {
     if ($cmd_path.Contains(':')) {
         # $PSCommandPath must have a : to represent drive
@@ -323,9 +316,10 @@ function get_shim_execution ($cmd_path) {
     if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
         $ret_ruby = get_ruby_exe_location_by_version $cmd $version
     } else {
-        $bin_path = get_bin_path_for_version $version
-        $ret_ruby = "$bin_path\ruby.exe"  # Exactly ruby.exe not rubyw.exe
-        $ret_gem  = "$bin_path\$cmd"
+        # Exactly ruby.exe not rubyw.exe
+        $ret_ruby = get_ruby_exe_location_by_version "ruby" $version
+        # Still need to call this function to do some work (e.g. find available bins)
+        $ret_gem  = get_gem_bin_location_by_version $cmd $version
     }
 
     return $ret_ruby, $ret_gem
