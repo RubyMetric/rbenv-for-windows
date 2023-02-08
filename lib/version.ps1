@@ -322,9 +322,8 @@ function get_shim_execution ($cmd_path) {
     if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
         $ret_ruby = get_ruby_exe_location_by_version $cmd $version
     } else {
-        # Exactly ruby.exe not rubyw.exe
-        $ret_ruby = get_ruby_exe_location_by_version "ruby" $version
         $bin_path = get_bin_path_for_version $version
+        $ret_ruby = "$bin_path\ruby.exe"  # Exactly ruby.exe not rubyw.exe
         $ret_gem  = "$bin_path\$cmd"
     }
 
