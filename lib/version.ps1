@@ -47,7 +47,6 @@ function auto_fix_version_for_installed($ver) {
 #
 # commands using this:
 # 1. rbenv-install
-#
 function auto_fix_version_for_remote($ver) {
     $versions = get_all_remote_versions
 
@@ -111,7 +110,6 @@ function get_global_version() {
 # Guess why I don't want it to find the Git root directory?
 # Because it's too slow: causing another 28ms to delay
 # I really don't want it
-#
 function get_local_version {
     $local_version_file = "$PWD\.ruby-version"
     if (Test-Path $local_version_file) {
@@ -172,20 +170,10 @@ function get_bin_path_for_version($version) {
 }
 
 
-# only used in list_who_has
-function try_suffix ($where, $name) {
 
-    $suffixes = @( "bat", "cmd" )
-
-    foreach ($s in $suffixes) {
-        $any = Get-ChildItem $where "$name.$s"
-        if ($any) { return "$where\$name.$s" }
-    }
-    return $null
-}
-
-
-# rbenv whence
+# For:
+#   1. 'rbenv whence' directly use
+#   2. get_gem_bin_location_by_version()
 function list_who_has ($name) {
 
     $versions = get_all_installed_versions
@@ -199,8 +187,8 @@ function list_who_has ($name) {
         } else {
             $where = "$env:RBENV_ROOT\$ver\bin"
         }
-        $who = try_suffix $where $name
-        if ($who) { $whos += $who }
+        $who = "$where\$name"
+        if (Test-Path $who) { $whos += $who }
         else { continue }
     }
 
@@ -224,8 +212,9 @@ function get_gem_bin_location_by_version ($cmd, $version) {
     $cmd = $cmd -replace '.bat$', ''
     $cmd = $cmd -replace '.cmd$', ''
 
-    if (Test-Path ("$where\$cmd" + '.bat')) { return "$where\$cmd.bat" }
-    elseif (Test-Path ("$where\$cmd" + '.cmd')) { return "$where\$cmd.cmd" }
+    # Use non-extension name!
+    if (Test-Path ("$where\$cmd" + '.bat')) { return "$where\$cmd" }
+    elseif (Test-Path ("$where\$cmd" + '.cmd')) { return "$where\$cmd" }
     else {
         Write-Host "rbenv: command '$cmd' not found"
 
@@ -258,7 +247,6 @@ function get_ruby_exe_location_by_version ($exe, $version) {
 # used by
 # command 'rbenv which' (13~18ms)
 #    $cmd is a executable name
-#
 function get_executable_location ($cmd) {
     $version, $_ = get_current_version_with_setmsg
 
