@@ -10,7 +10,6 @@ $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 ########################################
 
 
-
 function get_system_ruby_version_and_path {
     $version, $path = $env:RBENV_SYSTEM_RUBY -split '<=>'
     return $version, $path
