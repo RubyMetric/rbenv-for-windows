@@ -228,13 +228,14 @@ function get_gem_bin_location_by_version ($cmd, $version) {
     if (Test-Path ("$where\$cmd" + '.bat')) { return "$where\$cmd.bat" }
     elseif (Test-Path ("$where\$cmd" + '.cmd')) { return "$where\$cmd.cmd" }
     else {
-        Write-Host "rbenv: $cmd`: command not found"
+        Write-Host "rbenv: command '$cmd' not found"
 
         $whos = list_who_has $cmd
 
         if ($whos) {
-            Write-Host "`nThe '$cmd' command exists in these Ruby versions:`n"
-            Write-Output $whos
+            Write-Host "`nBut it exists in these Ruby versions:`n"
+            Write-Host $whos
+            Write-Host ""
         }
         exit -1
     }
