@@ -274,9 +274,6 @@ function get_executable_location ($cmd) {
 
     $version, $_ = get_current_version_with_setmsg
 
-    # <2023-01-11> We use `rbenv global` as a compromising method
-    # We hope users will run some Ruby commands in the root dir of a project, whenever they cd into a project.
-
     if ($_.Contains(".ruby-version")) {
         $current_global = get_global_version
         if (-Not ($version -eq $current_global)) {
@@ -291,4 +288,45 @@ function get_executable_location ($cmd) {
     } else {
         get_gem_bin_location_by_version  $cmd $version
     }
+}
+
+
+# Function added in <2023-02-09> to bypass .bat or .cmd delegator
+#
+# We only need to check Ruby version, no need to check a single gem's version
+function get_shim_execution ($cmd_path) {
+    if ($cmd_path.Contains(':')) {
+        # $PSCommandPath must have a : to represent drive
+        # E.g.
+        # C:Ruby-on-Windows\shims\bin\cr.ps1
+        $f = fname $cmd_path # Now 'cr.ps1'
+        $cmd = strip_ext $f  # Now 'cr'
+    }
+
+    $version, $_ = get_current_version_with_setmsg
+
+    # <2023-01-11> We use `rbenv global` as a compromising method
+    # We hope users will run some Ruby commands in the root dir of a project, whenever they cd into a project.
+
+    if ($_.Contains(".ruby-version")) {
+        $current_global = get_global_version
+        if (-Not ($version -eq $current_global)) {
+            warn "rbenv: As a compromise, we change to global version for '.ruby-version'"
+            rbenv global $version
+        }
+    }
+
+    $ret_ruby = $null
+    $ret_gem  = $null
+
+    if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
+        $ret_ruby = get_ruby_exe_location_by_version $cmd $version
+    } else {
+        # Exactly ruby.exe not rubyw.exe
+        $ret_ruby = get_ruby_exe_location_by_version "ruby" $version
+        $bin_path = get_bin_path_for_version $version
+        $ret_gem  = "$bin_path\$cmd"
+    }
+
+    return $ret_ruby, $ret_gem
 }
