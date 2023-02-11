@@ -29,7 +29,7 @@ Hi, hello
 1. [Relation with rbenv and RubyInstaller2](./doc/principle.md#RelationWithOtherProjects)
 2. [How does it work?](./doc/principle.md#HowDoesItWork)
 3. [FAQ for maintainers](./doc/principle.md#FAQforDevs)
-4. [Environment Variable](#EnvVar)
+4. [Environment Variables](#EnvVar)
 
 <br>
 
