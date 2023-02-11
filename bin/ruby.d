@@ -23,30 +23,83 @@ string global_version_file_path() {
     return environment["RBENV_ROOT"] ~ "\\global.txt";
 }
 
-void main(string[] args) {
 
+int main(string[] args) {
     auto arg_len = args.length;
 
-    if(arg_len < 2) return;
-
-    string option = args[1];    // bound check here
-
     VersionInfo vi;
+    vi = get_current_version_with_setmsg();
 
-    switch(option) {
-        case "-v":
-            vi = get_current_version_with_setmsg();
-            if ("" != vi.ver){
-                writeln("ruby ", vi.ver);
-            } else {
-                // https://dlang.org/phobos/std_process.html#spawnProcess
-                import std.process : spawnProcess, wait;
-                wait(spawnProcess(["ruby", "-v"]));
-            }
-            break;
-        default:
-            // noop
+    if ("" == vi.ver) {
+        return delegate_to_real_ruby_exe( args[1..$] );
     }
+
+    if(arg_len == 2 && args[1] == "-v") {
+        writeln("ruby ", vi.ver);
+        return 0;
+    }
+    return delegate_to_real_ruby_exe( args[1..$] );
+}
+
+
+int delegate_to_ruby_from_rbenv(string[] args) {
+    import std.process : spawnProcess, wait, environment , Config;
+
+    import std.array;
+
+    // https://dlang.org/phobos/std_process.html#.spawnShell
+    auto shellcmd = join(["ruby.exe"] ~ args[0..$], " ");
+    auto pid = spawnProcess(["ruby.exe"] ~ args[0..$]  ,new_env, Config.newEnv);
+    return wait(pid);
+}
+
+
+// Call the real ruby.exe
+int delegate_to_ruby_from_cmd(string[] args) {
+    import std.process : spawnShell, wait ;
+    import std.array;
+
+    /*
+    https://dlang.org/phobos/std_process.html#.spawnProcess
+    On Windows, spawnProcess will search for the executable in the following sequence:
+
+    [
+      As you can see, this fake ruby.exe is always here (the first) to search ...
+      So we can't delgetage to real ruby.exe, what a pity.
+    ]
+    1. The directory from which the application loaded. [This is where the fake ruby.exe exists in]
+
+    2. The current directory for the parent process.    [This is the PWD]
+    3. The 32-bit Windows system directory.
+    4. The 16-bit Windows system directory.
+    5. The Windows directory.
+    6. The directories listed in the PATH environment variable.
+    */
+
+
+    /* So the strategy here fails
+
+    import std.algorithm : find;
+    auto path = environment.get("PATH");
+    // \rbenv\bin;C:\Ruby-on-Windows\shims\bin;......
+    auto path_rm_rbenv_bin = find(path, "\\rbenv\\bin;");
+    path_rm_rbenv_bin = find(path_rm_rbenv_bin, ";");
+
+    writeln(path_rm_rbenv_bin);
+    environment.remove("PATH");
+    environment["PATH"] = path_rm_rbenv_bin;
+    string[string] new_env = ["PATH" : path_rm_rbenv_bin ];
+    auto pid = spawnProcess(["ruby.exe"] ~ args[0..$]  ,new_env, Config.newEnv);
+    */
+
+
+    // https://dlang.org/phobos/std_process.html#.spawnShell
+    auto shellcmd = join(["ruby.exe"] ~ args[0..$], " ");
+    // Haha, now we bypass PowerShell, directly run CMD
+    //   Because path env var 'rbenv\bin' is added from PowerShell,
+    //   so we skip this fake ruby.exe sucessfully
+    auto pid = spawnShell(shellcmd);
+    return wait(pid);
 }
 
 
