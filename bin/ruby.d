@@ -2,7 +2,7 @@
 * File          : ruby.d
 * Authors       : ccmywish <ccmywish@qq.com>
 * Created on    : <2023-02-11>
-* Last modified : <2023-02-11>
+* Last modified : <2023-02-12>
 * Contributors  :
 *
 * ruby:
@@ -30,8 +30,11 @@ int main(string[] args) {
     VersionInfo vi;
     vi = get_current_version_with_setmsg();
 
+    import std.file : getcwd;
+    string pwd = getcwd();
+
     if ("" == vi.ver || "system" == vi.ver) {
-        return delegate_to_real_ruby_from_cmd( args[1..$] );
+        return delegate_to_real_ruby_from_cmd(pwd, args[1..$] );
     }
 
     // We don't delegate here, to support starship to quickly get answer
@@ -40,12 +43,12 @@ int main(string[] args) {
 Use [ruby -e "RUBY_DESCRIPTION"] for real version info`);
         return 0;
     }
-    return delegate_to_real_ruby_from_rbenv(vi.setmsg, vi.ver, args[1..$]);
+    return delegate_to_real_ruby_from_rbenv(pwd, vi.setmsg, vi.ver, args[1..$]);
 }
 
 
-int delegate_to_real_ruby_from_rbenv(string setmsg, string ver, string[] args) {
-    import std.process : spawnProcess, wait, environment;
+int delegate_to_real_ruby_from_rbenv(string pwd, string setmsg, string ver, string[] args) {
+    import std.process : spawnProcess, wait, environment, Config;
     import std.string : indexOf, startsWith;
     import std.file : chdir, dirEntries , SpanMode ;
     import std.algorithm;
@@ -67,14 +70,17 @@ int delegate_to_real_ruby_from_rbenv(string setmsg, string ver, string[] args) {
 
     string ruby_exe = root ~ "\\" ~ ver ~ "\\bin\\ruby.exe" ;
 
-    auto pid = spawnProcess([ruby_exe] ~ args[0..$]);
+    auto pid = spawnProcess([ruby_exe] ~ args[0..$],
+                            null,        // env
+                            Config.none, // config
+                            pwd);        // workDir
     return wait(pid);
 }
 
 
 // Call the real ruby.exe
-int delegate_to_real_ruby_from_cmd(string[] args) {
-    import std.process : spawnShell, wait ;
+int delegate_to_real_ruby_from_cmd(string pwd, string[] args) {
+    import std.process : spawnShell, wait, Config;
     import std.array;
 
     /*
@@ -116,7 +122,11 @@ int delegate_to_real_ruby_from_cmd(string[] args) {
     // Haha, now we bypass PowerShell, directly run CMD
     //   Because path env var 'rbenv\bin' is added from PowerShell,
     //   so we skip this fake ruby.exe sucessfully
-    auto pid = spawnShell(shellcmd);
+    auto pid = spawnShell(shellcmd,
+                          null,        // env
+                          Config.none, // config
+                          pwd          // workDir
+                          );
     return wait(pid);
 }
 
