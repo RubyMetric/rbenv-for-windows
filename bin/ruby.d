@@ -1,3 +1,21 @@
+/* --------------------------------------------------------------
+* File          : ruby.d
+* Authors       : ccmywish <ccmywish@qq.com>
+* Created on    : <2023-02-11>
+* Last modified : <2023-02-11>
+* Contributors  :
+*
+* ruby:
+*
+*   Cheat starship
+*
+* ----------
+* Changelog:
+*
+* ~> v0.1.0
+* <2023-02-11> Create file
+* -------------------------------------------------------------*/
+
 import std.stdio;
 
 string global_version_file_path() {
