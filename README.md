@@ -171,25 +171,15 @@ However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7
 
 **The current implementation has these drawbacks and issues:**
 
-1. When changing into a dir that has `.ruby-version`, you will use the correct version, but your `prompt` will still display the wrong version.
-
-    [We can't have a good prompt using `starship`](https://github.com/ccmywish/rbenv-for-windows/issues/4).
-
-    This is caused by shims used by `rbenv local`, I can't find a good way to solve it.
-
-    However I make `rbenv global` work great with `prompt` by using `junction`. It **won't lead to the situation**: You can't change global version while running a Ruby-related process on that version.
-
-    Note that from <2023-01-11>, I change the behavior to directly set global version when there is a `.ruby-version` file. This is definitely a compromise, but I think it fits my daily development flow. All you need to do is: **Whenever you cd into a Ruby project, run some Ruby commands like `ruby` or `bundle` in the root directory**, this will change to correct version globally.
-
-2. Bad integration with `Bundler`, [Bundle install will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5).
+1. Bad integration with `Bundler`, [Bundle install will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5).
 
     I don't know if these are bugs of Bundler on Windows, please help this project if you can. As a compromise, I only have to `rbenv rehash version xxx` after you `rbenv global xxx`.
 
-3. We only support CRuby, x64 versions, provided by RubyInstaller2
+2. We only support CRuby, x64 versions, provided by RubyInstaller2
 
-    Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on, because of my extremely lack of time in next recent years for developing. If you want to support it, consider to be a maintainer please! Thank you!
+    Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on. If you want to support it, consider to be a maintainer please! Thank you!
 
-4. We don't support old versions that have a little different leading URL
+3. We don't support old versions that have a little different leading URL
 
     Very small URL changes will make our work double, I don't have time for it. So keep URLs convention stable is very important. Luckily, these exceptions are very old Ruby versions (part of 2.4, 2.5 series) built by RubyInstaller, don't worry! See [share/README.md](./share/README.md) for details.
 
