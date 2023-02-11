@@ -56,6 +56,7 @@ Hi, hello
 ```PowerShell
 mkdir "C:\Ruby-on-Windows"
 git -C "C:\Ruby-on-Windows" clone "https://github.com/ccmywish/rbenv-for-windows" rbenv
+curl -L https://github.com/ccmywish/rbenv-for-windows/releases/download/v1.3.0/fake-ruby-v0.1.0.exe -o "C:\Ruby-on-Windows\rbenv\bin\ruby.exe"
 ```
 
 In your `$profile`, you should add theses:
@@ -80,9 +81,10 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 ```PowerShell
 mkdir "C:\Ruby-on-Windows"
 git -C "C:\Ruby-on-Windows" clone "https://gitee.com/ccmywish/rbenv-for-windows" rbenv
+curl -L https://gitee.com/ccmywish/rbenv-for-windows/releases/download/v1.3.0/fake-ruby-v0.1.0.exe -o "C:\Ruby-on-Windows\rbenv\bin\ruby.exe"
 ```
 
-在你的 `$profile`, 你需要添加这些内容:
+在你的 `$profile` 中, 添加这些内容:
 
 ```PowerShell
 # rbenv for Windows
