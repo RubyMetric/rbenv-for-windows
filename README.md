@@ -75,11 +75,11 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 
 ### For Chinese users
 
-国内大陆用户请使用以下方式
+中国大陆用户请使用以下方式
 
 ```PowerShell
 mkdir "C:\Ruby-on-Windows"
-git -C "C:\Ruby-on-Windows" clone "https://github.com/ccmywish/rbenv-for-windows" rbenv
+git -C "C:\Ruby-on-Windows" clone "https://gitee.com/ccmywish/rbenv-for-windows" rbenv
 ```
 
 在你的 `$profile`, 你需要添加这些内容:

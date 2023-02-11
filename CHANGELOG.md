@@ -1,6 +1,11 @@
 # Changelog
 
-## [Unreleased](#) (2023-02-09)
+## [Unreleased](#) (2023-02-12)
+
+### New features:
+
+- Use fake `ruby.exe` to support shell prompt (e.g. `starship`) for `rbenv local` version
+- Bypass `.bat` or `.cmd` Windows executable delegator
 
 <br>
 
