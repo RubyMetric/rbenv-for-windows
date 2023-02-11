@@ -16,8 +16,8 @@ $gem = shim_get_gem_name $PSCommandPath
 
 ruby $gem $args
 '@
-#
-# $gem is $null if the caller is 'ruby' or 'rubyw'
+# if exists,
+#   $gem is C:\Ruby-on-Windows\shims\bin\'gem_name'
 #
 
 
@@ -84,10 +84,8 @@ function rehash_version ($version) {
     $bats = $bats | % { strip_ext $_}
     # remove .cmd suffix
     $cmds = $cmds | % { strip_ext $_}
-    # only two exes
-    $exes = @("ruby", "rubyw")
 
-    $executables = $bats + $cmds + $exes
+    $executables = $bats + $cmds
 
     # echo $executables
 

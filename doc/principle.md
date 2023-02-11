@@ -35,9 +35,8 @@ After you setup `rbenv` your `path` will be:
 $env:RBENV_ROOT\rbenv\bin
 
 # for
-# 1. ruby.exe rubyw.exe
-# 2. gem.cmd, ...
-# 3. bundler.bat irb.bat rdoc.bat rake.bat
+# 1. gem.cmd, ...
+# 2. bundler.bat irb.bat rdoc.bat rake.bat
 #    and other gems bat
 $env:RBENV_ROOT\shims\bin
 
@@ -81,6 +80,8 @@ This is the most difficult part when implementing `rbenv`. Because of the existe
 So the only method is to pretend to be the real `ruby.exe`. `starship` checks our `fake ruby.exe`'s version, hence get it correct. The fake one will check `shell version`, then `local version`, then `global version`. Otherwise, it will invoke `ruby.exe` in no consideration of this PowerShell's environment variables.
 
 How does `gem` command get correct version? Every `gem` command through shim invokes the `fake ruby.exe` too, so we also get correct version. Then we make the first argument of ruby interpreter the so-called `bin stub file`(glossary from `RubyGems`).
+
+Note: we don't support `rubyw.exe`, for I don't know any of its usage scenario.
 
 <br>
 
