@@ -150,6 +150,8 @@ function get_current_version_with_setmsg {
     } elseif ($cur_ver = get_global_version) {
         if (!$cur_ver) {
             warn "rbenv: No version has been set, try 'rbenv global <version>'"
+            # We must terminate rbenv to enforce users to set global version
+            return $null, $null
         } else {
             $setmsg = "(set by $env:RBENV_ROOT\global.txt)"
             return $cur_ver, $setmsg
@@ -285,6 +287,12 @@ function get_shim_execution ($cmd_path) {
     }
 
     $version, $_ = get_current_version_with_setmsg
+
+    # This condition is only met when global version is not set
+    # Enforce users to set global version
+    if ($version -eq $null) {
+        return
+    }
 
     # <2023-01-11> We use `rbenv global` as a compromising method
     # We hope users will run some Ruby commands in the root dir of a project, whenever they cd into a project.
