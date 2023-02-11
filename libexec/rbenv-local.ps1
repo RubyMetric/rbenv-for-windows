@@ -18,7 +18,7 @@ function set_local_version($version) {
 #>
 
     $version, $suffix = $version.split("-")
-    Set-Content $local_version_file $version
+    Set-Content $local_version_file $version -NoNewline
 }
 
 

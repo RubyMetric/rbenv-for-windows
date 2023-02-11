@@ -31,7 +31,7 @@ function rehash_single_executable_across_all_versions ($name) {
 
     foreach ($version in $versions) {
         $where = get_bin_path_for_version $version
-        Set-Content "$where\$name.ps1" $REHASH_TEMPLATE
+        Set-Content "$where\$name.ps1" $REHASH_TEMPLATE -NoNewline
     }
     success "rbenv: Rehash executable $argument for all $($versions.Count) versions"
 }
@@ -43,7 +43,7 @@ function rehash_single_executable_across_all_versions ($name) {
 #
 # For 'rehash_version' to use
 function rehash_single_executable ($where, $name) {
-    Set-Content "$where\$name.ps1" $REHASH_TEMPLATE
+    Set-Content "$where\$name.ps1" $REHASH_TEMPLATE -NoNewline
 }
 
 
