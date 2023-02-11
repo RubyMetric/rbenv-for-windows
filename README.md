@@ -24,11 +24,12 @@ Manage multiple Rubies on Windows.
 
 Hi, hello
 
-**If you're interested in how it works, read these sections in `doc/principle.md` for quick and enough information:**
+**If you're interested in how it works, read these sections for quick and enough information:**
 
 1. [Relation with rbenv and RubyInstaller2](./doc/principle.md#RelationWithOtherProjects)
 2. [How does it work?](./doc/principle.md#HowDoesItWork)
 3. [FAQ for maintainers](./doc/principle.md#FAQforDevs)
+4. [Environment Variable](#EnvVar)
 
 <br>
 
@@ -46,7 +47,7 @@ Hi, hello
 - [PowerShell 5](https://aka.ms/wmf5download) (or later, include [PowerShell Core](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-windows?view=powershell-6)) and [.NET Framework 4.5](https://www.microsoft.com/net/download) (or later)
 - PowerShell must be enabled for your user account e.g. `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 
-<hr>
+<br>
 
 **It's portable, be bold to try it now:**
 
@@ -185,6 +186,7 @@ However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7
 
 <br>
 
+<a id="EnvVar"> </a>
 ## Environment Variables
 
 ### rbenv user defined
