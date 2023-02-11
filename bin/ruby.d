@@ -36,7 +36,8 @@ int main(string[] args) {
 
     // We don't delegate here, to support starship to quickly get answer
     if(arg_len == 2 && args[1] == "-v") {
-        writeln("ruby ", vi.ver, ` Powered by rbenv for Windows. Use ruby -e "RUBY_DESCRIPTION" for real version info.`);
+        writeln("ruby ", vi.ver, " ", vi.setmsg, ` Powered by rbenv for Windows
+Use [ruby -e "RUBY_DESCRIPTION"] for real version info`);
         return 0;
     }
     return delegate_to_real_ruby_from_rbenv(vi.ver, args[1..$]);
@@ -148,7 +149,10 @@ LocalVersionInfo get_local_version() {
     if (ret.status != 0) return lvi;
 
     auto git_root = ret.output;
-    string local_version_file =  git_root ~ "\\.ruby-version";
+
+    import std.string : strip;
+    // Because git return '/' separated path, we also add "/.ruby-version"
+    string local_version_file =  strip(git_root) ~ "/.ruby-version";
 
     import std.file;
     if (exists(local_version_file)) {
