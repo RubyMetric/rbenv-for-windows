@@ -30,32 +30,33 @@ int main(string[] args) {
     VersionInfo vi;
     vi = get_current_version_with_setmsg();
 
-    if ("" == vi.ver) {
-        return delegate_to_real_ruby_exe( args[1..$] );
+    if ("" == vi.ver || "system" == vi.ver) {
+        return delegate_to_real_ruby_from_cmd( args[1..$] );
     }
 
+    // We don't delegate here, to support starship to quickly get answer
     if(arg_len == 2 && args[1] == "-v") {
-        writeln("ruby ", vi.ver);
+        writeln("ruby ", vi.ver, ` Powered by rbenv for Windows. Use ruby -e "RUBY_DESCRIPTION" for real version info.`);
         return 0;
     }
-    return delegate_to_real_ruby_exe( args[1..$] );
+    return delegate_to_real_ruby_from_rbenv(vi.ver, args[1..$]);
 }
 
 
-int delegate_to_ruby_from_rbenv(string[] args) {
+int delegate_to_real_ruby_from_rbenv(string ver, string[] args) {
     import std.process : spawnProcess, wait, environment , Config;
-
     import std.array;
+    import std.file;
 
-    // https://dlang.org/phobos/std_process.html#.spawnShell
-    auto shellcmd = join(["ruby.exe"] ~ args[0..$], " ");
-    auto pid = spawnProcess(["ruby.exe"] ~ args[0..$]  ,new_env, Config.newEnv);
+    string ruby_exe =  environment["RBENV_ROOT"] ~ "\\" ~ ver ~ "\\bin\\ruby.exe" ;
+
+    auto pid = spawnProcess([ruby_exe] ~ args[0..$]);
     return wait(pid);
 }
 
 
 // Call the real ruby.exe
-int delegate_to_ruby_from_cmd(string[] args) {
+int delegate_to_real_ruby_from_cmd(string[] args) {
     import std.process : spawnShell, wait ;
     import std.array;
 
