@@ -23,7 +23,7 @@ function set_global_version($version) {
         $path = "$env:RBENV_ROOT\$version"
     }
     New-Item -Path $shimsdir -ItemType Junction -Value $path | Out-Null
-    $version | Out-File $GLOBAL_VERSION_FILE
+    $version | Out-File $GLOBAL_VERSION_FILE -NoNewline
 
     success "rbenv: Change to global version  '$version'"
 
