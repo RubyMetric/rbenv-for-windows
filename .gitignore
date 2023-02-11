@@ -1,2 +1,5 @@
 # Useless
 star.ps1
+
+*.exe
+*.obj
