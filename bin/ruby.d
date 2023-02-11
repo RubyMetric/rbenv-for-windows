@@ -40,16 +40,32 @@ int main(string[] args) {
 Use [ruby -e "RUBY_DESCRIPTION"] for real version info`);
         return 0;
     }
-    return delegate_to_real_ruby_from_rbenv(vi.ver, args[1..$]);
+    return delegate_to_real_ruby_from_rbenv(vi.setmsg, vi.ver, args[1..$]);
 }
 
 
-int delegate_to_real_ruby_from_rbenv(string ver, string[] args) {
-    import std.process : spawnProcess, wait, environment , Config;
-    import std.array;
-    import std.file;
+int delegate_to_real_ruby_from_rbenv(string setmsg, string ver, string[] args) {
+    import std.process : spawnProcess, wait, environment;
+    import std.string : indexOf, startsWith;
+    import std.file : chdir, dirEntries , SpanMode ;
+    import std.algorithm;
+    import std.array : array;
 
-    string ruby_exe =  environment["RBENV_ROOT"] ~ "\\" ~ ver ~ "\\bin\\ruby.exe" ;
+    string root =  environment["RBENV_ROOT"];
+    if (setmsg.indexOf(".ruby-version")) {
+
+        // Switch directories first, so we directly get basenames
+        chdir(root);
+        // foreach(f; dirEntries("", SpanMode.shallow) ){writeln(f);}
+
+        // std.algorithm.iteration.FilterResult! -> sd.file.DirEntry[]
+        auto dirs = dirEntries("", SpanMode.shallow).filter!(
+            d => d.name.startsWith(ver)).array;
+
+        ver = dirs[0];
+    }
+
+    string ruby_exe = root ~ "\\" ~ ver ~ "\\bin\\ruby.exe" ;
 
     auto pid = spawnProcess([ruby_exe] ~ args[0..$]);
     return wait(pid);
