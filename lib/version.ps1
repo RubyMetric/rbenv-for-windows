@@ -224,8 +224,8 @@ function get_gem_bin_location_by_version ($cmd, $version) {
 
         if ($whos) {
             Write-Host "`nBut it exists in these Ruby versions:`n"
-            Write-Host $whos
-            Write-Host ""
+            $whos_rows = $whos -join "`n"
+            Write-Host $whos_rows
         }
         exit -1
     }
