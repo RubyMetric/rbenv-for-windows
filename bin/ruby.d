@@ -2,7 +2,7 @@
 * File          : ruby.d
 * Authors       : ccmywish <ccmywish@qq.com>
 * Created on    : <2023-02-11>
-* Last modified : <2023-02-12>
+* Last modified : <2023-02-14>
 * Contributors  :
 *
 * ruby:
@@ -12,20 +12,23 @@
 * ----------
 * Changelog:
 *
+* ~> v0.1.1
+* <2023-02-14> Make 'global_version_file' global variable
+*
 * ~> v0.1.0
 * <2023-02-11> Create file
 * -------------------------------------------------------------*/
 
 import std.stdio;
 
-string global_version_file_path() {
-    import std.process : environment;
-    return environment["RBENV_ROOT"] ~ "\\global.txt";
-}
+string global_version_file;
 
 
 int main(string[] args) {
     auto arg_len = args.length;
+
+    import std.process : environment;
+    global_version_file = environment["RBENV_ROOT"] ~ "\\global.txt";
 
     VersionInfo vi;
     vi = get_current_version_with_setmsg();
@@ -141,7 +144,6 @@ void warn(string str) {
 // Read the global.txt file
 string get_global_version() {
     import std.file;
-    string global_version_file = global_version_file_path();
 
 	if (! exists(global_version_file)) return "rbenv: Global version file doesn't exist!";
 
@@ -234,7 +236,7 @@ VersionInfo get_current_version_with_setmsg() {
     ver = get_global_version();
     if("" != ver) {
         vi.ver = ver;
-        vi.setmsg = "(set by " ~ global_version_file_path() ~ ")";
+        vi.setmsg = "(set by " ~ global_version_file ~ ")";
         return vi;
     }
 
