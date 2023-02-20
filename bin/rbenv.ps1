@@ -2,7 +2,7 @@
 # File          : rbenv.ps1
 # Authors       : ccmywish <ccmywish@qq.com>
 # Created on    : <2022-05-02>
-# Last modified : <2023-02-12>
+# Last modified : <2023-02-20>
 # Contributors  : Scoop Contributors
 #
 #
@@ -111,7 +111,11 @@ if ($cmd -eq "init") {
         }
     }
 
-    if (-Not (Test-Path "$env:RBENV_ROOT\msys64")) {
+    # We only support these two locations MSYS2 check
+    # Because, if not these two places, ridk will search slowly
+    # hence severely affect the start up time for Ruby commands
+    if ((-Not (Test-Path "$env:RBENV_ROOT\msys64")) -And (-Not (Test-Path "C:\msys64")))
+    {
         Write-Host -f DarkYellow "Seems you have just installed rbenv, auto install MSYS2 for you"
         Write-Host -f DarkYellow "MSYS2 is must-have if you want to install gems with C extensions"
 
