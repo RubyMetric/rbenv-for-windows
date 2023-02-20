@@ -2,8 +2,13 @@
 
 ## [Unreleased](#) (2023-02-20)
 
+<br>
+
+## [v1.3.1](#) (2023-02-20)
+
 ### Enhancements:
 
+- Keep up with upstream install options `nomodpath`, `noassocfiles`
 - Deny the check for `C:\msys64` to be `the shared MSYS2`. See comments in `bin\rbenv.ps1`
 
 <br>

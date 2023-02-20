@@ -416,19 +416,14 @@ function install_ruby_with_msys2($version) {
     $version = $version.Matches[0].value
 
 <#
-
 Ref: https://github.com/oneclick/rubyinstaller2/wiki/FAQ#user-content-silent-install
-
-1. No /tasks=assocfiles,modpath
-2. 'defaultutf8' will register an env var 'RUBYOPT': -Eutf-8
 
 'nodefaultutf8' is set by default at least in 3.1.0-1,
 when versions < 3.1.0-1, we still set 'defaultutf8'
-
 #>
     $ArgList = @("/verysilent",
                 "/dir=$env:RBENV_ROOT\$version",
-                "/tasks=defaultutf8")
+                "/tasks=defaultutf8,nomodpath,noassocfiles")
 
 <#
 
@@ -534,7 +529,8 @@ When users firstly installed `rbenv`, they will go here,
 #>
     $ArgList = @("/verysilent",
                 "/dir=$env:RBENV_ROOT\$version",
-                "/currentuser"
+                "/currentuser",
+                "/tasks=noassocfiles,nomodpath"
                 )
 
     $Status = Invoke-ExternalCommand $path $ArgList
