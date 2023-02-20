@@ -96,9 +96,12 @@ It's decided by RubyInstaller's tool: `ridk`, it's automatically loaded every ti
 
 1. MSYS2 inside Ruby dir
 2. MSYS2 beside Ruby dir **(That's how `rbenv` works!)**
-3. C:\msys64
-4. Other ways including `scoop`
-5. ...
+3. `C:\msys64`
+4. where RubyInstaller.exe is installed (search the Registry)
+5. Other ways including `scoop`
+6. ...
+
+See: https://github.com/oneclick/rubyinstaller2/blob/master/lib/ruby_installer/build/msys2_installation.rb
 
 We place a MSYS2 beside all Rubies, so every Ruby can share it. Hence I call this MSYS2 **the shared MSYS2**.
 

@@ -25,7 +25,7 @@ param($cmd)
 # [String]
 # rbenv's own version
 # Not to conflict with $env:RBENV_VERSION ('rbenv shell' sets it)
-$RBENV_OWN_VERSION       = "rbenv v1.3.0"
+$RBENV_OWN_VERSION       = "rbenv v1.3.1"
 
 # [String]
 # Where we check the global version
@@ -111,10 +111,17 @@ if ($cmd -eq "init") {
         }
     }
 
-    # We only support these two locations MSYS2 check
-    # Because, if not these two places, ridk will search slowly
-    # hence severely affect the start up time for Ruby commands
-    if ((-Not (Test-Path "$env:RBENV_ROOT\msys64")) -And (-Not (Test-Path "C:\msys64")))
+    # We MUST download our own MSYS2, and not reuse user's own!
+    # Because the RubyInstaller2 bundled MSYS2 have everything ready to build CRuby gems,
+    # battle-tested by upstream.
+    #
+    # However,we don't know what exists in user's own MSYS2, it may lack of something.
+    #
+    # And there's another reason:
+    #   `ridk` is in Ruby commands runtime. When any Ruby command starts, it will search
+    # MSYS2 existence, hence severely affect the start up time if not quickly checked.
+    #
+    if (-Not (Test-Path "$env:RBENV_ROOT\msys64") )
     {
         Write-Host -f DarkYellow "Seems you have just installed rbenv, auto install MSYS2 for you"
         Write-Host -f DarkYellow "MSYS2 is must-have if you want to install gems with C extensions"

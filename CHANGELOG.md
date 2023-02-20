@@ -1,6 +1,10 @@
 # Changelog
 
-## [Unreleased](#) (2023-02-12)
+## [Unreleased](#) (2023-02-20)
+
+### Enhancements:
+
+- Deny the check for `C:\msys64` to be `the shared MSYS2`. See comments in `bin\rbenv.ps1`
 
 <br>
 
