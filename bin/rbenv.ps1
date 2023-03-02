@@ -25,7 +25,7 @@ param($cmd)
 # [String]
 # rbenv's own version
 # Not to conflict with $env:RBENV_VERSION ('rbenv shell' sets it)
-$RBENV_OWN_VERSION       = "rbenv v1.3.2"
+$RBENV_OWN_VERSION       = "rbenv v1.4.0"
 
 # [String]
 # Where we check the global version

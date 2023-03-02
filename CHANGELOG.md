@@ -2,14 +2,22 @@
 
 ## [Unreleased](#) (2023-03-03)
 
+### New features:
+
+- Use `ruby.ps1` and `rubyw.ps1` to delegate to `real ruby.exe`
+
 ### Enhancements:
 
-- Get current version from fake `ruby.exe`
+- Get current version from `fake ruby.exe`
 
 ### Bug fixes:
 
 - Revert change: not bypass `.bat` or `.cmd` delegator in [v1.3.0]()
     - See reasons: [GitHub issue #12](https://github.com/ccmywish/rbenv-for-windows/issues/12)
+
+### Deprecations:
+
+- Not use `fake ruby.exe (ruby.d)` to delegate anymore
 
 <br>
 
@@ -26,7 +34,7 @@
 
 ### New features:
 
-- Use fake `ruby.exe` to support shell prompt (e.g. `starship`) for `rbenv local` version
+- Use `fake ruby.exe` to support shell prompt (e.g. `starship`) for `rbenv local` version
 - ~~Bypass `.bat` or `.cmd` Windows executable delegator~~
     - This is reverted in [v1.3.2]()
 
