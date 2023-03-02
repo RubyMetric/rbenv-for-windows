@@ -130,6 +130,10 @@ function get_this_shell_version {
 
 
 # (current_version  set_by_xxx)
+# Note: This is not used any more from <2023-03-02>
+#       Now we use 'get_current_version_with_setmsg_from_fake_ruby' instead
+#
+# Reserved for later check
 function get_current_version_with_setmsg {
     # Check rbenv shell
     if ($cur_ver = get_this_shell_version) {
@@ -149,7 +153,6 @@ function get_current_version_with_setmsg {
     # Check rbenv global
     } elseif ($cur_ver = get_global_version) {
         if (!$cur_ver) {
-            warn "rbenv: No version has been set, try 'rbenv global <version>'"
             # We must terminate rbenv to enforce users to set global version
             return $null, $null
         } else {
@@ -157,6 +160,15 @@ function get_current_version_with_setmsg {
             return $cur_ver, $setmsg
         }
     }
+}
+
+
+function get_current_version_with_setmsg_from_fake_ruby () {
+    $msg = & $env:RBENV_ROOT\rbenv\bin\ruby.exe -v
+    $ruby_slogan, $rest = $msg[0] -Split ' '
+
+    $ver, $setmsg = $rest
+    return $ver, ($setmsg -Join ' ')
 }
 
 
@@ -255,19 +267,18 @@ function get_ruby_exe_location_by_version ($exe, $version) {
 }
 
 
-# used by
-# command 'rbenv which' (13~18ms)
-#    $cmd is a executable name
+# Function:
+#   used by command 'rbenv which'
+#
+# Time:
+#   73~85ms
+#
+# Arguments:
+#   $cmd is a executable name
 function get_executable_location ($cmd) {
-    $version, $_ = get_current_version_with_setmsg
+    $ver, $_ = get_current_version_with_setmsg_from_fake_ruby
 
-    if ($_.Contains(".ruby-version")) {
-        $current_global = get_global_version
-        if (-Not ($version -eq $current_global)) {
-            warn "rbenv: As a compromise, we change to global version for '.ruby-version'"
-            rbenv global $version
-        }
-    }
+    $version = auto_fix_version_for_installed $ver
 
     if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
         get_ruby_exe_location_by_version $cmd $version
@@ -277,23 +288,15 @@ function get_executable_location ($cmd) {
 }
 
 
-function get_current_version_with_setmsg_from_fake_ruby () {
-    $msg = & $env:RBENV_ROOT\rbenv\bin\ruby.exe -v
-    $ruby_slogan, $rest = $msg[0] -Split ' '
-
-    $ver, $setmsg = $rest
-    return $ver, ($setmsg -Join ' ')
-}
-
-
 # Function:
-#   This is for shim to use.
+#   used for shim script
 #
-#   (1) If we call ruby
-#   We will run:    'correct_ver_dir\ruby.exe' arguments
+#   (1) If we call ruby, we will run:
+#       'correct_ver_dir\ruby.exe' arguments
 #
-#   (2) If we call gem bin command
-#   We will run:    'correct_ver_dir\gem_name.cmd' or 'correct_ver_dir\gem_name.bat' arguments
+#   (2) If we call gem bin command, we will run:
+#       'correct_ver_dir\gem_name.cmd' arguments or
+#       'correct_ver_dir\gem_name.bat' arguments
 #
 # Time:
 #   This function is only (6~8ms) to run
@@ -301,7 +304,7 @@ function get_current_version_with_setmsg_from_fake_ruby () {
 # Arguments:
 #   $cmd is a $PSCommandPath
 #
-function shim_get_execution ($cmd_path) {
+function shim_get_executable_location ($cmd_path) {
     if ($cmd_path.Contains(':')) {
         # $PSCommandPath must have a : to represent drive
         # E.g.
@@ -310,27 +313,16 @@ function shim_get_execution ($cmd_path) {
         $cmd = strip_ext $f  # Now 'cr'
     }
 
-    $version, $_ = get_current_version_with_setmsg_from_fake_ruby
+    $ver, $_ = get_current_version_with_setmsg_from_fake_ruby
+
+    # fix for local version
+    $version = auto_fix_version_for_installed($ver)
 
     # This condition is only met when global version is not set
     # Enforce users to set global version
     if ($version -eq $null) {
         return
     }
-
-    # <2023-01-11> We use `rbenv global` as a compromising method
-    # We hope users will run some Ruby commands in the root dir of a project, whenever they cd into a project.
-
-    if ($_.Contains(".ruby-version")) {
-        $current_global = get_global_version
-        if (-Not ($version -eq $current_global)) {
-            warn "rbenv: As a compromise, we change to global version for '.ruby-version'"
-            rbenv global $version
-        }
-    }
-
-    $rubyexe = $null
-    $gem     = $null
 
     if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
         $rubyexe = get_ruby_exe_location_by_version $cmd $version
