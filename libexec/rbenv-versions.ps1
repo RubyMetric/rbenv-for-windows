@@ -10,10 +10,10 @@ function list_installed_and_current_versions {
         exit
     }
 
-    $version, $setmsg = get_current_version_with_setmsg
+    $current_ver, $setmsg = get_current_version_with_setmsg
 
     foreach ($ver in $versions) {
-        if ($ver -eq $version) {
+        if ($ver -eq $current_ver) {
             Write-Host "* $ver $setmsg"
         } elseif ($ver -eq "system") {
             $s_rb_ver, $s_rb_path  = get_system_ruby_version_and_path
