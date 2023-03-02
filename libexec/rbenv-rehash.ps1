@@ -15,7 +15,10 @@ $rubyexe_or_gem = shim_get_executable_location $PSCommandPath
 & $rubyexe_or_gem $args
 '@
 # if exists,
-#   $gem is C:\Ruby-on-Windows\shims\bin\'gem_name'
+#   $rubyexe is C:\Ruby-on-Windows\correct_version_dir\bin\ruby.exe
+#
+#   $gem     is C:\Ruby-on-Windows\correct_version_dir\bin\'gem_name'.bat or
+#               C:\Ruby-on-Windows\correct_version_dir\bin\'gem_name'.cmd
 #
 
 

@@ -2,7 +2,7 @@
 * File          : ruby.d
 * Authors       : ccmywish <ccmywish@qq.com>
 * Created on    : <2023-02-11>
-* Last modified : <2023-03-02>
+* Last modified : <2023-03-03>
 * Contributors  :
 *
 * ruby:
@@ -13,7 +13,10 @@
 * Changelog:
 *
 * ~> v0.1.1
-* <2023-03-02> Improve 'ruby -v' info
+* <2023-03-03>
+#   1. Improve 'ruby -v' info
+#   2. Don't delegate when '-v' using system ruby
+#
 * <2023-02-14> Make 'global_version_file' global variable
 *
 * ~> v0.1.0
@@ -37,7 +40,7 @@ int main(string[] args) {
     import std.file : getcwd;
     string pwd = getcwd();
 
-    if ("" == vi.ver || "system" == vi.ver) {
+    if ("" == vi.ver) {
         return delegate_to_real_ruby_from_cmd(pwd, args[1..$] );
     }
 

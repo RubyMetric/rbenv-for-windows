@@ -1,6 +1,10 @@
 # Changelog
 
-## [Unreleased](#) (2023-03-02)
+## [Unreleased](#) (2023-03-03)
+
+### Enhancements:
+
+- Get current version from fake `ruby.exe`
 
 ### Bug fixes:
 
