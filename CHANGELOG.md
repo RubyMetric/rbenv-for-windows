@@ -8,6 +8,7 @@
 
 ### Enhancements:
 
+- All shim is in shims dir
 - Get current version from `fake ruby.exe`
 
 ### Bug fixes:
@@ -17,6 +18,7 @@
 
 ### Deprecations:
 
+- Not use junction for shims dir
 - Not use `fake ruby.exe (ruby.d)` to delegate anymore
 
 <br>

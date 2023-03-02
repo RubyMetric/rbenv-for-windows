@@ -174,9 +174,15 @@ However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7
 
 **The current implementation has these drawbacks and issues:**
 
-1. Bad integration with `Bundler`, [Bundle install will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5).
+1. Bad integration with `Bundler`:
 
-    I don't know if these are bugs of Bundler on Windows, please help this project if you can. As a compromise, I only have to `rbenv rehash version xxx` after you `rbenv global xxx`.
+1.1 [Bundle install will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5).
+
+    I don't know if these are bugs of Bundler on Windows, please help this project if you can. As a compromise, I only have to `rbenv rehash version xxx` after you `rbenv global xxx`. This is a simple method to make shims dir always full with kinds of shims.
+
+1.2 `Bundle exec` will fail.
+
+    This is because `bundler` will search gem executable in `PATH`. However, all `.bat`/`.cmd` files are not exposed to `PATH`. This is difficult and there's no way to handle temporarily. Just use an gem executable with version specified yourself!
 
 2. We only support CRuby, x64 versions, provided by RubyInstaller2
 
