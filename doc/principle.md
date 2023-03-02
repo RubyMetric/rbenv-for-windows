@@ -38,7 +38,7 @@ $env:RBENV_ROOT\rbenv\bin
 # 1. gem.cmd, ...
 # 2. bundler.bat irb.bat rdoc.bat rake.bat
 #    and other gems bat
-$env:RBENV_ROOT\shims\bin
+$env:RBENV_ROOT\shims
 
 # The default path of yours
 $env:PATH
@@ -57,7 +57,7 @@ $env:RBENV_ROOT\3.1.2\bin
 
 $env:RBENV_ROOT\rbenv\bin
 
-$env:RBENV_ROOT\shims\bin
+$env:RBENV_ROOT\shims
 
 $env:PATH
 ```

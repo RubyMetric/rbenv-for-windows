@@ -305,7 +305,7 @@ function shim_get_gem_executable_location ($cmd_path) {
     if ($cmd_path.Contains(':')) {
         # $PSCommandPath must have a : to represent drive
         # E.g.
-        # C:Ruby-on-Windows\shims\bin\cr.ps1
+        # C:Ruby-on-Windows\shims\cr.ps1
         $f = fname $cmd_path # Now 'cr.ps1'
         $cmd = strip_ext $f  # Now 'cr'
     }

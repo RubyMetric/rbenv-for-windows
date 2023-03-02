@@ -41,8 +41,8 @@ The init process does 7 things:
 
     1. Set init flag to avoid double init
     2. Add two paths at the front of the user PATH (almost no delay)
-       (2.1) rbenv\bin is to delegate all rbenv commands
-       (2.2) shims\bin is to delegate all Ruby commands
+       (2.1) $env:RBENV_ROOT\rbenv\bin is to delegate rbenv commands and ruby(w).exe
+       (2.2) $env:RBENV_ROOT\shims     is to delegate all Gem commands
     3. Add one path to RUBYLIB
     4. Ensure global.txt (   1ms    delay)
     5. Check system Ruby (10ms~20ms delay)
@@ -61,7 +61,7 @@ if ($cmd -eq "init") {
     }
     $env:RBENV_INIT = 1
 
-    $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims\bin;"
+    $rbenv_path_first = "$env:RBENV_ROOT\rbenv\bin;" + "$env:RBENV_ROOT\shims;"
     $env:PATH = $rbenv_path_first + $env:PATH
 
     # For RubyGems plugin to work
