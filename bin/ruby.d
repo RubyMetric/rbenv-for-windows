@@ -2,7 +2,7 @@
 * File          : ruby.d
 * Authors       : ccmywish <ccmywish@qq.com>
 * Created on    : <2023-02-11>
-* Last modified : <2023-02-14>
+* Last modified : <2023-03-02>
 * Contributors  :
 *
 * ruby:
@@ -13,6 +13,7 @@
 * Changelog:
 *
 * ~> v0.1.1
+* <2023-03-02> Improve 'ruby -v' info
 * <2023-02-14> Make 'global_version_file' global variable
 *
 * ~> v0.1.0
@@ -42,8 +43,8 @@ int main(string[] args) {
 
     // We don't delegate here, to support starship to quickly get answer
     if(arg_len == 2 && args[1] == "-v") {
-        writeln("ruby ", vi.ver, " ", vi.setmsg, ` Powered by rbenv for Windows
-Use [ruby -e "RUBY_DESCRIPTION"] for real version info`);
+        writeln("ruby ", vi.ver, " ", vi.setmsg, `
+rbenv: Use 'ruby --version' for real version info`);
         return 0;
     }
     return delegate_to_real_ruby_from_rbenv(pwd, vi.setmsg, vi.ver, args[1..$]);

@@ -277,6 +277,15 @@ function get_executable_location ($cmd) {
 }
 
 
+function get_current_version_with_setmsg_from_fake_ruby () {
+    $msg = & $env:RBENV_ROOT\rbenv\bin\ruby.exe -v
+    $ruby_slogan, $rest = $msg[0] -Split ' '
+
+    $ver, $setmsg = $rest
+    return $ver, ($setmsg -Join ' ')
+}
+
+
 # Function:
 #   This is for shim to use.
 #
@@ -301,7 +310,7 @@ function shim_get_execution ($cmd_path) {
         $cmd = strip_ext $f  # Now 'cr'
     }
 
-    $version, $_ = get_current_version_with_setmsg
+    $version, $_ = get_current_version_with_setmsg_from_fake_ruby
 
     # This condition is only met when global version is not set
     # Enforce users to set global version
