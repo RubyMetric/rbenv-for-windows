@@ -244,8 +244,9 @@ function get_gem_bin_location_by_version ($cmd, $version) {
     $cmd_file = "$where\$cmd" + '.cmd'
     $bat_file = "$where\$cmd" + '.bat'
 
-    if     (Test-Path $cmd_file) { return $cmd_file }
-    elseif (Test-Path $bat_file) { return $bat_file }
+    # '.bat' first, because from 2023, basically all gems are in '.bat'
+    if     (Test-Path $bat_file) { return $bat_file }
+    elseif (Test-Path $cmd_file) { return $cmd_file }
     else {
         gem_not_found
         exit -1
@@ -299,7 +300,7 @@ function get_executable_location ($cmd) {
 #       'correct_ver_dir\gem_name.bat' arguments
 #
 # Time:
-#   This function is only (6~8ms) to run
+#   65~70ms
 #
 # Arguments:
 #   $cmd is a $PSCommandPath
