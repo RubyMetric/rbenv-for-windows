@@ -3,19 +3,19 @@
 * Authors       : ccmywish <ccmywish@qq.com>
 * Created on    : <2023-02-11>
 * Last modified : <2023-03-03>
-* Contributors  :
 *
 * ruby:
 *
-*   Cheat starship
+*   1. Cheat 'starship' to get version info
+*   2. Get correct version info for rbenv commands
 *
 * ----------
 * Changelog:
 *
 * ~> v0.1.1
 * <2023-03-03>
-#   1. Improve 'ruby -v' info
-#   2. Drop support for system ruby
+#   1. Improve 'ruby -v' info to coordinate with rbenv
+#   2. Don't delegate to real ruby.exe anymore
 #
 * <2023-02-14> Make 'global_version_file' global variable
 *
@@ -45,98 +45,17 @@ int main(string[] args) {
         return -1;
     }
 
-    // We don't delegate here, to support starship to quickly get answer
+    // support starship to quickly get answer
     if(arg_len == 2 && args[1] == "-v") {
         writeln("ruby ", vi.ver, " ", vi.setmsg);
-        writeln(`rbenv: Use 'ruby --version' for real version info`);
+        return 0;
+    } else {
+        warn("rbenv: This is fake ruby.exe in $env:RBENV_ROOT\\rbenv\\bin");
+        warn("rbenv: You shouldn't invoke 'ruby.exe', instead you should invoke 'ruby'");
         return 0;
     }
 
-    return delegate_to_real_ruby_from_rbenv(pwd, vi.setmsg, vi.ver, args[1..$]);
-}
-
-
-int delegate_to_real_ruby_from_rbenv(string pwd, string setmsg, string ver, string[] args) {
-    import std.process : spawnProcess, wait, environment, Config;
-    import std.string : indexOf, startsWith;
-    import std.file : chdir, dirEntries , SpanMode ;
-    import std.algorithm;
-    import std.array : array;
-
-    string root =  environment["RBENV_ROOT"];
-    if (setmsg.indexOf(".ruby-version")) {
-
-        // Switch directories first, so we directly get basenames
-        chdir(root);
-        // foreach(f; dirEntries("", SpanMode.shallow) ){writeln(f);}
-
-        // std.algorithm.iteration.FilterResult! -> sd.file.DirEntry[]
-        auto dirs = dirEntries("", SpanMode.shallow).filter!(
-            d => d.name.startsWith(ver)).array;
-
-        ver = dirs[0];
-    }
-
-    string ruby_exe = root ~ "\\" ~ ver ~ "\\bin\\ruby.exe" ;
-
-    auto pid = spawnProcess([ruby_exe] ~ args[0..$],
-                            null,        // env
-                            Config.none, // config
-                            pwd);        // workDir
-    return wait(pid);
-}
-
-
-// Deprecated function (because we don't support system ruby now)
-int delegate_to_real_ruby_from_cmd(string pwd, string[] args) {
-    import std.process : spawnShell, wait, Config;
-    import std.array;
-
-    /*
-    https://dlang.org/phobos/std_process.html#.spawnProcess
-    On Windows, spawnProcess will search for the executable in the following sequence:
-
-    [
-      As you can see, this fake ruby.exe is always here (the first) to search ...
-      So we can't delgetage to real ruby.exe, what a pity.
-    ]
-    1. The directory from which the application loaded. [This is where the fake ruby.exe exists in]
-
-    2. The current directory for the parent process.    [This is the PWD]
-    3. The 32-bit Windows system directory.
-    4. The 16-bit Windows system directory.
-    5. The Windows directory.
-    6. The directories listed in the PATH environment variable.
-    */
-
-
-    /* So the strategy here fails
-
-    import std.algorithm : find;
-    auto path = environment.get("PATH");
-    // \rbenv\bin;C:\Ruby-on-Windows\shims\bin;......
-    auto path_rm_rbenv_bin = find(path, "\\rbenv\\bin;");
-    path_rm_rbenv_bin = find(path_rm_rbenv_bin, ";");
-
-    writeln(path_rm_rbenv_bin);
-    environment.remove("PATH");
-    environment["PATH"] = path_rm_rbenv_bin;
-    string[string] new_env = ["PATH" : path_rm_rbenv_bin ];
-    auto pid = spawnProcess(["ruby.exe"] ~ args[0..$]  ,new_env, Config.newEnv);
-    */
-
-    // https://dlang.org/phobos/std_process.html#.spawnShell
-    auto shellcmd = join(["where ruby"] ~ args[0..$], " ");
-    // NOTE:  Still, We CAN'T bypass PowerShell's environment
-    //   Although 'rbenv\bin' is added to env var 'path' from PowerShell,
-    //   You can check here, the 'where' command shows, the CMD's env get polluted
-    // So, we show drop support for "system ruby"
-    auto pid = spawnShell(shellcmd,
-                          null,        // env
-                          Config.none, // config
-                          pwd          // workDir
-                          );
-    return wait(pid);
+    return 0;
 }
 
 

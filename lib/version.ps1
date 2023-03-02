@@ -303,9 +303,9 @@ function get_executable_location ($cmd) {
 #   65~70ms
 #
 # Arguments:
-#   $cmd is a $PSCommandPath
+#   $cmd is $PSCommandPath
 #
-function shim_get_executable_location ($cmd_path) {
+function shim_get_gem_executable_location ($cmd_path) {
     if ($cmd_path.Contains(':')) {
         # $PSCommandPath must have a : to represent drive
         # E.g.
@@ -325,12 +325,7 @@ function shim_get_executable_location ($cmd_path) {
         return
     }
 
-    if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
-        $rubyexe = get_ruby_exe_location_by_version $cmd $version
-        return $rubyexe
-    } else {
-        # Still need to call this function to do some work (e.g. find available bins)
-        $gem  = get_gem_bin_location_by_version $cmd $version
-        return $gem
-    }
+    # Still need to call this function to do some work (e.g. find available bins)
+    $gem = get_gem_bin_location_by_version $cmd $version
+    return $gem
 }
