@@ -2,6 +2,10 @@
 
 ## [Unreleased](#) (2023-03-03)
 
+<br>
+
+## [v1.4.0](#) (2023-03-03)
+
 ### New features:
 
 - Use `ruby.ps1` and `rubyw.ps1` to delegate to `real ruby.exe`
