@@ -25,7 +25,7 @@ function set_global_version($version) {
     New-Item -Path $shimsdir -ItemType Junction -Value $path | Out-Null
     $version | Out-File $GLOBAL_VERSION_FILE -NoNewline
 
-    success "rbenv: Change to global version  '$version'"
+    success "rbenv: Change to global version '$version'"
 
     # As the share/rubygems_plugins.rb says
     # This is a compromise for Bundler's failure on triggering the post-install hook
