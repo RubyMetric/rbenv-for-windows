@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------
 # File          : ruby.ps1
-# Authors       : ccmywish <ccmywish@qq.com>
+# Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2023-03-03>
 # Last modified : <2023-03-03>
 #

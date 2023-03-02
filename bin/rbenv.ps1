@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------
 # File          : rbenv.ps1
-# Authors       : ccmywish <ccmywish@qq.com>
+# Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2022-05-02>
 # Last modified : <2023-03-03>
 # Contributors  : Scoop Contributors

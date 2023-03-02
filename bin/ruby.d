@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------
 * File          : ruby.d
-* Authors       : ccmywish <ccmywish@qq.com>
+* Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-02-11>
 * Last modified : <2023-03-03>
 *
