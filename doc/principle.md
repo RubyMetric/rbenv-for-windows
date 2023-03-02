@@ -14,11 +14,7 @@ Our `rbenv-for-windows` works on Windows, also in a native way (using PowerShell
 <a id="HowDoesItWork"> </a>
 ## How does it work?
 
-We are a little different with how `rbenv` works. Surely, we have shims too, but our shims folder is always pointing to the global version.
-
- Every time you use `rbenv global x.x.x`, the shims folder location will not change, but the content of it will change wholly (unlike `rbenv` on Linux, there it will stores shell scripts to delegate).
-
-You are maybe questioning the performance now, we use `junction` in Windows, so there is so little overhead you'll notice, in fact, this leads to about just 10ms delay.
+We are only a little different with how `rbenv` works.
 
 There are three kind of 'versions'
 1. global version (set by `$env:RBENV_ROOT\global.txt`)
@@ -44,7 +40,7 @@ $env:RBENV_ROOT\shims
 $env:PATH
 ```
 
-So every time you change global version, you will directly get what `$env:RBENV_ROOT\shims\bin` offers you!
+So every time you change global version, you will directly get what `$env:RBENV_ROOT\shims` offers you!
 
 <br>
 
@@ -53,7 +49,7 @@ So every time you change global version, you will directly get what `$env:RBENV_
 If we execute the command `rbenv shell 3.1.2`, we will get a new environment variable `$env:RBENV_VERSION = 3.1.2`, and now your path will be:
 
 ```PowerShell
-$env:RBENV_ROOT\3.1.2\bin
+$env:RBENV_ROOT\3.1.2-1\bin
 
 $env:RBENV_ROOT\rbenv\bin
 
@@ -67,7 +63,7 @@ So in this shell, your env will not be affected with `global version` or `local 
 
 ### local version
 
-Like `rbenv` we also don't hook on changing location. We use shims too. Our shims are directly in every ruby `bin` directory. Every ruby-related command has a `PowerShell` script individually, this script is called `shim`. The script will delegate to the correct version's `bin` directory.
+Like `rbenv` we also don't hook on changing location. We use shims too. Our shims are in the shims dir `$env:RBENV_ROOT\shims` directory. Every Gem executable command has a `PowerShell` script individually, this script is called `shim`. The script will delegate to the correct version's `bin` directory.
 
 <br>
 
@@ -80,8 +76,6 @@ This is the most difficult part when implementing `rbenv`. Because of the existe
 So the only method is to pretend to be the real `ruby.exe`. `starship` checks our `fake ruby.exe`'s version, hence get it correct. The fake one will check `shell version`, then `local version`, then `global version`. Otherwise, it will invoke `ruby.exe` in no consideration of this PowerShell's environment variables.
 
 How does `gem` command get correct version? Every `gem` command through shim invokes the `fake ruby.exe` too, so we also get correct version. Then we make the first argument of ruby interpreter the so-called `bin stub file`(glossary from `RubyGems`).
-
-Note: we don't support `rubyw.exe`, for I don't know any of its usage scenario.
 
 <br>
 
