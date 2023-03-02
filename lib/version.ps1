@@ -91,7 +91,7 @@ function get_all_installed_versions {
         if ($versions.Count -eq 0) { $versions = @() }
         if ($versions.Count -eq 1) { $versions = @() + $versions }
         $versions = [Collections.ArrayList] $versions
-        $versions.Insert(0, "system")
+        $versions.Add("system")
     }
 
     $versions
@@ -165,10 +165,14 @@ function get_current_version_with_setmsg {
 
 function get_current_version_with_setmsg_from_fake_ruby () {
     $msg = & $env:RBENV_ROOT\rbenv\bin\ruby.exe -v
-    $ruby_slogan, $rest = $msg[0] -Split ' '
+    $ruby_slogan, $rest = $msg -Split ' '
 
     $ver, $setmsg = $rest
-    return $ver, ($setmsg -Join ' ')
+
+    # fix for local version
+    $version = auto_fix_version_for_installed($ver)
+
+    return $version, ($setmsg -Join ' ')
 }
 
 
@@ -277,9 +281,7 @@ function get_ruby_exe_location_by_version ($exe, $version) {
 # Arguments:
 #   $cmd is a executable name
 function get_executable_location ($cmd) {
-    $ver, $_ = get_current_version_with_setmsg_from_fake_ruby
-
-    $version = auto_fix_version_for_installed $ver
+    $version, $_ = get_current_version_with_setmsg_from_fake_ruby
 
     if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
         get_ruby_exe_location_by_version $cmd $version
@@ -290,14 +292,10 @@ function get_executable_location ($cmd) {
 
 
 # Function:
-#   used for shim script
+#   used for shim script to find the correct version of gem executable
 #
-#   (1) If we call ruby, we will run:
-#       'correct_ver_dir\ruby.exe' arguments
-#
-#   (2) If we call gem bin command, we will run:
-#       'correct_ver_dir\gem_name.cmd' arguments or
-#       'correct_ver_dir\gem_name.bat' arguments
+#     'correct_ver_dir\gem_name.cmd' arguments or
+#     'correct_ver_dir\gem_name.bat' arguments
 #
 # Time:
 #   65~70ms
@@ -314,10 +312,7 @@ function shim_get_gem_executable_location ($cmd_path) {
         $cmd = strip_ext $f  # Now 'cr'
     }
 
-    $ver, $_ = get_current_version_with_setmsg_from_fake_ruby
-
-    # fix for local version
-    $version = auto_fix_version_for_installed($ver)
+    $version, $_ = get_current_version_with_setmsg_from_fake_ruby
 
     # This condition is only met when global version is not set
     # Enforce users to set global version

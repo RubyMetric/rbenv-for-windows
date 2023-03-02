@@ -20,10 +20,7 @@
 
 . $env:RBENV_ROOT\rbenv\lib\version.ps1
 
-$ver, $_ = get_current_version_with_setmsg_from_fake_ruby
-
-# fix for local version
-$version = auto_fix_version_for_installed($ver)
+$version, $_ = get_current_version_with_setmsg_from_fake_ruby
 
 $rubyexe = get_ruby_exe_location_by_version "rubyw" $version
 
