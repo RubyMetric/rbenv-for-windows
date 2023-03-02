@@ -138,8 +138,14 @@ function list_who_has ($name) {
         } else {
             $where = "$env:RBENV_ROOT\$ver\bin"
         }
-        $who = "$where\$name"
-        if (Test-Path $who) { $whos += $who }
+
+
+        $bat_file = "$where\$cmd" + '.bat'
+        $cmd_file = "$where\$cmd" + '.cmd'
+
+        # '.bat' first, because from 2023, basically all gems are in '.bat'
+        if     (Test-Path $bat_file) { $whos += $bat_file }
+        elseif (Test-Path $cmd_file) { $whos += $cmd_file }
         else { continue }
     }
 
@@ -178,8 +184,8 @@ function get_gem_bin_location_by_version ($cmd, $version) {
     $cmd = $cmd -replace '.bat$', ''
     $cmd = $cmd -replace '.cmd$', ''
 
-    $cmd_file = "$where\$cmd" + '.cmd'
     $bat_file = "$where\$cmd" + '.bat'
+    $cmd_file = "$where\$cmd" + '.cmd'
 
     # '.bat' first, because from 2023, basically all gems are in '.bat'
     if     (Test-Path $bat_file) { return $bat_file }
