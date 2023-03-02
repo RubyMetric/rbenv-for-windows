@@ -15,7 +15,7 @@
 * ~> v0.1.1
 * <2023-03-03>
 #   1. Improve 'ruby -v' info
-#   2. Don't delegate when '-v' using system ruby
+#   2. Drop support for system ruby
 #
 * <2023-02-14> Make 'global_version_file' global variable
 *
@@ -41,15 +41,17 @@ int main(string[] args) {
     string pwd = getcwd();
 
     if ("" == vi.ver) {
-        return delegate_to_real_ruby_from_cmd(pwd, args[1..$] );
+        warn("rbenv: No valid version has been set");
+        return -1;
     }
 
     // We don't delegate here, to support starship to quickly get answer
     if(arg_len == 2 && args[1] == "-v") {
-        writeln("ruby ", vi.ver, " ", vi.setmsg, `
-rbenv: Use 'ruby --version' for real version info`);
+        writeln("ruby ", vi.ver, " ", vi.setmsg);
+        writeln(`rbenv: Use 'ruby --version' for real version info`);
         return 0;
     }
+
     return delegate_to_real_ruby_from_rbenv(pwd, vi.setmsg, vi.ver, args[1..$]);
 }
 
@@ -85,7 +87,7 @@ int delegate_to_real_ruby_from_rbenv(string pwd, string setmsg, string ver, stri
 }
 
 
-// Call the real ruby.exe
+// Deprecated function (because we don't support system ruby now)
 int delegate_to_real_ruby_from_cmd(string pwd, string[] args) {
     import std.process : spawnShell, wait, Config;
     import std.array;
@@ -123,12 +125,12 @@ int delegate_to_real_ruby_from_cmd(string pwd, string[] args) {
     auto pid = spawnProcess(["ruby.exe"] ~ args[0..$]  ,new_env, Config.newEnv);
     */
 
-
     // https://dlang.org/phobos/std_process.html#.spawnShell
-    auto shellcmd = join(["ruby.exe"] ~ args[0..$], " ");
-    // Haha, now we bypass PowerShell, directly run CMD
-    //   Because path env var 'rbenv\bin' is added from PowerShell,
-    //   so we skip this fake ruby.exe sucessfully
+    auto shellcmd = join(["where ruby"] ~ args[0..$], " ");
+    // NOTE:  Still, We CAN'T bypass PowerShell's environment
+    //   Although 'rbenv\bin' is added to env var 'path' from PowerShell,
+    //   You can check here, the 'where' command shows, the CMD's env get polluted
+    // So, we show drop support for "system ruby"
     auto pid = spawnShell(shellcmd,
                           null,        // env
                           Config.none, // config
@@ -244,6 +246,6 @@ VersionInfo get_current_version_with_setmsg() {
         return vi;
     }
 
-    // return empty string, this may lead to find the system ruby
+    // return empty string, this will cause program to exit -1
     return vi;
 }
