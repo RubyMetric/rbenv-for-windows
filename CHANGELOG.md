@@ -1,6 +1,11 @@
 # Changelog
 
-## [Unreleased](#) (2023-02-20)
+## [Unreleased](#) (2023-03-02)
+
+### Bug fixes:
+
+- Revert change: not bypass `.bat` or `.cmd` delegator in [v1.3.0]()
+    - See reasons: [GitHub issue #12](https://github.com/ccmywish/rbenv-for-windows/issues/12)
 
 <br>
 
@@ -18,7 +23,8 @@
 ### New features:
 
 - Use fake `ruby.exe` to support shell prompt (e.g. `starship`) for `rbenv local` version
-- Bypass `.bat` or `.cmd` Windows executable delegator
+- ~~Bypass `.bat` or `.cmd` Windows executable delegator~~
+    - This is reverted in [v1.3.2]()
 
 <br>
 

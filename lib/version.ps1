@@ -220,8 +220,6 @@ function gem_not_found($gem) {
 
 
 
-# This is called by 'get_executable_location'
-#
 # Here, $cmd is a Gem's executable name
 function get_gem_bin_location_by_version ($cmd, $version) {
 
@@ -231,9 +229,11 @@ function get_gem_bin_location_by_version ($cmd, $version) {
     $cmd = $cmd -replace '.bat$', ''
     $cmd = $cmd -replace '.cmd$', ''
 
-    # Use non-extension name!
-    if (Test-Path ("$where\$cmd" + '.bat')) { return "$where\$cmd" }
-    elseif (Test-Path ("$where\$cmd" + '.cmd')) { return "$where\$cmd" }
+    $cmd_file = "$where\$cmd" + '.cmd'
+    $bat_file = "$where\$cmd" + '.bat'
+
+    if     (Test-Path $cmd_file) { return $cmd_file }
+    elseif (Test-Path $bat_file) { return $bat_file }
     else {
         gem_not_found
         exit -1
@@ -320,17 +320,15 @@ function shim_get_execution ($cmd_path) {
         }
     }
 
-    $ret_ruby = $null
-    $ret_gem  = $null
+    $rubyexe = $null
+    $gem     = $null
 
     if ($cmd -eq 'ruby' -or $cmd -eq 'rubyw') {
-        $ret_ruby = get_ruby_exe_location_by_version $cmd $version
+        $rubyexe = get_ruby_exe_location_by_version $cmd $version
+        return $rubyexe
     } else {
-        # Exactly ruby.exe not rubyw.exe
-        $ret_ruby = get_ruby_exe_location_by_version "ruby" $version
         # Still need to call this function to do some work (e.g. find available bins)
-        $ret_gem  = get_gem_bin_location_by_version $cmd $version
+        $gem  = get_gem_bin_location_by_version $cmd $version
+        return $gem
     }
-
-    return $ret_ruby, $ret_gem
 }
