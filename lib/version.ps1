@@ -97,14 +97,11 @@ function get_all_installed_versions {
 
 
 function get_current_version_with_setmsg_from_fake_ruby () {
+
     $msg = & $env:RBENV_ROOT\rbenv\bin\ruby.exe -v
+
     $ruby_slogan, $rest = $msg -Split ' '
-
-    $ver, $setmsg = $rest
-
-    # fix for local version
-    $version = auto_fix_version_for_installed($ver)
-
+    $version, $setmsg = $rest
     return $version, ($setmsg -Join ' ')
 }
 

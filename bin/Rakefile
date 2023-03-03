@@ -1,0 +1,4 @@
+desc "rbenv: Build fake ruby.exe from D files"
+task :build do
+    sh "dmd -of=ruby.exe ruby.d rbenv.d"
+end

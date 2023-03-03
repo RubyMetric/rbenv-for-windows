@@ -2,7 +2,7 @@
 * File          : ruby.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-02-11>
-* Last modified : <2023-03-03>
+* Last modified : <2023-03-04>
 *
 * ruby:
 *
@@ -13,6 +13,7 @@
 * Changelog:
 *
 * ~> v0.1.1
+* <2023-03-04> Auto fix for local version
 * <2023-03-03>
 #   1. Improve 'ruby -v' info to coordinate with rbenv
 #   2. Don't delegate to real ruby.exe anymore
@@ -24,6 +25,13 @@
 * -------------------------------------------------------------*/
 
 import std.stdio;
+import std.process : environment, executeShell;
+
+import rbenv;
+
+
+// Written in the D programming language.
+// --------------------------------------------------------------
 
 string global_version_file;
 
@@ -31,7 +39,6 @@ string global_version_file;
 int main(string[] args) {
     auto arg_len = args.length;
 
-    import std.process : environment;
     global_version_file = environment["RBENV_ROOT"] ~ "\\global.txt";
 
     VersionInfo vi;
@@ -56,13 +63,6 @@ int main(string[] args) {
     }
 
     return 0;
-}
-
-
-void warn(string str) {
-    import std.format : format;
-    auto colorized =  "\033[33m%s\033[0m".format(str); // UFCS
-    writeln(colorized);
 }
 
 
@@ -97,7 +97,6 @@ LocalVersionInfo get_local_version() {
     lvi.ver = "";
 
     // pwd = std.path.absolute();
-    import std.process : executeShell;
     auto ret = executeShell("git rev-parse --show-toplevel");
     if (ret.status != 0) return lvi;
 
@@ -111,7 +110,7 @@ LocalVersionInfo get_local_version() {
     if (exists(local_version_file)) {
         string ver = cast(string)read(local_version_file);
         // Complete '3.1.3' with the suffix '-1'
-        // ver = auto_fix_version_for_installed($ver)
+        ver = auto_fix_version_for_installed(ver);
         lvi.where = local_version_file;
         lvi.ver = ver;
         return lvi;
@@ -123,7 +122,6 @@ LocalVersionInfo get_local_version() {
 
 // Read the global shell variable
 string get_this_shell_version() {
-    import std.process : environment;
     // https://dlang.org/phobos/std_process.html#environment.get
     // get won't throw
     auto ver = environment.get("RBENV_VERSION");
