@@ -21,6 +21,12 @@ import std.stdio;
 import std.process : environment;
 import std.array   : split, array;
 
+import core.stdc.stdlib : exit;
+import std.algorithm    : canFind, startsWith;
+
+
+// --------------------------------------------------------------
+
 enum version_match_regexp = r"\d{1,}\.\d{1,}\.\d{1,}-\d{1,}";
 
 // Read versions list
@@ -80,9 +86,6 @@ void warn(string str) {
 
 string auto_fix_version_for_installed(string ver) {
 
-    import core.stdc.stdlib : exit;
-    import std.algorithm    : canFind, startsWith;
-
     auto versions = get_all_installed_versions();
 
     if (versions.canFind(ver)) {
@@ -99,10 +102,28 @@ string auto_fix_version_for_installed(string ver) {
 }
 
 
+string auto_fix_version_for_remote(string ver) {
+    auto versions = get_all_remote_versions();
+
+    if (versions.canFind(ver)) {
+        return ver;
+    } else {
+        foreach (s ; versions)  {
+            auto yes = s.startsWith(ver);
+            if (yes) { return s; }
+        }
+    }
+
+    warn("rbenv: version " ~ ver ~ " not installed");
+    exit(0);
+}
+
+
 int main() {
     auto arr = get_all_remote_versions();
     auto arr2 = get_all_installed_versions();
     auto ret = "2.7".auto_fix_version_for_installed;
-    writeln(ret);
+    auto ret2 = "2.7".auto_fix_version_for_remote;
+    writeln(ret2);
     return 0;
 }
