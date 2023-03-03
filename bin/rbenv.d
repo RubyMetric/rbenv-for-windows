@@ -43,6 +43,7 @@ string[] get_all_remote_versions() {
 string[] get_all_installed_versions() {
 
     import std.file      : dirEntries, SpanMode;
+    import std.path      : baseName;
     import std.algorithm : filter, sort, map, cmp;
     import std.regex     : matchAll;
 
@@ -52,7 +53,7 @@ string[] get_all_installed_versions() {
             auto name = dir.name;
             return name.matchAll(version_match_regexp) || name == "head" ;
         }
-    ).map!(a => a.name).array;
+    ).map!(a => baseName(a.name)).array;
     // https://dlang.org/phobos/std_algorithm_iteration.html#.map
 
 
@@ -70,9 +71,38 @@ string[] get_all_installed_versions() {
 }
 
 
+void warn(string str) {
+    import std.format : format;
+    auto colorized =  "\033[33m%s\033[0m".format(str); // UFCS
+    writeln(colorized);
+}
+
+
+string auto_fix_version_for_installed(string ver) {
+
+    import core.stdc.stdlib : exit;
+    import std.algorithm    : canFind, startsWith;
+
+    auto versions = get_all_installed_versions();
+
+    if (versions.canFind(ver)) {
+        return ver;
+    } else {
+        foreach (s ; versions)  {
+            // writeln(s);
+            auto yes = s.startsWith(ver);
+            if (yes) { return s; }
+        }
+    }
+    warn("rbenv: version " ~ ver ~ " not installed");
+    exit(0);
+}
+
+
 int main() {
     auto arr = get_all_remote_versions();
     auto arr2 = get_all_installed_versions();
-    writeln(arr2);
+    auto ret = "2.7".auto_fix_version_for_installed;
+    writeln(ret);
     return 0;
 }
