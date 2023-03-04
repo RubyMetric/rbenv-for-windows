@@ -6,7 +6,8 @@
 *
 * rbenv:
 *
-*   This D file works normally.
+*   Common functions for 'fake ruby.exe' and
+*                        'libexec\rbenv-rehash.exe'
 *
 * ----------
 * Changelog:

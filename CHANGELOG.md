@@ -4,6 +4,7 @@
 
 ### Enhancements:
 
+- Refactor `rbenv rehash` in Dlang, making time cost **from 120ms to 30ms**
 - Add benchmark documents
 - Add auto fix version feature into fake ruby.exe
 

@@ -27,7 +27,7 @@
 import std.stdio;
 import std.process : environment, executeShell;
 
-import rbenv;
+import rbenv.common;
 
 // Written in the D programming language.
 // --------------------------------------------------------------

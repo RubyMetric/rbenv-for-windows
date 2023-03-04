@@ -58,8 +58,8 @@ int main(string[] args) {
 
     SHIMS_DIR = environment["RBENV_ROOT"] ~ "\\shims";
 
-    if(args[1] == "executable") {
-        rehash_single_executable(args[2]);
+    if(args[1] == "gem") {
+        rehash_single_gem(args[2]);
         return 0;
     } else if (args[1] == "version") {
         rehash_version(args[2]);
@@ -73,7 +73,7 @@ int main(string[] args) {
 }
 
 
-void rehash_single_executable(string name) {
+void rehash_single_gem(string name) {
     string file = SHIMS_DIR ~ "\\" ~ name ~ ".ps1";
     // std.file : write NOT std.stdio : write
     write(file, REHASH_TEMPLATE);
@@ -87,7 +87,7 @@ We need shims dir to always have the names that every Ruby has installed
 
 How can we achieve this? Via two steps:
     1. Every time you install a new Ruby version, call 'rehash_version'
-    2. Every time you install a gem, call 'rehash_single_executable'
+    2. Every time you install a gem, call 'rehash_single_gem'
 */
 void rehash_version (string arg_ver) {
 
@@ -119,14 +119,14 @@ void rehash_version (string arg_ver) {
     // remove .cmd suffix ;
     cmds = cmds.map!(f => baseName(f, ".cmd")).array;
 
-    auto executables = bats ~ cmds;
+    auto gems = bats ~ cmds;
 
-    // writeln(executables);
+    // writeln(gems);
 
-    foreach (exe ; executables) {
-        rehash_single_executable(exe);
+    foreach (exe ; gems) {
+        rehash_single_gem(exe);
     }
 
     import std.conv : to;
-    success("rbenv: Rehash all " ~ executables.length.to!(string) ~ " executables in '" ~ ver ~ "'");
+    success("rbenv: Rehash all " ~ gems.length.to!(string) ~ " gems in '" ~ ver ~ "'");
 }
