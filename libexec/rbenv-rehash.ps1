@@ -14,7 +14,7 @@ param($cmd, $argument)
 #
 # This is called after you install a gem
 function rehash_single_gem ($name, $echo_or_not=$True) {
-    & "$env:RBENV_ROOT\rbenv\bin\rbenv-rehash.exe" gem $name
+    & "$env:RBENV_ROOT\rbenv\libexec\rbenv-rehash.exe" gem $name
     if($echo_or_not){
         success "rbenv: Rehash gem '$argument'"
     }
@@ -22,7 +22,7 @@ function rehash_single_gem ($name, $echo_or_not=$True) {
 
 
 function rehash_version ($version) {
-    & "$env:RBENV_ROOT\rbenv\bin\rbenv-rehash.exe" version $version
+    & "$env:RBENV_ROOT\rbenv\libexec\rbenv-rehash.exe" version $version
 }
 
 
