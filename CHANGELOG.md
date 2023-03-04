@@ -2,11 +2,17 @@
 
 ## [Unreleased](#) (2023-03-04)
 
+### New features:
+
+- Add installer script
+- Add build script
+- Refactor `rbenv rehash` in Dlang. This adds binary `.\libexec\rbenv-rehash.exe` making rehash time cost **from 120ms to 30ms**. This also removes the dependency on `pwsh.exe` in `rubygems_plugin.rb`.
+
 ### Enhancements:
 
-- Refactor `rbenv rehash` in Dlang, making time cost **from 120ms to 30ms**
+- Remove redundant blank line in hook
 - Add benchmark documents
-- Add auto fix version feature into fake ruby.exe
+- Add auto fix version feature into `fake ruby.exe`
 
 ### Bug fixes:
 

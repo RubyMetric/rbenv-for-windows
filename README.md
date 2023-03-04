@@ -56,9 +56,10 @@ There's a [benchmark](./doc/benchmark.md) to show if `rbenv` will influence Ruby
 ### For common users
 
 ```PowerShell
-mkdir "C:\Ruby-on-Windows"
-git -C "C:\Ruby-on-Windows" clone "https://github.com/ccmywish/rbenv-for-windows" rbenv
-curl -L https://github.com/ccmywish/rbenv-for-windows/releases/download/v1.3.0/fake-ruby-v0.1.0.exe -o "C:\Ruby-on-Windows\rbenv\bin\ruby.exe"
+# Customize the location you want to install to,
+# preferably without spaces, as it has not been tested
+$env:RBENV_ROOT = "C:\Ruby-on-Windows"
+iwr -useb "https://github.com/ccmywish/rbenv-for-windows/raw/main/tools/install.ps1" | iex
 ```
 
 In your `$profile`, you should add theses:
@@ -81,9 +82,9 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 中国大陆用户请使用以下方式
 
 ```PowerShell
-mkdir "C:\Ruby-on-Windows"
-git -C "C:\Ruby-on-Windows" clone "https://gitee.com/ccmywish/rbenv-for-windows" rbenv
-curl -L https://gitee.com/ccmywish/rbenv-for-windows/releases/download/v1.3.0/fake-ruby-v0.1.0.exe -o "C:\Ruby-on-Windows\rbenv\bin\ruby.exe"
+# 自定义你想安装到的位置，最好不要有空格，因为没有测试过
+$env:RBENV_ROOT = "C:\Ruby-on-Windows"
+iwr -useb "https://gitee.com/ccmywish/rbenv-for-windows/raw/main/tools/install-cn.ps1" | iex
 ```
 
 在你的 `$profile` 中, 添加这些内容:
@@ -94,7 +95,7 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 
 # 我为大陆用户预置了镜像, 请查看 share/mirrors.ps1
 # 请注意，这个必须放在 'init' 之前
-$env:RBENV_USE_MIRROR = "CN"  # For Chinese users
+$env:RBENV_USE_MIRROR = "CN"
 
 & "$env:RBENV_ROOT\rbenv\bin\rbenv.ps1" init
 ```
