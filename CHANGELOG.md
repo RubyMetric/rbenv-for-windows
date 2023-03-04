@@ -2,6 +2,10 @@
 
 ## [Unreleased](#) (2023-03-04)
 
+<br>
+
+## [v1.4.1](#) (2023-03-04)
+
 ### New features:
 
 - Add installer script

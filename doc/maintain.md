@@ -15,7 +15,11 @@ cd $env:RBENV_ROOT\rbenv
 .\tools\build.ps1
 ```
 
-4. Change `tools\*.ps1` versions and tags
+4. Change `rbenv` version
+
+In `bin\rbenv.ps1`, update `$RBENV_OWN_VERSION`
+
+5. Change `tools\*.ps1` versions and tags
 
 In `tools\install.ps1` and `tools\install-cn.ps1`, change `$tag` and `$$binary_version`
 
