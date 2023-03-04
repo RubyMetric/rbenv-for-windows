@@ -33,7 +33,8 @@ import core.stdc.stdlib : exit;
 void warn(string str) {
     import std.format : format;
     auto colorized =  "\033[33m%s\033[0m".format(str); // UFCS yellow
-    writeln(colorized);
+    // We use stderr exlicitly, so there's no incomplete output
+    stderr.writeln(colorized);
 }
 
 void success(string str) {

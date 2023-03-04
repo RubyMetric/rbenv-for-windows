@@ -25,6 +25,7 @@
 
 import std.stdio;
 import std.process : environment, executeShell;
+import std.file    : exists, read, write;
 
 import rbenv.common;
 
@@ -46,7 +47,8 @@ int main(string[] args) {
     string pwd = getcwd();
 
     if ("" == vi.ver) {
-        warn("rbenv: No valid version has been set");
+        // The last valid version to check is the global version, we've warned already
+        // warn("rbenv: No valid version has been set");
         return -1;
     }
 
@@ -66,9 +68,12 @@ int main(string[] args) {
 
 // Read the global.txt file
 string get_global_version() {
-    import std.file;
 
-	if (! exists(global_version_file)) return "rbenv: Global version file doesn't exist!";
+	if (! exists(global_version_file)) {
+        // warn("rbenv: Global version file doesn't exist!");
+        // return "";
+        write(global_version_file, []);
+    }
 
     // read return 'void[]'' type
     string ver = cast(string)read(global_version_file);
