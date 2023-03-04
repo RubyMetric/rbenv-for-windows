@@ -15,14 +15,17 @@
 * <2023-03-03> Create file
 * -------------------------------------------------------------*/
 
-module rbenv;
+module rbenv.common;
 
 import std.stdio;
 import std.process      : environment;
 import std.array        : split, array;
-import core.stdc.stdlib : exit;
 import std.algorithm    : canFind, startsWith;
-import std.typecons     : tuple;
+import std.algorithm    : filter, sort, map, cmp;
+import std.file         : dirEntries, SpanMode;
+import std.path         : baseName;
+import std.regex        : matchAll;
+import core.stdc.stdlib : exit;
 
 // Written in the D programming language.
 // --------------------------------------------------------------
@@ -60,11 +63,6 @@ string[] get_all_remote_versions() {
 
 // Read all dir names in the RBENV_ROOT
 string[] get_all_installed_versions() {
-
-    import std.file      : dirEntries, SpanMode;
-    import std.path      : baseName;
-    import std.algorithm : filter, sort, map, cmp;
-    import std.regex     : matchAll;
 
     // FilterResult!(__lambda1, _DirIterator!false)
     auto vers = dirEntries(environment["RBENV_ROOT"], SpanMode.shallow).filter!(
