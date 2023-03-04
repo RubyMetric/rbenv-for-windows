@@ -55,6 +55,8 @@ There's a [benchmark](./doc/benchmark.md) to show if `rbenv` will influence Ruby
 
 ### For common users
 
+First, input and run these commands in your terminal:
+
 ```PowerShell
 # Customize the location you want to install to,
 # preferably without spaces, as it has not been tested
@@ -62,7 +64,7 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 iwr -useb "https://github.com/ccmywish/rbenv-for-windows/raw/main/tools/install.ps1" | iex
 ```
 
-In your `$profile`, you should add theses:
+Then, in your `$profile`, you should add theses:
 
 ```PowerShell
 # rbenv for Windows
@@ -79,7 +81,9 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 
 ### For Chinese users
 
-中国大陆用户请使用以下方式
+中国大陆用户请使用以下方式，通过Gitee避免网络问题，以及使用内置CN镜像。
+
+首先，在你的终端中输入并运行以下命令:
 
 ```PowerShell
 # 自定义你想安装到的位置，最好不要有空格，因为没有测试过
@@ -87,7 +91,7 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 iwr -useb "https://gitee.com/ccmywish/rbenv-for-windows/raw/main/tools/install-cn.ps1" | iex
 ```
 
-在你的 `$profile` 中, 添加这些内容:
+其次，在你的 `$profile` 中, 添加这些内容:
 
 ```PowerShell
 # rbenv for Windows
