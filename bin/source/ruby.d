@@ -12,12 +12,11 @@
 * ----------
 * Changelog:
 *
-* ~> v0.1.1
+* ~> v0.2.0
 * <2023-03-04> Auto fix for local version
 * <2023-03-03>
-#   1. Improve 'ruby -v' info to coordinate with rbenv
-#   2. Don't delegate to real ruby.exe anymore
-#
+#       1. Improve 'ruby -v' info to coordinate with rbenv
+#       2. Don't delegate to real ruby.exe anymore
 * <2023-02-14> Make 'global_version_file' global variable
 *
 * ~> v0.1.0
