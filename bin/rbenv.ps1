@@ -2,7 +2,7 @@
 # File          : rbenv.ps1
 # Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2022-05-02>
-# Last modified : <2023-03-03>
+# Last modified : <2023-03-04>
 # Contributors  : Scoop Contributors
 #
 #
@@ -35,6 +35,12 @@ $RBENV_OWN_VERSION       = "rbenv v1.4.0"
 # to be $env variable.
 $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 
+# [String]
+# Where we store shims(Gem executables delegate script)
+#
+# Note that We redefined it at libexec\rbenv-rehash.ps1,
+#  We don't want it to be $env variable.
+$SHIMS_DIR = "$env:RBENV_ROOT\shims"
 
 <#
 The init process does 7 things:
@@ -44,8 +50,8 @@ The init process does 7 things:
        (2.1) $env:RBENV_ROOT\rbenv\bin is to delegate rbenv commands and ruby(w).exe
        (2.2) $env:RBENV_ROOT\shims     is to delegate all Gem commands
     3. Add one path to RUBYLIB
-    4. Ensure global.txt (   1ms    delay)
-    5. Check system Ruby (10ms~20ms delay)
+    4. Ensure global.txt and shims dir (2ms       delay)
+    5. Check system Ruby               (10ms~20ms delay)
     6. If has system Ruby, rehash it just only one time (50ms, but only when you first setup rbenv)
     7. If no the shared MSYS2, install it
 #>
@@ -67,10 +73,16 @@ if ($cmd -eq "init") {
     # For RubyGems plugin to work
     $env:RUBYLIB += "$env:RBENV_ROOT\rbenv\share"
 
-    # Ensure our global.txt file
+    # Ensure global.txt version file
     if (-Not (Test-Path $GLOBAL_VERSION_FILE) ) {
         # Defined at the top
         New-Item $GLOBAL_VERSION_FILE | Out-Null
+    }
+
+    # Ensure shims dir
+    if (-Not (Test-Path $SHIMS_DIR) ) {
+        # Defined at the top
+        New-Item -Path $SHIMS_DIR -ItemType Directory | Out-Null
     }
 
     # Always check the system ruby first

@@ -22,12 +22,6 @@ $gem = shim_get_gem_executable_location $PSCommandPath
 #
 
 
-function ensure_shims_dir() {
-    if(Test-Path $SHIMS_DIR) {}
-    else { New-Item -Path $SHIMS_DIR -ItemType Directory | Out-Null }
-}
-
-
 # Generate shims for specific name across all versions
 #
 # Note that $name shouldn't have suffix
@@ -57,8 +51,6 @@ function rehash_single_executable ($name, $echo_or_not=$True) {
 # 2. Every time you install a gem, call 'rehash_single_executable'
 #
 function rehash_version ($version) {
-
-    ensure_shims_dir
 
     $version = auto_fix_version_for_installed $version
 
@@ -103,7 +95,6 @@ if (!$cmd) {
 
 } elseif ($cmd -eq 'executable') {
     if (!$argument) { rbenv help rehash; return}
-    ensure_shims_dir
     rehash_single_executable $argument
 
 } else {

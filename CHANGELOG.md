@@ -1,6 +1,15 @@
 # Changelog
 
-## [Unreleased](#) (2023-03-03)
+## [Unreleased](#) (2023-03-04)
+
+### Enhancements:
+
+- Add benchmark documents
+- Add auto fix version feature into fake ruby.exe
+
+### Bug fixes:
+
+- Fix bug of `.editorconfig` to make it work for `Rakefile`
 
 <br>
 

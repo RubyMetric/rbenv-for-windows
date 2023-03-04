@@ -22,9 +22,23 @@ import std.process      : environment;
 import std.array        : split, array;
 import core.stdc.stdlib : exit;
 import std.algorithm    : canFind, startsWith;
+import std.typecons     : tuple;
 
 // Written in the D programming language.
 // --------------------------------------------------------------
+
+void warn(string str) {
+    import std.format : format;
+    auto colorized =  "\033[33m%s\033[0m".format(str); // UFCS yellow
+    writeln(colorized);
+}
+
+void success(string str) {
+    import std.format : format;
+    auto colorized =  "\033[32m%s\033[0m".format(str); // green
+    writeln(colorized);
+}
+
 
 enum version_match_regexp = r"\d{1,}\.\d{1,}\.\d{1,}-\d{1,}";
 
@@ -76,13 +90,6 @@ string[] get_all_installed_versions() {
 }
 
 
-void warn(string str) {
-    import std.format : format;
-    auto colorized =  "\033[33m%s\033[0m".format(str); // UFCS
-    writeln(colorized);
-}
-
-
 string auto_fix_version_for_installed(string ver) {
 
     auto versions = get_all_installed_versions();
@@ -121,9 +128,39 @@ string auto_fix_version_for_remote(string ver) {
 
 // rdmd -unittest -main .\rbenv.d
 unittest {
-    auto arr = get_all_remote_versions();
+    auto arr  = get_all_remote_versions();
     auto arr2 = get_all_installed_versions();
-    auto ret = "2.7".auto_fix_version_for_installed;
+    auto ret  = "2.7".auto_fix_version_for_installed;
     auto ret2 = "2.7".auto_fix_version_for_remote;
-    writeln(ret2);
+    // writeln(ret2);
+}
+
+
+
+string[] get_system_ruby_version_and_path() {
+    auto ver_and_path = environment["RBENV_SYSTEM_RUBY"].split("<=>");
+    // Error: cannot cast expression `ver_and_path` of type `string[]` to `string[2]
+    // return cast(string[2])ver_and_path;
+    return ver_and_path;
+}
+
+
+// return the ruby bin path for specific version
+string get_ruby_bin_path_for_version(string ver) {
+    string where;
+    if (ver == "system") {
+        auto ver_and_path = get_system_ruby_version_and_path();
+        where = ver_and_path[1];
+    } else {
+        where = environment.get("RBENV_ROOT") ~ "\\" ~ ver;
+    }
+    where ~= "\\bin";
+    return where;
+}
+
+
+unittest {
+    // no auto fix version
+    auto path = get_ruby_bin_path_for_version("3.1.3-1");
+    assert(path == "C:\\Ruby-on-Windows\\3.1.3-1\\bin" );
 }
