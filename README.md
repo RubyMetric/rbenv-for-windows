@@ -4,8 +4,8 @@
 
 <p>
 
-<a href="https://gitter.im/rbenv-for-windows/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
-    <img src="https://badges.gitter.im/rbenv-for-windows/community.svg" alt="Gitter Chat" />
+<a href="https://matrix.to/#/#rbenv-for-windows_community:gitter.im">
+    <img src="https://badges.gitter.im/repo.svg" alt="Gitter Chat" />
 </a>
 
 <a href="https://github.com/ccmywish/rbenv-for-windows/blob/main/LICENSE">
@@ -24,12 +24,14 @@ Manage multiple Rubies on Windows.
 
 Hi, hello
 
-**If you're interested in how it works, read these sections for quick and enough information:**
+`rbenv for Windows` is a `rbenv` clone for Ruby users on Windows. **If you're interested in how it works, read these sections for quick and enough information:**
 
 1. [Relation with rbenv and RubyInstaller2](./doc/principle.md#RelationWithOtherProjects)
 2. [How does it work?](./doc/principle.md#HowDoesItWork)
 3. [FAQ for maintainers](./doc/principle.md#FAQforDevs)
 4. [Environment Variables](#EnvVar)
+
+There's a [benchmark](./doc/benchmark.md) to show if `rbenv` will influence Ruby/Gem commands startup time significantly.
 
 <br>
 
