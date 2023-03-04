@@ -24,5 +24,5 @@ indent_size = 2
 indent_style = tab
 end_of_line = lf
 
-[{*.rb, Gemfile, Rakefile}]
+[{*.rb,Gemfile,Rakefile}]
 indent_size = 2
