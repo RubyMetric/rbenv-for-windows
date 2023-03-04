@@ -2,10 +2,14 @@
 #   https://github.com/rbenv/rbenv/blob/master/rbenv.d/exec/gem-rehash/rubygems_plugin.rb
 #
 
-RBENV_PS1 = ENV['RBENV_ROOT'] + '\rbenv\bin\rbenv.ps1'
+RBENV_REHASH_EXE = ENV['RBENV_ROOT'] + '\rbenv\libexec\rbenv-rehash.exe'
+FAKE_RUBY_EXE    = ENV['RBENV_ROOT'] + '\rbenv\bin\ruby.exe'
 
-def success(msg)
-  puts "\e[32m" + msg + "\e[0m"
+def success(msg, use_print: false)
+  str = "\e[32m" + msg + "\e[0m"
+  if use_print then print str
+  else puts str
+  end
 end
 
 hook = lambda do |installer|
@@ -15,12 +19,12 @@ hook = lambda do |installer|
       [Gem.default_bindir, Gem.bindir(Gem.user_dir)].include?(installer.bin_dir)
 
       installer.spec.executables.each do |e|
-        success `pwsh -c "#{RBENV_PS1} rehash executable #{e}"`
+        success `#{RBENV_REHASH_EXE} gem #{e}`, use_print: true
       end
 
     end
   rescue
-    warn "rbenv: error in gem-rehash (#{$!.class.name}: #{$!.message})"
+    warn "rbenv: error in rbenv-rehash.exe (#{$!.class.name}: #{$!.message})"
   end
 end
 
@@ -37,13 +41,13 @@ if defined?(Bundler::Installer) && Bundler::Installer.respond_to?(:install) && !
         #   bundle install with path not works for post-install hook, it just adds $LOAD_PATH
         #   However, in my test, the hook won't be triggered even for the basic " gem 'xxx' "
         #
-        # So, we have a bad integration with Bundler, help me, buddy
+        # So, we have a bad integration with Bundler.
         # To compromise, I have to run `rbenv rehash version xxx` when `rbenv global xxx``
         #
         puts
-        success "rbenv: Hey, friend! If you see this line, please let me know how you do it."
-        success "This means you successfully trigger the Bundler post-install hook on Windows"
-        success "This is what we really want but Bundler doesn't do for us correctly at present (2022-05-08)"
+        success "rbenv: Hi! If you see this line, please let me know how you do it."
+        success "It means you successfully trigger the Bundler post-install hook on Windows"
+        success "It is what we want but Bundler doesn't do correctly at present (2022-05-08)"
         puts
 
         begin
@@ -61,7 +65,8 @@ if defined?(Bundler::Installer) && Bundler::Installer.respond_to?(:install) && !
           # rehash for current version
           # Our code is correct, because our `rbenv rehash` will rehash the current version
           # So next time, you change global to this version, you really already get what you want in a Gemfile
-          success `pwsh -c "#{RBENV_PS1} rehash"`
+          cur_ver = `#{FAKE_RUBY_EXE} -v`.split()[1]
+          success `#{RBENV_REHASH_EXE} version #{cur_ver}`, use_print: true
         end
         result
       end

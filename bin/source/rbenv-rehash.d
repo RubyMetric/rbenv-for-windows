@@ -6,8 +6,8 @@
 *
 * rbenv-rehash:
 *
-*   rbenv-rehash executable <gem_name>
-*   rbenv-rehash version    <version>
+*   rbenv-rehash gem     <gem_name>
+*   rbenv-rehash version <version>
 *
 * ----------
 * Changelog:
@@ -59,7 +59,7 @@ int main(string[] args) {
     SHIMS_DIR = environment["RBENV_ROOT"] ~ "\\shims";
 
     if(args[1] == "gem") {
-        rehash_single_gem(args[2]);
+        rehash_single_gem_echo(args[2]);
         return 0;
     } else if (args[1] == "version") {
         rehash_version(args[2]);
@@ -77,6 +77,19 @@ void rehash_single_gem(string name) {
     string file = SHIMS_DIR ~ "\\" ~ name ~ ".ps1";
     // std.file : write NOT std.stdio : write
     write(file, REHASH_TEMPLATE);
+}
+
+
+/*
+Generate shims for specific name across all versions
+
+Note that $name shouldn't have suffix
+
+This is called after you install a gem
+*/
+void rehash_single_gem_echo(string name) {
+    rehash_single_gem(name);
+    success("rbenv: Rehash gem " ~ "'" ~ name ~ "'");
 }
 
 
