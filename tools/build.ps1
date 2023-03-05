@@ -30,3 +30,10 @@ Write-Host "rbenv: Build fake ruby.exe to $dir\bin\"
 build_fake_ruby
 Write-Host "rbenv: Build rbenv-exec.exe to $dir\libexec\"
 build_rbenv_exec
+
+$dest = "$HOME\Desktop\rbenv-for-Windows-export"
+mkdir $dest | Out-Null
+
+cp $dir\bin\ruby.exe $dest
+cp $dir\libexec\rbenv-exec.exe $dest
+Write-Host "rbenv: Copy built files to $dest"
