@@ -64,7 +64,10 @@ int main(string[] args) {
     auto arg_len = args.length;
     enforce(arg_len == 3);
 
-    SHIMS_DIR = environment["RBENV_ROOT"] ~ "\\shims";
+    // We must define all three, to make rbenv\common.d work
+    RBENV_ROOT = environment["RBENV_ROOT"];
+    SHIMS_DIR  = RBENV_ROOT ~ "\\shims";
+    GLOBAL_VERSION_FILE = RBENV_ROOT ~ "\\global.txt";
 
     if(args[1] == "gem") {
         rehash_single_gem_echo(args[2]);

@@ -198,7 +198,9 @@ unittest {
 #     'correct_ver_dir\gem_name.bat' arguments
 */
 string shim_get_gem_executable_location (string cmd_path) {
+
     string cmd;
+
     if (cmd_path.indexOf(':')) {
         // E.g. C:Ruby-on-Windows\shims\cr.bat
         cmd = baseName(cmd_path, ".bat"); // Now 'cr'

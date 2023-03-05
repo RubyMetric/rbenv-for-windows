@@ -39,7 +39,9 @@ import rbenv.common;
 int main(string[] args) {
     auto arg_len = args.length;
 
+    // We must define all three, to make rbenv\common.d work
     RBENV_ROOT = environment["RBENV_ROOT"];
+    SHIMS_DIR  = RBENV_ROOT ~ "\\shims";
     GLOBAL_VERSION_FILE = RBENV_ROOT ~ "\\global.txt";
 
     VersionSetInfo vsi;
