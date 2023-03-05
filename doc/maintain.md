@@ -20,27 +20,6 @@ In `bin\rbenv.ps1`, update `$RBENV_OWN_VERSION`
 
 5. Change `tools\*.ps1` versions and tags
 
-In `tools\install.ps1` and `tools\install-cn.ps1`, change `$tag` and `$binary_version`
+In `tools\install.ps1` and `tools\install-cn.ps1`, change `$tag`
 
 <br>
-
-## Binary versions
-
-### = v0.3.0
-**Release time:** `<2023-03-05>`
-
-**Release tag:**  `v1.4.2`
-
-<br>
-
-### = v0.2.0
-**Release time:** `<2023-03-04>`
-
-**Release tag:**  `v1.4.1`
-
-<br>
-
-### = v0.1.0
-**Release time:** `<2023-02-11>`
-
-**Release tag:**  `v1.3.0`

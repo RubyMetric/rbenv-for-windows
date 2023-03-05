@@ -10,23 +10,27 @@
 #   It installs rbenv for Windows for common users
 #
 # ----------
+param($cmd)
 $repo = "https://github.com/ccmywish/rbenv-for-windows"
-$tag  = "v1.4.2"
-$binary_version = "v0.3.0"
+$tag  = "v1.4.3"
 # ---------------------------------------------------------------
 
-if($env:RBENV_ROOT)  {
+function download_binaries() {
+    Write-Host -f blue "rbenv: Downloading pre-compiled binaries..."
 
-mkdir $env:RBENV_ROOT
+    curl -sSL "$repo/releases/download/$tag/ruby.exe" -o "$env:RBENV_ROOT\rbenv\bin\ruby.exe"
 
-git -C $env:RBENV_ROOT clone $repo rbenv
+    curl -sSL "$repo/releases/download/$tag/rbenv-exec.exe" -o "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe"
 
-curl -sSL "$repo/releases/download/$tag/fake-ruby-$binary_version.exe" -o "$env:RBENV_ROOT\rbenv\bin\ruby.exe"
-
-curl -sSL "$repo/releases/download/$tag/rbenv-exec-$binary_version.exe" -o "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe"
-
+    Write-Host -f green "rbenv: Install finish!"
 }
 
-else {
+if ($cmd -eq "update") {
+    # noop
+} elseif($env:RBENV_ROOT) {
+    mkdir $env:RBENV_ROOT
+    git -C $env:RBENV_ROOT clone $repo rbenv
+    download_binaries
+} else {
     Write-Error 'rbenv installer: You must define $env:RBENV_ROOT first'
 }
