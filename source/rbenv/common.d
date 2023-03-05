@@ -7,13 +7,7 @@
 * common:
 *
 *   Common functions for 'fake ruby.exe' and
-*                        'libexec\rbenv-rehash.exe'
-*                        'libexec\rbenv-shim.exe'
-*
-* ----------
-* Changelog:
-*
-* <2023-03-03> Create file
+*                        'libexec\rbenv-exec.exe'
 * -------------------------------------------------------------*/
 
 module rbenv.common;
@@ -192,19 +186,26 @@ unittest {
 
 
 /*
-#  Used for shim script to find the correct version of gem executable
-#
-#     'correct_ver_dir\gem_name.cmd' arguments or
-#     'correct_ver_dir\gem_name.bat' arguments
+Function:
+
+    Used for shim script to find the correct version of gem executable
+
+Directly called by:
+
+    rbenv-exec.exe shim-get-gem <arg>
+
+Return:
+
+    'correct_ver_dir\gem_name.cmd' arguments or
+    'correct_ver_dir\gem_name.bat' arguments
 */
-string shim_get_gem_executable_location (string cmd_path) {
+string shim_get_gem(string cmd_path) {
 
     string cmd;
 
-    if (cmd_path.indexOf(':')) {
-        // E.g. C:Ruby-on-Windows\shims\cr.bat
-        cmd = baseName(cmd_path, ".bat"); // Now 'cr'
-    }
+    // E.g. C:Ruby-on-Windows\shims\cr.bat
+    // if (cmd_path.indexOf(':'))
+    cmd = baseName(cmd_path, ".bat"); // Now 'cr'
 
     VersionSetInfo vsi = get_current_version_with_setmsg();
     auto ver = vsi.ver;
@@ -216,17 +217,13 @@ string shim_get_gem_executable_location (string cmd_path) {
     }
 
     // Still need to call this function to do some work (e.g. find available bins)
-    auto gem = get_gem_bin_location_by_version(cmd, ver);
+    auto gem = get_gem_executable_by_version(cmd, ver);
     return gem;
 }
 
 
-/*
-For
-    1. 'rbenv whence' directly use
-    2. get_gem_bin_location_by_version()
-*/
-string[] list_who_has (string name) {
+// The argument 'name' is with no file type suffix!
+string[] who_has_gem(string name) {
 
     string[] versions = get_all_installed_versions();
     string[] whos;
@@ -253,14 +250,23 @@ string[] list_who_has (string name) {
 }
 
 
-// This is called by
-//   1. 'get_gem_bin_location_by_version'
-//   2. 'shim_get_gem_name'
-//
-void gem_not_found(string gem) {
-    writeln("rbenv: command '" ~ gem ~ "' not found");
+// Called by 'get_gem_executable_by_version()'
+void gem_not_found(string name) {
+    writeln("rbenv: command '" ~ name ~ "' not found");
 
-    auto whos = list_who_has(gem);
+    // TODO: Fix it using template to match with list_who_has_gem()
+    auto whos = who_has_gem(name);
+    if (whos) {
+        stderr.writeln("\nBut it exists in these Ruby versions:\n");
+        auto whos_rows = whos.join("\n");
+        stderr.writeln(whos_rows);
+    }
+}
+
+
+// For 'rbenv whence' directly use
+void list_who_has_gem(string name) {
+    auto whos = who_has_gem(name);
 
     if (whos) {
         writeln("\nBut it exists in these Ruby versions:\n");
@@ -271,7 +277,7 @@ void gem_not_found(string gem) {
 
 
 // Here, cmd is a Gem's executable name
-string get_gem_bin_location_by_version (string cmd, string ver) {
+string get_gem_executable_by_version (string cmd, string ver) {
 
     auto where = get_bin_path_for_version(ver);
 
