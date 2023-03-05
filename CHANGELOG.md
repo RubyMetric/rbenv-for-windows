@@ -1,6 +1,21 @@
 # Changelog
 
-## [Unreleased](#) (2023-03-04)
+## [Unreleased](#) (2023-03-05)
+
+<br>
+
+## [v1.4.2](#) (2023-03-05)
+
+### New features:
+
+- Change shim from `PowerShell` script to `batch` file, this is to support `bundle exec`
+
+### Enhancements:
+
+- Add more precise documents
+- Organize D files
+- Enhance `rbenv update`
+- Use versatile `rbenv-exec.exe`
 
 <br>
 
