@@ -32,13 +32,11 @@ import rbenv.common;
 // Written in the D programming language.
 // --------------------------------------------------------------
 
-// Auto import these global variables
-//import rbenv.common : RBENV_ROOT, SHIMS_DIR, GLOBAL_VERSION_FILE;
-
 
 int main(string[] args) {
     auto arg_len = args.length;
 
+    // !!!
     // We must define all three, to make rbenv\common.d work
     RBENV_ROOT = environment["RBENV_ROOT"];
     SHIMS_DIR  = RBENV_ROOT ~ "\\shims";
