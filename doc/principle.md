@@ -1,20 +1,70 @@
 # Principle
 
-<a id="RelationWithOtherProjects"> </a>
-## Relation with `rbenv` and `RubyInstaller2`
+## Relation with `rbenv` and with `RubyInstaller2`
 
-[rbenv](https://github.com/rbenv/rbenv) works on Unix-like systems in a native way (using Bash), it uses the plugin [ruby-build](https://github.com/rbenv/ruby-build) to download CRuby source code and compile, then install. `rbenv` does a great job! I really want it to run on my Windows.
+[rbenv](https://github.com/rbenv/rbenv) works on Unix-like systems in a native way (using Bash), it uses the plugin [ruby-build](https://github.com/rbenv/ruby-build) to download CRuby source code and compile, then install. `rbenv` does a great job, I want it to run on Windows.
 
-Our `rbenv-for-windows` works on Windows, also in a native way (using PowerShell), we use the great and battle-tested [RubyInstaller2](https://github.com/oneclick/rubyinstaller2) directly to install the binary, it hence saves your time.
+`rbenv for Windows` works on Windows, also in a native way (using PowerShell and D pre-compiled binaries), we use the battle-tested [RubyInstaller2](https://github.com/oneclick/rubyinstaller2) directly to install CRuby, no need to compile as in `rbenv`, hence saves time.
 
-`rbenv-for-windows` is trying to make commands compatible with `rbenv`, which can make you feel consistent in different systems.
+`rbenv for Windows` is trying to make commands compatible with `rbenv`, which can make you feel consistent in different systems.
 
 <br>
 
-<a id="HowDoesItWork"> </a>
-## How does it work?
+## Ways to solve Windows-specific issues
 
-We are only a little different with how `rbenv` works.
+The working principle of `rbenv for Windows` is very similar to `rbenv`. However, on Windows, we are quite in trouble with `exeutables`. For example, files without an extension will not be executed in a proper way.
+
+<br>
+
+### fake ruby.exe
+
+Shell prompt tools like `starship` always look for `ruby.exe` in `PATH`, however, this can't respect versions set by `rbenv for Windows`. Hence, I propose the idea of `fake ruby.exe`.
+
+There's a `ruby.exe` residing in `rbenv\bin`, `starship` will be fooled by this `fake ruby.exe` to display correct version set by users.
+
+Try use `ruby.exe` in your terminal, you will find that, all it will do is to handle `ruby.exe -v`. All other commands will be rejected to nitice that you shouldn't directly invoke it.
+
+```PowerShell
+❯ ruby.exe -v
+ruby 3.2.0-1 (set by C:\Ruby-on-Windows\global.txt)
+
+❯ ruby.exe --version
+rbenv: This is fake ruby.exe in $env:RBENV_ROOT\rbenv\bin
+rbenv: You shouldn't invoke 'ruby.exe', instead you should invoke 'ruby'
+```
+
+<br>
+
+### ruby/rubyw imitator
+
+Whenever you call `ruby`(`rubybw`) (without suffix), what you invoke in fact is `ruby.ps1`(`rubyw.ps1`).
+
+The two imitators are to help run `ruby` and `rubyw` with correct versions. Note that, it internally invoke `fake ruby.exe` to get current version info.
+
+<br>
+
+### rbenv-exec.exe
+
+This native executable is called by
+1. `rbenv rehash`,
+2. `rbenv whence`
+3. `batch` shim to find the correct version of gem exeutables.
+
+When you type a gem command in your terminal, it runs the corresponding shim in shims dir. The shim invokes the `rbenv-exec.exe`, so we can get correct version.
+
+```PowerShell
+# call chain
+1. shim xxx.bat
+    2. rbenv-exec.exe
+        3. find the correct version of the gem, e.g. C:\Ruby-on-Windows\3.2.0-1\bin\cr.bat
+            4. C:\Ruby-on-Windows\3.2.0-1\bin\ruby.exe C:\Ruby-on-Windows\3.2.0-1\bin\cr
+```
+
+In the last step of the chain, the argument of ruby interpreter is the so-called `bin stub file` (glossary from `RubyGems`).
+
+<br>
+
+## How do three versions work?
 
 There are three kind of 'versions'
 1. global version (set by `$env:RBENV_ROOT\global.txt`)
@@ -27,20 +77,20 @@ There are three kind of 'versions'
 
 After you setup `rbenv` your `path` will be:
 ```PowerShell
-# for 'rbenv' command itself
+# For
+#   1. 'rbenv' command itself
+#   2. fake ruby.exe
+#   3. ruby/rubyw imitator
 $env:RBENV_ROOT\rbenv\bin
 
-# for
-# 1. gem.cmd, ...
-# 2. bundler.bat irb.bat rdoc.bat rake.bat
-#    and other gems bat
+# For
+#   1. gem.cmd, ...
+#   2. bundler.bat irb.bat rdoc.bat rake.bat and other gems bat
 $env:RBENV_ROOT\shims
 
 # The default path of yours
 $env:PATH
 ```
-
-So every time you change global version, you will directly get what `$env:RBENV_ROOT\shims` offers you!
 
 <br>
 
@@ -57,30 +107,21 @@ $env:RBENV_ROOT\shims
 
 $env:PATH
 ```
-So in this shell, your env will not be affected with `global version` or `local version`. **A very simple hack in path!**
+
+So in this shell, your env will not be affected with `global version` or `local version`. It's a very simple hack in path.
 
 <br>
 
 ### local version
 
-Like `rbenv` we also don't hook on changing location. We use shims too. Our shims are in the shims dir `$env:RBENV_ROOT\shims` directory. Every Gem executable command has a `PowerShell` script individually, this script is called `shim`. The script will delegate to the correct version's `bin` directory.
+Like `rbenv` we also don't hook on changing location. We use shims too. Our shims are in the shims dir `$env:RBENV_ROOT\shims` directory. Every Gem executable has a `batch` script (`.bat`) individually, this script is called `shim`. The script will delegate to the correct version's `bin` directory.
 
-<br>
-
-### Fake ruby.exe
-
-There's a `ruby.exe` residing in `rbenv\bin`, whenever you call `ruby` or any `gem` commands, what you invoke in fact is always this `fake ruby.exe`.
-
-This is the most difficult part when implementing `rbenv`. Because of the existence of `rbenv local`, I finally introduce the concept of `shim`, but very different with the original `rbenv`. Shell prompt like `starship` can't get the correct version, as it only invokes the `ruby.exe` to get version not through our shim file. There's no way to make `starship` get correct and without huge delay.
-
-So the only method is to pretend to be the real `ruby.exe`. `starship` checks our `fake ruby.exe`'s version, hence get it correct. The fake one will check `shell version`, then `local version`, then `global version`. Otherwise, it will invoke `ruby.exe` in no consideration of this PowerShell's environment variables.
-
-How does `gem` command get correct version? Every `gem` command through shim invokes the `fake ruby.exe` too, so we also get correct version. Then we make the first argument of ruby interpreter the so-called `bin stub file`(glossary from `RubyGems`).
+Note that, previous `v1.4.2`, we use `PowerShell` as shim script. However, it makes `bundle exec` can't find the gem executables. So, we change to use `batch` file.
 
 <br>
 
 <a id="FAQforDevs"> </a>
-## FAQ for maintainers
+## FAQ for developers
 
 > Q: Why multiple Rubies can share one MSYS2?
 

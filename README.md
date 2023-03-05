@@ -24,12 +24,15 @@ Manage multiple Rubies on Windows.
 
 Hi, hello
 
-`rbenv for Windows` is a `rbenv` clone for Ruby users on Windows. **If you're interested in how it works, read these sections for quick and enough information:**
+`rbenv for Windows` is a `rbenv` clone for Ruby users on Windows. After continuous improvements, It now can handle `rbenv local` and other Windows-specific issues properly.
 
-1. [Relation with rbenv and RubyInstaller2](./doc/principle.md#RelationWithOtherProjects)
-2. [How does it work?](./doc/principle.md#HowDoesItWork)
-3. [FAQ for maintainers](./doc/principle.md#FAQforDevs)
-4. [Environment Variables](#EnvVar)
+**If you're interested in how it works, read these sections for quick and enough information:**
+
+1. [Relation with `rbenv` and with `RubyInstaller2`](./doc/principle.md#relation-with-rbenv-and-with-rubyinstaller2)
+2. [Ways to solve Windows-specific issues](./doc/principle.md#ways-to-solve-windows-specific-issues)
+3. [How do three versions work?](./doc/principle.md#how-do-three-versions-work)
+4. [FAQ for developers](./doc/principle.md#FAQforDevs)
+5. [Environment Variables](#EnvVar)
 
 There's a [benchmark](./doc/benchmark.md) to show if `rbenv` will influence Ruby/Gem commands startup time significantly.
 
@@ -193,15 +196,9 @@ However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7
 
 **The current implementation has these drawbacks and issues:**
 
-1. Bad integration with `Bundler`:
-
-1.1 [Bundle install will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5).
+1. Bad integration with `Bundler`: [`bundle install` will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5).
 
     I don't know if these are bugs of Bundler on Windows, please help this project if you can. As a compromise, I only have to `rbenv rehash version xxx` after you `rbenv global xxx`. This is a simple method to make shims dir always full with kinds of shims.
-
-1.2 `Bundle exec` will fail.
-
-    This is because `bundler` will search gem executable in `PATH`. However, all `.bat`/`.cmd` files are not exposed to `PATH`. This is difficult and there's no way to handle temporarily. Just use an gem executable with version specified yourself!
 
 2. We only support CRuby, x64 versions, provided by RubyInstaller2
 
@@ -229,7 +226,7 @@ name | init value | description
 -----|---------|------------
 `$env:RBENV_INIT` | 1 | To avoid double init. **This variable is set automatically when your terminal start, not set yourself!**
 `$env:RUBYLIB` | `$env:RBENV_ROOT\rbenv\share` | For RubyGems plugin to work. **This variable is set automatically when your terminal start, not set yourself!**
-`$env:RBENV_SYSTEM_RUBY` | No this if you don't have a Ruby installed by RubyInstaller GUI | **This variable is set automatically when your terminal start, not set yourself!**
+`$env:RBENV_SYSTEM_RUBY` | `3.1.2-1<=>C:\Ruby31-x64\` | **This variable is set automatically when your terminal start, not set yourself!** No this if you don't have a Ruby installed by RubyInstaller GUI
 
 ### rbenv commands defined
 
