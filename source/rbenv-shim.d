@@ -26,16 +26,19 @@ import rbenv.common;
 // Written in the D programming language.
 // --------------------------------------------------------------
 
+// Auto import these global variables
+//import rbenv.common : RBENV_ROOT, SHIMS_DIR, GLOBAL_VERSION_FILE;
 
 int main(string[] args) {
 
     auto arg_len = args.length;
-    enforce(arg_len == 3);
+    // enforce(arg_len == 3);
 
-    SHIMS_DIR = environment["RBENV_ROOT"] ~ "\\shims";
+    RBENV_ROOT = environment["RBENV_ROOT"];
+    SHIMS_DIR  = RBENV_ROOT ~ "\\shims";
 
     if(args[1] == "get_gem_executable") {
-        rehash_single_gem_echo(args[2]);
+        shim_get_gem_executable_location(args[2]).writeln;
         return 0;
     } else {
         stderr.writeln("Internal error");

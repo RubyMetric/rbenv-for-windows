@@ -2,7 +2,7 @@
 # File          : build.ps1
 # Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2023-03-04>
-# Last modified : <2023-03-04>
+# Last modified : <2023-03-05>
 # Contributors  :
 #
 # build:
@@ -25,11 +25,11 @@
 $dir = "$env:RBENV_ROOT\rbenv"
 
 function build_fake_ruby() {
-    dmd -O -release -inline -of="$dir\bin\ruby.exe" "$dir\bin\source\ruby.d" "$dir\bin\source\rbenv.d"
+    dmd -O -release -inline -of="$dir\bin\ruby.exe" "$dir\source\ruby.d" "$dir\bin\source\rbenv.d"
 }
 
 function build_rbenv_rehash() {
-    dmd -O -release -inline -of="$dir\libexec\rbenv-rehash.exe" "$dir\bin\source\rbenv-rehash.d" "$dir\bin\source\rbenv.d"
+    dmd -O -release -inline -of="$dir\libexec\rbenv-rehash.exe" "$dir\source\rbenv-rehash.d" "$dir\bin\source\rbenv.d"
 }
 
 

@@ -2,12 +2,13 @@
 * File          : rbenv.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-03>
-* Last modified : <2023-03-04>
+* Last modified : <2023-03-05>
 *
 * rbenv:
 *
 *   Common functions for 'fake ruby.exe' and
 *                        'libexec\rbenv-rehash.exe'
+*                        'libexec\rbenv-shim.exe'
 *
 * ----------
 * Changelog:
@@ -18,13 +19,16 @@
 module rbenv.common;
 
 import std.stdio;
-import std.process      : environment;
+import std.process      : environment, executeShell;
 import std.array        : split, array;
 import std.algorithm    : canFind, startsWith;
 import std.algorithm    : filter, sort, map, cmp;
-import std.file         : dirEntries, SpanMode;
+import std.file         : dirEntries, SpanMode, exists, readText, read;
 import std.path         : baseName;
 import std.regex        : matchAll;
+import std.string       : indexOf;
+import std.array        : join;
+
 import core.stdc.stdlib : exit;
 
 // Written in the D programming language.
@@ -44,12 +48,32 @@ void success(string str) {
 }
 
 
+// --------------------------------------------------------------
+//                  Global variable and constant
+// --------------------------------------------------------------
+
 enum version_match_regexp = r"\d{1,}\.\d{1,}\.\d{1,}-\d{1,}";
+
+string RBENV_ROOT;
+string SHIMS_DIR;
+string GLOBAL_VERSION_FILE;
+
+// --------------------------------------------------------------
+//                              Struct
+// --------------------------------------------------------------
+struct VersionSetInfo {
+    string ver;
+    string setmsg;
+}
+
+struct LocalVersionInfo{
+    string ver;
+    string where;
+}
+
 
 // Read versions list
 string[] get_all_remote_versions() {
-
-    import std.file : readText;
 
     auto vers_file = environment["RBENV_ROOT"] ~ "\\rbenv\\share\\versions.txt";
 
@@ -162,4 +186,218 @@ unittest {
     // no auto fix version
     auto path = get_ruby_bin_path_for_version("3.1.3-1");
     assert(path == "C:\\Ruby-on-Windows\\3.1.3-1\\bin" );
+}
+
+
+
+/*
+# Function:
+#   used for shim script to find the correct version of gem executable
+#
+#     'correct_ver_dir\gem_name.cmd' arguments or
+#     'correct_ver_dir\gem_name.bat' arguments
+*/
+string shim_get_gem_executable_location (string cmd_path) {
+    string cmd;
+    if (cmd_path.indexOf(':')) {
+        // E.g. C:Ruby-on-Windows\shims\cr.bat
+        cmd = baseName(cmd_path, ".bat"); // Now 'cr'
+    }
+
+    VersionSetInfo vsi = get_current_version_with_setmsg();
+    auto ver = vsi.ver;
+
+    // This condition is only met when global version is not set
+    // Enforce users to set global version
+    if (ver == "") {
+        return "";
+    }
+
+    // Still need to call this function to do some work (e.g. find available bins)
+    auto gem = get_gem_bin_location_by_version(cmd, ver);
+    return gem;
+}
+
+
+// For:
+//   1. 'rbenv whence' directly use
+//   2. get_gem_bin_location_by_version()
+string[] list_who_has (string name) {
+
+    string[] versions = get_all_installed_versions();
+    string[] whos;
+    string   where;
+
+    foreach (ver ; versions) {
+        if (ver == "system") {
+            where = get_system_ruby_version_and_path()[1];
+            where = where ~ "\\bin";
+        } else {
+            where = RBENV_ROOT ~ "\\" ~ ver ~ "\\bin";
+        }
+
+        auto bat_file = where ~ "\\" ~ name ~ ".bat";
+        auto cmd_file = where ~ "\\" ~ name ~ ".cmd";
+
+        // '.bat' first, because from 2023, basically all gems are in '.bat'
+        if      (bat_file.exists) { whos ~= bat_file; }
+        else if (cmd_file.exists) { whos ~= cmd_file; }
+        else    { continue; }
+    }
+
+    return whos;
+}
+
+
+
+// This is called by
+//   1. 'get_gem_bin_location_by_version'
+//   2. 'shim_get_gem_name'
+//
+void gem_not_found(string gem) {
+    writeln("rbenv: command '" ~ gem ~ "' not found");
+
+    auto whos = list_who_has(gem);
+
+    if (whos) {
+        writeln("\nBut it exists in these Ruby versions:\n");
+        auto whos_rows = whos.join("\n");
+        writeln(whos_rows);
+    }
+}
+
+
+
+// Here, cmd is a Gem's executable name
+string get_gem_bin_location_by_version (string cmd, string ver) {
+
+    auto where = get_bin_path_for_version(ver);
+
+    cmd = baseName(cmd, ".bat");
+    cmd = baseName(cmd, ".cmd");
+
+    auto bat_file = where ~ "\\" ~ cmd ~ ".bat";
+    auto cmd_file = where ~ "\\" ~ cmd ~ ".cmd";
+
+    // '.bat' first, because from 2023, basically all gems are in '.bat'
+    if      (bat_file.exists) { return bat_file; }
+    else if (cmd_file.exists) { return cmd_file; }
+    else {
+        gem_not_found(cmd);
+        exit(-1);
+    }
+}
+
+
+
+// return the bin path for specific version
+string get_bin_path_for_version(string ver) {
+    string where;
+
+    if (ver == "system") {
+        where = get_system_ruby_version_and_path()[1];
+    } else {
+        where = "$env:RBENV_ROOT\\" ~ ver;
+    }
+    where ~= "\\bin";
+    return where;
+}
+
+
+
+
+
+
+// Read the global.txt file
+string get_global_version() {
+
+	if (! exists(GLOBAL_VERSION_FILE)) {
+        // warn("rbenv: Global version file doesn't exist!");
+        // return "";
+        write(GLOBAL_VERSION_FILE, []);
+    }
+
+    // read return 'void[]'' type
+    string ver = cast(string)read(GLOBAL_VERSION_FILE);
+
+    if ("" == ver) {
+        warn("rbenv: No global version has been set, use rbenv global <version>");
+        return "";
+    } else {
+        return ver;
+    }
+}
+
+
+// Read the .ruby-version file
+LocalVersionInfo get_local_version() {
+
+    LocalVersionInfo lvi;
+    lvi.where = "";
+    lvi.ver = "";
+
+    // pwd = std.path.absolute();
+    auto ret = executeShell("git rev-parse --show-toplevel");
+    if (ret.status != 0) return lvi;
+
+    auto git_root = ret.output;
+
+    import std.string : strip;
+    // Because git return '/' separated path, we also add "/.ruby-version"
+    string local_version_file =  strip(git_root) ~ "/.ruby-version";
+
+    import std.file;
+    if (exists(local_version_file)) {
+        string ver = cast(string)read(local_version_file);
+        // Complete '3.1.3' with the suffix '-1'
+        ver = auto_fix_version_for_installed(ver);
+        lvi.where = local_version_file;
+        lvi.ver = ver;
+        return lvi;
+    } else {
+        return lvi;
+    }
+}
+
+
+// Read the global shell variable
+string get_this_shell_version() {
+    // https://dlang.org/phobos/std_process.html#environment.get
+    // get won't throw
+    auto ver = environment.get("RBENV_VERSION");
+    if (ver is null) return "";
+    else return ver;
+}
+
+
+VersionSetInfo get_current_version_with_setmsg() {
+
+    VersionSetInfo vsi;
+
+    string ver = get_this_shell_version();
+    if("" != ver) {
+        vsi.ver = ver;
+        vsi.setmsg = "(set by $env:RBENV_VERSION environment variable)";
+        return vsi;
+    }
+
+
+    LocalVersionInfo lvi;
+    lvi = get_local_version();
+
+    if("" != lvi.ver) {
+        vsi.ver = lvi.ver;
+        vsi.setmsg = "(set by " ~ lvi.where ~ ")";
+        return vsi;
+    }
+
+    ver = get_global_version();
+    if("" != ver) {
+        vsi.ver = ver;
+        vsi.setmsg = "(set by " ~ GLOBAL_VERSION_FILE ~ ")";
+        return vsi;
+    }
+
+    // return empty string, this will cause program to exit -1
+    return vsi;
 }
