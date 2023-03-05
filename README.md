@@ -77,6 +77,12 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 & "$env:RBENV_ROOT\rbenv\bin\rbenv.ps1" init
 ```
 
+To update, use the following command:
+
+```PowerShell
+rbenv update
+```
+
 <br>
 
 ### For Chinese users
@@ -102,6 +108,12 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 $env:RBENV_USE_MIRROR = "CN"
 
 & "$env:RBENV_ROOT\rbenv\bin\rbenv.ps1" init
+```
+
+更新请使用以下命令
+
+```PowerShell
+rbenv update cn
 ```
 
 <br>
