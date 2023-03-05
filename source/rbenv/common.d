@@ -34,6 +34,7 @@ import core.stdc.stdlib : exit;
 // Written in the D programming language.
 // --------------------------------------------------------------
 
+
 void warn(string str) {
     import std.format : format;
     auto colorized =  "\033[33m%s\033[0m".format(str); // UFCS yellow
@@ -58,6 +59,7 @@ string RBENV_ROOT;
 string SHIMS_DIR;
 string GLOBAL_VERSION_FILE;
 
+
 // --------------------------------------------------------------
 //                              Struct
 // --------------------------------------------------------------
@@ -75,7 +77,7 @@ struct LocalVersionInfo{
 // Read versions list
 string[] get_all_remote_versions() {
 
-    auto vers_file = environment["RBENV_ROOT"] ~ "\\rbenv\\share\\versions.txt";
+    auto vers_file = RBENV_ROOT ~ "\\rbenv\\share\\versions.txt";
 
     auto vers_str = readText(vers_file);
 
@@ -90,7 +92,7 @@ string[] get_all_remote_versions() {
 string[] get_all_installed_versions() {
 
     // FilterResult!(__lambda1, _DirIterator!false)
-    auto vers = dirEntries(environment["RBENV_ROOT"], SpanMode.shallow).filter!(
+    auto vers = dirEntries(RBENV_ROOT, SpanMode.shallow).filter!(
         (dir) {
             auto name = dir.name;
             return name.matchAll(version_match_regexp) || name == "head" ;
@@ -175,7 +177,7 @@ string get_ruby_bin_path_for_version(string ver) {
         auto ver_and_path = get_system_ruby_version_and_path();
         where = ver_and_path[1];
     } else {
-        where = environment.get("RBENV_ROOT") ~ "\\" ~ ver;
+        where = RBENV_ROOT ~ "\\" ~ ver;
     }
     where ~= "\\bin";
     return where;
@@ -189,10 +191,8 @@ unittest {
 }
 
 
-
 /*
-# Function:
-#   used for shim script to find the correct version of gem executable
+#  Used for shim script to find the correct version of gem executable
 #
 #     'correct_ver_dir\gem_name.cmd' arguments or
 #     'correct_ver_dir\gem_name.bat' arguments
@@ -221,9 +221,11 @@ string shim_get_gem_executable_location (string cmd_path) {
 }
 
 
-// For:
-//   1. 'rbenv whence' directly use
-//   2. get_gem_bin_location_by_version()
+/*
+For
+    1. 'rbenv whence' directly use
+    2. get_gem_bin_location_by_version()
+*/
 string[] list_who_has (string name) {
 
     string[] versions = get_all_installed_versions();
@@ -251,7 +253,6 @@ string[] list_who_has (string name) {
 }
 
 
-
 // This is called by
 //   1. 'get_gem_bin_location_by_version'
 //   2. 'shim_get_gem_name'
@@ -269,7 +270,6 @@ void gem_not_found(string gem) {
 }
 
 
-
 // Here, cmd is a Gem's executable name
 string get_gem_bin_location_by_version (string cmd, string ver) {
 
@@ -277,6 +277,8 @@ string get_gem_bin_location_by_version (string cmd, string ver) {
 
     cmd = baseName(cmd, ".bat");
     cmd = baseName(cmd, ".cmd");
+
+    // stderr.writeln("DEBUG: "~ cmd);
 
     auto bat_file = where ~ "\\" ~ cmd ~ ".bat";
     auto cmd_file = where ~ "\\" ~ cmd ~ ".cmd";
@@ -291,7 +293,6 @@ string get_gem_bin_location_by_version (string cmd, string ver) {
 }
 
 
-
 // return the bin path for specific version
 string get_bin_path_for_version(string ver) {
     string where;
@@ -299,15 +300,16 @@ string get_bin_path_for_version(string ver) {
     if (ver == "system") {
         where = get_system_ruby_version_and_path()[1];
     } else {
-        where = "$env:RBENV_ROOT\\" ~ ver;
+        where = RBENV_ROOT ~ "\\" ~ ver;
     }
     where ~= "\\bin";
     return where;
 }
 
 
-
-
+// --------------------------------------------------------------
+//                          Version Get
+// --------------------------------------------------------------
 
 
 // Read the global.txt file
