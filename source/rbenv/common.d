@@ -1,10 +1,10 @@
 /* --------------------------------------------------------------
-* File          : rbenv.d
+* File          : common.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-03>
 * Last modified : <2023-03-05>
 *
-* rbenv:
+* common:
 *
 *   Common functions for 'fake ruby.exe' and
 *                        'libexec\rbenv-rehash.exe'
