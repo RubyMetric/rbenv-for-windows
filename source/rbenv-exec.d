@@ -9,6 +9,7 @@
 *   rbenv-exec.exe rehash-gem     <gem_name>
 *   rbenv-exec.exe rehash-version <version>
 *   rbenv-exec.exe shim-get-gem   <gem_shim.bat>
+*   rbenv-exec.exe list-who-has   <gem_name>
 *
 * -------------------------------------------------------------*/
 
@@ -69,8 +70,12 @@ int main(string[] args) {
         shim_get_gem(args[2]).writeln;
         return 0;
     }
+    else if (args[1] == "list-who-has") {
+        list_who_has_gem(args[2]);
+        return 0;
+    }
     else {
-        stderr.writeln("rbenv-exec.exe: Internal error");
+        stderr.writeln("rbenv-exec.exe: Unmatched command " ~ args[2]);
         return -1;
     }
 }

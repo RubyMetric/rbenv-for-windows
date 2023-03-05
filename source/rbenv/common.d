@@ -269,7 +269,6 @@ void list_who_has_gem(string name) {
     auto whos = who_has_gem(name);
 
     if (whos) {
-        writeln("\nBut it exists in these Ruby versions:\n");
         auto whos_rows = whos.join("\n");
         writeln(whos_rows);
     }
