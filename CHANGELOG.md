@@ -4,6 +4,15 @@
 
 <br>
 
+## [v1.4.3](#) (2023-03-05)
+
+### Enhancements:
+
+- `rbenv update` reuse installer
+- Fix bug of `rbenv update cn` : no any behavior
+
+<br>
+
 ## [v1.4.2](#) (2023-03-05)
 
 ### New features:

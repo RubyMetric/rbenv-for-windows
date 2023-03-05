@@ -3,7 +3,6 @@
 # Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2023-03-04>
 # Last modified : <2023-03-05>
-# Contributors  :
 #
 # build:
 #
