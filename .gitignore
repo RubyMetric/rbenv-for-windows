@@ -3,3 +3,4 @@ star.ps1
 
 *.exe
 *.obj
+*.pdb
