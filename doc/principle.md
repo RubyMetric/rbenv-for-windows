@@ -22,7 +22,7 @@ Shell prompt tools like `starship` always look for `ruby.exe` in `PATH`, however
 
 There's a `ruby.exe` residing in `rbenv\bin`, `starship` will be fooled by this `fake ruby.exe` to display correct version set by users.
 
-Try use `ruby.exe` in your terminal, you will find that, all it will do is to handle `ruby.exe -v`. All other commands will be rejected to nitice that you shouldn't directly invoke it.
+Try use `ruby.exe` in your terminal, you will find that, all it will do is to handle `ruby.exe -v`. All other commands will be rejected to notify that you shouldn't directly invoke it.
 
 ```PowerShell
 ❯ ruby.exe -v
@@ -48,7 +48,7 @@ The two imitators are to help run `ruby` and `rubyw` with correct versions. Note
 This native executable is called by
 1. `rbenv rehash`,
 2. `rbenv whence`
-3. `batch` shim to find the correct version of gem exeutables.
+3. `batch` shim to find the correct version of gem executables.
 
 When you type a gem command in your terminal, it runs the corresponding shim in shims dir. The shim invokes the `rbenv-exec.exe`, so we can get correct version.
 

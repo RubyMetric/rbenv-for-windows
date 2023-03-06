@@ -4,10 +4,6 @@
 
 <p>
 
-<a href="https://matrix.to/#/#rbenv-for-windows_community:gitter.im">
-    <img src="https://badges.gitter.im/repo.svg" alt="Gitter Chat" />
-</a>
-
 <a href="https://github.com/ccmywish/rbenv-for-windows/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/ccmywish/rbenv-for-windows.svg" alt="License" />
 </a>
@@ -24,7 +20,7 @@ Manage multiple Rubies on Windows.
 
 Hi, hello
 
-`rbenv for Windows` is a `rbenv` clone for Ruby users on Windows. After continuous improvements, It now can handle `rbenv local` and other Windows-specific issues properly.
+`rbenv for Windows` is a `rbenv` clone for Ruby users on Windows. After continuous improvements, It now can handle `rbenv local` well and interact with shell prompt tools like `starship` properly.
 
 **If you're interested in how it works, read these sections for quick and enough information:**
 
