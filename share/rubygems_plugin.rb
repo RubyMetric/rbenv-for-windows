@@ -2,8 +2,8 @@
 #   https://github.com/rbenv/rbenv/blob/master/rbenv.d/exec/gem-rehash/rubygems_plugin.rb
 #
 
-RBENV_REHASH_EXE = ENV['RBENV_ROOT'] + '\rbenv\libexec\rbenv-rehash.exe'
-FAKE_RUBY_EXE    = ENV['RBENV_ROOT'] + '\rbenv\bin\ruby.exe'
+RBENV_EXEC    = ENV['RBENV_ROOT'] + '\rbenv\libexec\rbenv-exec.exe'
+FAKE_RUBY_EXE = ENV['RBENV_ROOT'] + '\rbenv\bin\ruby.exe'
 
 def success(msg, use_print: false)
   str = "\e[32m" + msg + "\e[0m"
@@ -19,12 +19,12 @@ hook = lambda do |installer|
       [Gem.default_bindir, Gem.bindir(Gem.user_dir)].include?(installer.bin_dir)
 
       installer.spec.executables.each do |e|
-        success `#{RBENV_REHASH_EXE} gem #{e}`, use_print: true
+        success `#{RBENV_EXEC} rehash-gem #{e}`, use_print: true
       end
 
     end
   rescue
-    warn "rbenv: error in rbenv-rehash.exe (#{$!.class.name}: #{$!.message})"
+    warn "rbenv: error in Gem post-install hook (#{$!.class.name}: #{$!.message})"
   end
 end
 
@@ -66,7 +66,7 @@ if defined?(Bundler::Installer) && Bundler::Installer.respond_to?(:install) && !
           # Our code is correct, because our `rbenv rehash` will rehash the current version
           # So next time, you change global to this version, you really already get what you want in a Gemfile
           cur_ver = `#{FAKE_RUBY_EXE} -v`.split()[1]
-          success `#{RBENV_REHASH_EXE} version #{cur_ver}`, use_print: true
+          success `#{RBENV_EXEC} rehash-version #{cur_ver}`, use_print: true
         end
         result
       end
