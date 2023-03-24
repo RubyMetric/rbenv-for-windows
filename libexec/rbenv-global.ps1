@@ -7,7 +7,7 @@ function set_global_version($version) {
 
     $version = auto_fix_version_for_installed $version
 
-    $version | Out-File $GLOBAL_VERSION_FILE -NoNewline
+    $version | Out-File $GLOBAL_VERSION_FILE -NoNewline -Encoding ascii
 
     success "rbenv: Change to global version '$version'"
 
