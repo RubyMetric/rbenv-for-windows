@@ -2,7 +2,7 @@
 * File          : common.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-03>
-* Last modified : <2023-03-05>
+* Last modified : <2023-04-03>
 *
 * common:
 *
@@ -31,7 +31,7 @@ import core.stdc.stdlib : exit;
 
 void warn(string str) {
     import std.format : format;
-    auto colorized =  "\033[33m%s\033[0m".format(str); // UFCS yellow
+    auto colorized =  "\033[33m%s\033[0m".format(str); // yellow
     // We use stderr exlicitly, so there's no incomplete output
     stderr.writeln(colorized);
 }
@@ -47,11 +47,18 @@ void success(string str) {
 //                  Global variable and constant
 // --------------------------------------------------------------
 
-enum version_match_regexp = r"\d{1,}\.\d{1,}\.\d{1,}-\d{1,}";
+private enum version_match_regexp = r"\d{1,}\.\d{1,}\.\d{1,}-\d{1,}";
 
 string RBENV_ROOT;
 string SHIMS_DIR;
 string GLOBAL_VERSION_FILE;
+
+static this()
+{
+    RBENV_ROOT = environment["RBENV_ROOT"];
+    SHIMS_DIR  = RBENV_ROOT ~ "\\shims";
+    GLOBAL_VERSION_FILE = RBENV_ROOT ~ "\\global.txt";
+}
 
 
 // --------------------------------------------------------------
@@ -92,11 +99,7 @@ string[] get_all_installed_versions() {
             return name.matchAll(version_match_regexp) || name == "head" ;
         }
     ).map!(a => baseName(a.name)).array;
-    // https://dlang.org/phobos/std_algorithm_iteration.html#.map
 
-
-    // https://dlang.org/phobos/std_algorithm_sorting.html#.sort
-    // https://dlang.org/phobos/std_algorithm_comparison.html#.cmp
     vers = vers.sort!( (a,b) => cmp(a,b) == 1 ).array;
 
     string system_rb = environment.get("RBENV_SYSTEM_RUBY");

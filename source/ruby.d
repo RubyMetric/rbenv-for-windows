@@ -2,7 +2,7 @@
 * File          : ruby.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-02-11>
-* Last modified : <2023-03-05>
+* Last modified : <2023-04-03>
 *
 * ruby:
 *
@@ -19,15 +19,8 @@ import rbenv.common;
 // Written in the D programming language.
 // --------------------------------------------------------------
 
-
 int main(string[] args) {
     auto arg_len = args.length;
-
-    // !!!
-    // We must define all three, to make rbenv\common.d work
-    RBENV_ROOT = environment["RBENV_ROOT"];
-    SHIMS_DIR  = RBENV_ROOT ~ "\\shims";
-    GLOBAL_VERSION_FILE = RBENV_ROOT ~ "\\global.txt";
 
     VersionSetInfo vsi;
     vsi = get_current_version_with_setmsg();
