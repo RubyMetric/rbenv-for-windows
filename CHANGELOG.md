@@ -1,6 +1,19 @@
 # Changelog
 
-## [Unreleased](#) (2023-03-05)
+## [Unreleased](#) (2023-04-03)
+
+<br>
+
+## [v1.4.4](#) (2023-04-03)
+
+### Enhancements:
+
+- Always update from a specific tag
+- Share more codes
+
+### Bug fixes:
+
+- Use ascii encoding for global version file
 
 <br>
 
@@ -86,7 +99,7 @@
 
 - Use `fake ruby.exe` to support shell prompt (e.g. `starship`) for `rbenv local` version
 - ~~Bypass `.bat` or `.cmd` Windows executable delegator~~
-    - This is reverted in [v1.3.2]()
+    - This is reverted in [v1.4.0]()
 
 <br>
 
