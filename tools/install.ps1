@@ -14,15 +14,15 @@ param($cmd, $config)
 $tag = "latest-binary"
 
 if ($config -eq "cn") {
-    $repo    = "https://github.com/ccmywish/rbenv-for-windows"
-    $welcome = "rbenv: Downloading pre-compiled binaries..."
-    $goodbye = "rbenv: Install finish!"
-    $err_msg = 'rbenv installer: You must define $env:RBENV_ROOT first'
-} else {
     $repo    = "https://gitee.com/ccmywish/rbenv-for-windows"
-    $welcome = "rbenv: 下载预编译二进制文件..."
+    $welcome = "rbenv: 从Gitee下载预编译二进制文件..."
     $goodbye = "rbenv: 安装完成!"
     $err_msg = 'rbenv installer: 您必须首先定义 $env:RBENV_ROOT'
+} else {
+    $repo    = "https://github.com/ccmywish/rbenv-for-windows"
+    $welcome = "rbenv: Downloading pre-compiled binaries from GitHub..."
+    $goodbye = "rbenv: Install finish!"
+    $err_msg = 'rbenv installer: You must define $env:RBENV_ROOT first'
 }
 # ---------------------------------------------------------------
 
