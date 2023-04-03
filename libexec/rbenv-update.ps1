@@ -10,16 +10,13 @@
 param($cmd)
 
 
-function update_rbenv {
+function update_rbenv($config) {
     git -C $env:RBENV_ROOT\rbenv pull
-    . $env:RBENV_ROOT\rbenv\tools\install.ps1 update
-    download_binaries
-}
-
-
-function update_rbenv_for_cn_users {
-    git -C $env:RBENV_ROOT\rbenv pull
-    . $env:RBENV_ROOT\rbenv\tools\install-cn.ps1 update
+    if ($config -eq "cn") {
+        . $env:RBENV_ROOT\rbenv\tools\install.ps1 update cn
+    } else {
+        . $env:RBENV_ROOT\rbenv\tools\install.ps1 update
+    }
     download_binaries
 }
 
@@ -35,7 +32,7 @@ if (! $cmd) {
 } elseif ($cmd -eq 'rbenv') {
     update_rbenv
 } elseif ($cmd -eq 'cn') {
-    update_rbenv_for_cn_users
+    update_rbenv 'cn'
 } elseif ($cmd -eq 'msys' -or $cmd -eq 'msys2' -or $cmd -eq 'devkit' ) {
     update_msys2
 } else {
