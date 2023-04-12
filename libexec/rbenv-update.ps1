@@ -10,14 +10,15 @@
 param($cmd)
 
 
+# Pull repo && Download binaries
 function update_rbenv($config) {
     git -C $env:RBENV_ROOT\rbenv pull
+
     if ($config -eq "cn") {
-        . $env:RBENV_ROOT\rbenv\tools\install.ps1 update cn
+        & "$env:RBENV_ROOT\rbenv\tools\install.ps1" update cn
     } else {
-        . $env:RBENV_ROOT\rbenv\tools\install.ps1 update
+        & "$env:RBENV_ROOT\rbenv\tools\install.ps1" update
     }
-    download_binaries
 }
 
 
