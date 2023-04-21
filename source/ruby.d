@@ -2,7 +2,7 @@
 * File          : ruby.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-02-11>
-* Last modified : <2023-04-03>
+* Last modified : <2023-04-20>
 *
 * ruby:
 *
@@ -11,13 +11,16 @@
 * -------------------------------------------------------------*/
 
 import std.stdio;
-import std.process : environment;
-import std.file    : getcwd;
+import std.process   : environment;
+import std.file      : getcwd;
+import std.algorithm : canFind;
 
 import rbenv.common;
 
 // Written in the D programming language.
 // --------------------------------------------------------------
+
+string[] versionOptions = ["-v", "--version"];
 
 int main(string[] args) {
     auto arg_len = args.length;
@@ -34,7 +37,7 @@ int main(string[] args) {
     }
 
     // support starship to quickly get answer
-    if(arg_len == 2 && args[1] == "-v") {
+    if(arg_len == 2 && versionOptions.canFind(args[1])) {
         writeln("ruby ", vsi.ver, " ", vsi.setmsg);
         return 0;
     } else {
