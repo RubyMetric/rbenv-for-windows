@@ -1,6 +1,10 @@
 # Changelog
 
-## [Unreleased](#) (2023-04-03)
+## [Unreleased](#) (2023-04-21)
+
+### Enhancements:
+
+- Support `oh-my-pwsh` by adding `--version` for `fake ruby.exe`
 
 <br>
 

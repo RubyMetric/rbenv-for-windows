@@ -22,13 +22,16 @@ Shell prompt tools like `starship` always look for `ruby.exe` in `PATH`, however
 
 There's a `ruby.exe` residing in `rbenv\bin`, `starship` will be fooled by this `fake ruby.exe` to display correct version set by users.
 
-Try use `ruby.exe` in your terminal, you will find that, all it will do is to handle `ruby.exe -v`. All other commands will be rejected to notify that you shouldn't directly invoke it.
+Try use `ruby.exe` in your terminal, you will find that, all it will do is to handle `ruby.exe -v`(for `starship` to work) and `ruby.exe --version`(for `oh-my-posh` to work). All other commands will be rejected to notify that you shouldn't directly invoke it.
 
 ```PowerShell
 ❯ ruby.exe -v
 ruby 3.2.0-1 (set by C:\Ruby-on-Windows\global.txt)
 
 ❯ ruby.exe --version
+ruby 3.2.0-1 (set by C:\Ruby-on-Windows\global.txt)
+
+❯ ruby.exe -h
 rbenv: This is fake ruby.exe in $env:RBENV_ROOT\rbenv\bin
 rbenv: You shouldn't invoke 'ruby.exe', instead you should invoke 'ruby'
 ```
