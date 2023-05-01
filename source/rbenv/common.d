@@ -2,7 +2,7 @@
 * File          : common.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-03>
-* Last modified : <2023-04-03>
+* Last modified : <2023-05-02>
 *
 * common:
 *
@@ -255,7 +255,7 @@ string[] who_has_gem(string name) {
 
 // Called by 'get_gem_executable_by_version()'
 void gem_not_found(string name) {
-    writeln("rbenv: command '" ~ name ~ "' not found");
+    stderr.writeln("rbenv: command '" ~ name ~ "' not found");
 
     // TODO: Fix it using template to match with list_who_has_gem()
     auto whos = who_has_gem(name);
