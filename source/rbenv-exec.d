@@ -2,7 +2,7 @@
 * File          : rbenv-exec.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-04>
-* Last modified : <2023-04-03>
+* Last modified : <2023-05-02>
 *
 * rbenv-exec:
 *
@@ -37,13 +37,16 @@ private enum REHASH_TEMPLATE =
 @ECHO OFF
 SET find_gem="%~dp0..\rbenv\libexec\rbenv-exec.exe shim-get-gem %~0"
 FOR /F "delims=" %%i IN ('%find_gem%') DO SET gem_exe=%%i
-%gem_exe% %*
+IF NOT "%gem_exe%"=="Mr.rbenv's %~n0 batch shim, you should hide yourself" %gem_exe% %*
 `;
 /*
-if exists, %gem_exe% is
-   C:\Ruby-on-Windows\correct_version_dir\bin\'gem_name'.bat
+if exists, %gem_exe% is:
+    C:\Ruby-on-Windows\correct_version_dir\bin\'gem_name'.bat
 or
-   C:\Ruby-on-Windows\correct_version_dir\bin\'gem_name'.cmd
+    C:\Ruby-on-Windows\correct_version_dir\bin\'gem_name'.cmd
+
+if not exists, %gem_exe% is:
+    Mr.rbenv's jekyll batch shim, you should hide yourself
 */
 
 

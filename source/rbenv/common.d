@@ -255,6 +255,14 @@ string[] who_has_gem(string name) {
 
 // Called by 'get_gem_executable_by_version()'
 void gem_not_found(string name) {
+    // NOTE! This line of output is specially designed to let batch shim eat off!
+    // Because when gem not found, batch shim will still think the stdout's string
+    // is the execution script path. However we really have nothing to feed the shim,
+    // so give the shim a command like the sentense below, the shim will happily
+    // recognize it and do nothing!
+    stdout.writeln("Mr.rbenv's " ~ name ~ " batch shim, you should hide yourself");
+
+    // These are the real output info for users to read
     stderr.writeln("rbenv: command '" ~ name ~ "' not found");
 
     // TODO: Fix it using template to match with list_who_has_gem()
