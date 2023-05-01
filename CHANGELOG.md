@@ -1,10 +1,19 @@
 # Changelog
 
-## [Unreleased](#) (2023-04-21)
+## [Unreleased](#) (2023-05-02)
+
+### New features:
+
+- Add gem name in output of gem install hook
 
 ### Enhancements:
 
 - Support `oh-my-pwsh` by adding `--version` for `fake ruby.exe`
+
+### Bug fixes:
+
+- Design special mechanism for batch shim to swallow error when gem not found
+- Fix incomplete output when gem command not exists in this Ruby version
 
 <br>
 

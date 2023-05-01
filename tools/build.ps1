@@ -25,9 +25,9 @@ function build_rbenv_exec() {
     dmd -O -release -inline -of="$dir\libexec\rbenv-exec.exe" "$dir\source\rbenv-exec.d" "$dir\source\rbenv\common.d"
 }
 
-Write-Host "rbenv: Build fake ruby.exe to $dir\bin\"
+Write-Host "rbenv: Building fake ruby.exe to $dir\bin\"
 build_fake_ruby
-Write-Host "rbenv: Build rbenv-exec.exe to $dir\libexec\"
+Write-Host "rbenv: Building rbenv-exec.exe to $dir\libexec\"
 build_rbenv_exec
 
 $dest = "$HOME\Desktop\rbenv-for-Windows-export"
