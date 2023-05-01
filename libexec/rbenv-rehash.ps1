@@ -1,8 +1,8 @@
 # Usage: rbenv rehash [<command>] [<version/gem>]
 # Summary: Rehash rbenv shims (run this after installing gems)
 # Help: rbenv rehash                => rehash the current version
-# rbenv rehash version xxx    => rehash all gems in specific version
-# rbenv rehash gem xxx        => rehash a gem
+# rbenv rehash version xxx    => rehash all gems' executables in specific version
+# rbenv rehash gem xxx        => rehash a single gem's executable
 #
 
 param($cmd, $argument)

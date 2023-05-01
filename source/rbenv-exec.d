@@ -25,6 +25,7 @@ import std.file         : dirEntries, SpanMode;
 import std.file         : write;
 import std.path         : baseName;
 import std.exception    : enforce;
+import std.format       : format;
 
 import rbenv.common;
 
@@ -56,7 +57,21 @@ int main(string[] args) {
     // enforce(arg_len == 3);
 
     if(args[1] == "rehash-gem") {
-        rehash_single_gem_echo(args[2]);
+        // Full form:
+        //
+        //    $ rbenv rehash rougify for rouge
+        //
+        // This is for rubygems_plugin.rb to work
+        if (args.length >= 5) {
+            rehash_single_gem_echo(args[2], args[4]);
+        } else {
+        // Reduced form:
+        //
+        //    $ rbenv rehash rougify
+        //
+        // This is for user to invoke when sometimes necessary
+            rehash_single_gem_echo(args[2]);
+        }
         return 0;
     }
     else if (args[1] == "rehash-version") {
@@ -90,11 +105,30 @@ Generate shims for specific name across all versions
 
 Note that $name shouldn't have suffix
 
-This is called after you install a gem
+This is *auto* called by rubygems_plugin.rb right after you install a gem
+
+Note this is the full form
 */
-void rehash_single_gem_echo(string name) {
-    rehash_single_gem(name);
-    success("rbenv: Rehash gem " ~ "'" ~ name ~ "'");
+void rehash_single_gem_echo(string exe, string gem) {
+    rehash_single_gem(exe);
+    auto msg = format("rbenv: Rehash executable '%s' for gem '%s'", exe, gem);
+    success(msg);
+}
+
+
+/*
+Generate shims for specific name across all versions
+
+Note that $name shouldn't have suffix
+
+This is called *by user* by hand
+
+Note this is the reduced form
+*/
+void rehash_single_gem_echo(string exe) {
+    rehash_single_gem(exe);
+    auto msg = format("rbenv: Rehash executable '%s'", exe);
+    success(msg);
 }
 
 

@@ -1,4 +1,4 @@
-# 'rbenv on windows' patch to
+# 'rbenv for Windows' patch to
 #   https://github.com/rbenv/rbenv/blob/master/rbenv.d/exec/gem-rehash/rubygems_plugin.rb
 #
 
@@ -12,14 +12,17 @@ def success(msg, use_print: false)
   end
 end
 
+# The installer is Gem::Installer instance
 hook = lambda do |installer|
   begin
     # Ignore gems that aren't installed in locations that rbenv searches for binstubs
     if installer.spec.executables.any? &&
       [Gem.default_bindir, Gem.bindir(Gem.user_dir)].include?(installer.bin_dir)
 
+      gem_name = installer.spec.name
+
       installer.spec.executables.each do |e|
-        success `#{RBENV_EXEC} rehash-gem #{e}`, use_print: true
+        success `#{RBENV_EXEC} rehash-gem #{e} for #{gem_name}`, use_print: true
       end
 
     end
