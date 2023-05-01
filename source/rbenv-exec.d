@@ -180,5 +180,5 @@ void rehash_version (string arg_ver) {
     }
 
     import std.conv : to;
-    success("rbenv: Rehash all " ~ gems.length.to!(string) ~ " gems in '" ~ ver ~ "'");
+    success("rbenv: Rehash all " ~ gems.length.to!(string) ~ " executables in '" ~ ver ~ "'");
 }

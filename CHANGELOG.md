@@ -2,6 +2,10 @@
 
 ## [Unreleased](#) (2023-05-02)
 
+<br>
+
+## [v1.4.5](#) (2023-05-02)
+
 ### New features:
 
 - Add gem name in output of gem install hook
@@ -14,6 +18,10 @@
 
 - Design special mechanism for batch shim to swallow error when gem not found
 - Fix incomplete output when gem command not exists in this Ruby version
+
+### Deprecations:
+
+- Use word `executable` in place of `gem` for rehash
 
 <br>
 
