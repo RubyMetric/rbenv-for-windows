@@ -77,7 +77,7 @@ To update, use the following command:
 rbenv update
 ```
 
-Note that, this tool is still under active development, if you've encoutered some error, UPDATE FIRST!
+Note that, this tool is still under active development, if you've encountered some error, UPDATE FIRST!
 
 <br>
 
@@ -236,5 +236,5 @@ name | example | description
 
 <br>
 
-[starship]: (https://github.com/starship/starship)
-[oh-my-posh]: (https://github.com/JanDeDobbeleer/oh-my-posh)
+[starship]: https://github.com/starship/starship
+[oh-my-posh]: https://github.com/JanDeDobbeleer/oh-my-posh
