@@ -172,9 +172,9 @@ This is one time one gem way. How to rehash all for a newly installed version? E
 So, when to rehash (automatically, not user's behaviors)?
 
 1. After `gem install xxx`
-2. After `bundle install` (This hook doesn't work, please help if you can)
+2. After `bundle install` (~~This hook doesn't work~~ The hook works right now since `v1.4.6`)
 3. After installing a new Ruby version
-4. After `rbenv global xxx` (This is a compromise as mentioned before)
+4. After `rbenv global xxx` (~~This is a compromise becuase hook can't be triggered in Bundler process~~ Not needed anymore in theory (since `v1.4.6`), but I keep it as a second safeguard)
 5. After detecting a system Ruby
 
 <br>

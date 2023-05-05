@@ -11,8 +11,12 @@ function set_global_version($version) {
 
     success "rbenv: Change to global version '$version'"
 
-    # As the share/rubygems_plugins.rb says
-    # This is a compromise for Bundler's failure on triggering the post-install hook
+    # <2023-05-05> Although I've fixed the bug of bundler process to successfully trigger
+    # the post-install hook in the share/rubygems_plugins.rb
+    # And then, `rbenv rehash` after a `rbenv global` is no longer needed.
+    #
+    # But I think it now can be a second safeguard to ensure all gems' executables are there
+    # in the shims dir. So I keep this statement.
     rbenv rehash version $version
 }
 
