@@ -1,6 +1,14 @@
 # Changelog
 
-## [Unreleased](#) (2023-05-02)
+## [Unreleased](#) (2023-05-05)
+
+<br>
+
+## [v1.4.6](#) (2023-05-05)
+
+### Bug fixes:
+
+- Use RubyGem's hook also in bundler process, this fixes the [one-year long bug: GitHub Issue #5](https://github.com/ccmywish/rbenv-for-windows/issues/5):
 
 <br>
 
@@ -96,7 +104,7 @@
 ### Bug fixes:
 
 - Revert change: not bypass `.bat` or `.cmd` delegator in [v1.3.0]()
-    - See reasons: [GitHub issue #12](https://github.com/ccmywish/rbenv-for-windows/issues/12)
+    - See reasons: [GitHub Issue #12](https://github.com/ccmywish/rbenv-for-windows/issues/12)
 
 ### Deprecations:
 

@@ -20,17 +20,12 @@ Manage multiple Rubies on Windows.
 
 Hi, hello
 
-`rbenv for Windows` is a `rbenv` clone for Ruby users on Windows. After continuous improvements, It now can handle `rbenv local` well and interact with shell prompt tools like `starship` properly.
+`rbenv for Windows` is a `rbenv` clone for Ruby users on Windows. After continuous improvements, It now can
+1. Handle `rbenv local` well
+2. Integrate with `RubyGems`, `Bundler` compactly
+3. Interact with shell prompt tools like [starship] and [oh-my-posh] properly
 
-**If you're interested in how it works, read these sections for quick and enough information:**
-
-1. [Relation with `rbenv` and with `RubyInstaller2`](./doc/principle.md#relation-with-rbenv-and-with-rubyinstaller2)
-2. [Ways to solve Windows-specific issues](./doc/principle.md#ways-to-solve-windows-specific-issues)
-3. [How do three versions work?](./doc/principle.md#how-do-three-versions-work)
-4. [FAQ for developers](./doc/principle.md#FAQforDevs)
-5. [Environment Variables](#EnvVar)
-
-There's a [benchmark](./doc/benchmark.md) to show if `rbenv` will influence Ruby/Gem commands startup time significantly.
+There's a simple [record](./doc/benchmark.md) to show if `rbenv` will influence Ruby/Gem commands startup time significantly.
 
 <br>
 
@@ -82,6 +77,8 @@ To update, use the following command:
 rbenv update
 ```
 
+Note that, this tool is still under active development, if you've encoutered some error, UPDATE FIRST!
+
 <br>
 
 ### For Chinese users
@@ -115,6 +112,8 @@ $env:RBENV_USE_MIRROR = "CN"
 ```PowerShell
 rbenv update cn
 ```
+
+请注意，此工具仍在积极开发中，如果您遇到了一些错误，请先更新!
 
 <br>
 
@@ -193,15 +192,11 @@ However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7
 
 **The current implementation has these drawbacks and issues:**
 
-1. Bad integration with `Bundler`: [`bundle install` will not trigger hooks to rehash](https://github.com/ccmywish/rbenv-for-windows/issues/5).
-
-    I don't know if these are bugs of Bundler on Windows, please help this project if you can. As a compromise, I only have to `rbenv rehash version xxx` after you `rbenv global xxx`. This is a simple method to make shims dir always full with kinds of shims.
-
-2. We only support CRuby, x64 versions, provided by RubyInstaller2
+1. We only support CRuby, x64 versions, provided by RubyInstaller2
 
     Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on. If you want to support it, consider to be a maintainer please! Thank you!
 
-3. We don't support old versions that have a little different leading URL
+2. We don't support old versions that have a little different leading URL
 
     Very small URL changes will make our work double, I don't have time for it. So keep URLs convention stable is very important. Luckily, these exceptions are very old Ruby versions (part of 2.4, 2.5 series) built by RubyInstaller, don't worry! See [share/README.md](./share/README.md) for details.
 
@@ -240,3 +235,6 @@ name | example | description
 3. The [rbenv](https://github.com/rbenv/rbenv) is our role model
 
 <br>
+
+[starship]: (https://github.com/starship/starship)
+[oh-my-posh]: (https://github.com/JanDeDobbeleer/oh-my-posh)
