@@ -20,7 +20,7 @@ Manage multiple Rubies on Windows.
 
 Hi, hello
 
-`rbenv for Windows` is a `rbenv` clone for Ruby users on Windows. After continuous improvements, It now can
+`rbenv for Windows` is a [rbenv] clone for Ruby users on Windows. After continuous improvements, It now can
 1. Handle `rbenv local` well
 2. Integrate with `RubyGems`, `Bundler` compactly
 3. Interact with shell prompt tools like [starship] and [oh-my-posh] properly
@@ -231,10 +231,12 @@ name | example | description
 ## Thanks
 
 1. I reuse a lot of code pieces from [scoop](https://github.com/ScoopInstaller/Scoop)
-2. The [RubyInstaller2](https://github.com/oneclick/rubyinstaller2) builds Ruby on Windows day and night
-3. The [rbenv](https://github.com/rbenv/rbenv) is our role model
+2. The [RubyInstaller2] builds Ruby on Windows day and night
+3. The [rbenv] is our role model
 
 <br>
 
+[RubyInstaller2]: https://github.com/oneclick/rubyinstaller2
+[rbenv]: https://github.com/rbenv/rbenv
 [starship]: https://github.com/starship/starship
 [oh-my-posh]: https://github.com/JanDeDobbeleer/oh-my-posh
