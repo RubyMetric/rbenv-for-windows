@@ -2,7 +2,7 @@
 # File          : build.ps1
 # Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2023-03-04>
-# Last modified : <2023-03-05>
+# Last modified : <2023-05-19>
 #
 # build:
 #
@@ -10,10 +10,18 @@
 #
 #   I write this in PowerShell rather than Rakefile just to avoid
 #   calling Ruby in the worst case.
+#
+#   Usage:
+#
+#       (1) ./build
+#
+#       (2) ./build export
 # ---------------------------------------------------------------
 
 # working dir, is not where this script locates
 # (get-location).path
+
+param($to_export)
 
 $dir = "$env:RBENV_ROOT\rbenv"
 
@@ -30,9 +38,13 @@ build_fake_ruby
 Write-Host "rbenv: Building rbenv-exec.exe to $dir\libexec\"
 build_rbenv_exec
 
-$dest = "$HOME\Desktop\rbenv-for-Windows-export"
-mkdir $dest | Out-Null
 
-cp $dir\bin\ruby.exe $dest
-cp $dir\libexec\rbenv-exec.exe $dest
-Write-Host "rbenv: Copy built files to $dest"
+if ($to_export -eq 'export') {
+    $dest = "$HOME\Desktop\rbenv-for-Windows-export"
+    mkdir $dest | Out-Null
+
+    cp $dir\bin\ruby.exe $dest
+    cp $dir\libexec\rbenv-exec.exe $dest
+    Write-Host "rbenv: Copy built files to $dest"
+}
+
