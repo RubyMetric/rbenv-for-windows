@@ -2,6 +2,10 @@
 
 ## [Unreleased](#) (2023-05-19)
 
+<br>
+
+## [v1.4.7](#) (2023-05-19)
+
 ### Enhancements:
 
 - Use `informative version` when specific version not available
