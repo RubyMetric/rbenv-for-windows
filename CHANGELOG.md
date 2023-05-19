@@ -123,7 +123,8 @@
 ### Bug fixes:
 
 - Revert change: not bypass `.bat` or `.cmd` delegator in [v1.3.0]()
-    - See reasons: [GitHub Issue #12](https://github.com/ccmywish/rbenv-for-windows/issues/12)
+
+    See reasons: [GitHub Issue #12](https://github.com/ccmywish/rbenv-for-windows/issues/12)
 
 ### Deprecations:
 
@@ -147,7 +148,8 @@
 
 - Use `fake ruby.exe` to support shell prompt (e.g. `starship`) for `rbenv local` version
 - ~~Bypass `.bat` or `.cmd` Windows executable delegator~~
-    - This is reverted in [v1.4.0]()
+
+    This is reverted in [v1.4.0]()
 
 <br>
 
@@ -167,12 +169,12 @@
 
 ### New features:
 
-- Change to global version as a compromise when there's a '.ruby-version' file
-- Set '/currentuser' when version >= 3.2.0-1 with MSYS2
+- Change to global version as a compromise when there's a `.ruby-version` file
+- Set `/currentuser` when version `>= 3.2.0-1` with MSYS2
 
 ### Enhancements:
 
-- 'rbenv local' command removes the RubyInstaller2 suffix when set
+- `rbenv local` command removes the RubyInstaller2 suffix when set
 
 ### Bug fixes:
 
@@ -182,7 +184,7 @@
 
 ## [v1.0.0](#) (2022-05-09)
 
-- Finish
+- Basically work
 
 <br>
 
