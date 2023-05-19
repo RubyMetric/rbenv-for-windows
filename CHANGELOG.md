@@ -2,6 +2,13 @@
 
 ## [Unreleased](#) (2023-05-19)
 
+### Enhancements:
+
+- Use `informative version` when specific version not available
+
+    1. version `x.x.xNotInstalled`
+    2. version `NoGlobalVersionIsSet`
+
 ### Bug fixes:
 
 - When `.ruby-version` has multiple lines

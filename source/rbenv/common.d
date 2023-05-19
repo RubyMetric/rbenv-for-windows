@@ -126,7 +126,11 @@ string auto_fix_version_for_installed(string ver) {
         }
     }
     warn("rbenv: version " ~ ver ~ " not installed");
-    exit(0);
+
+    // exit(0);
+    // Now we don't exit instantly, but show the *informative version*,
+    // to make starship/oh-my-posh user directly know what is wrong
+    return ver ~ "NotInstalled";
 }
 
 
@@ -342,7 +346,12 @@ string get_global_version() {
 
     if ("" == ver) {
         warn("rbenv: No global version has been set, use rbenv global <version>");
-        return "";
+
+        // return "";
+        // Now we don't return an empty string, but show the *informative version*,
+        // to make starship/oh-my-posh user directly know what is wrong
+        return "NoGlobalVersionIsSet";
+
     } else {
         return ver;
     }
