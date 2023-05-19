@@ -1,6 +1,14 @@
 # Changelog
 
-## [Unreleased](#) (2023-05-05)
+## [Unreleased](#) (2023-05-19)
+
+### Bug fixes:
+
+- When `.ruby-version` has multiple lines
+
+    **It should only read the first line.**
+
+    But it read the whole file's content as version. I've fixed it to meet our expectations.
 
 <br>
 

@@ -2,7 +2,7 @@
 * File          : common.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-03>
-* Last modified : <2023-05-02>
+* Last modified : <2023-05-19>
 *
 * common:
 *
@@ -20,7 +20,7 @@ import std.algorithm    : filter, sort, map, cmp;
 import std.file         : dirEntries, SpanMode, exists, readText, read;
 import std.path         : baseName;
 import std.regex        : matchAll;
-import std.string       : indexOf;
+import std.string       : indexOf, splitLines;
 import std.array        : join;
 
 import core.stdc.stdlib : exit;
@@ -368,7 +368,9 @@ LocalVersionInfo get_local_version() {
 
     import std.file;
     if (exists(local_version_file)) {
-        string ver = cast(string)read(local_version_file);
+        string ver_content = cast(string)read(local_version_file);
+        // Just read the first line to resist some evil editors!!!
+        string ver = splitLines(ver_content)[0];
         // Complete '3.1.3' with the suffix '-1'
         ver = auto_fix_version_for_installed(ver);
         lvi.where = local_version_file;
