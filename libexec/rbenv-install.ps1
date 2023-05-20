@@ -145,11 +145,13 @@ function dl($url, $to, $cookies, $progress) {
 
         # Get the new location of the file
         if ((-not $redirectRes.Headers) -or ($redirectRes.Headers -notcontains 'Location')) {
+            warn "We're going to redirect, but no 'Location' is provieded by the server!"
             throw $exc
         }
 
         $newUrl = $redirectRes.Headers['Location']
-        info "Following redirect to $newUrl..."
+        Write-Host "Following redirect to:"
+        info "=> $newUrl"
 
         # Handle manual file rename
         if ($url -like '*#/*') {
