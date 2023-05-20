@@ -114,14 +114,27 @@ function dl($url, $to, $cookies, $progress) {
     }
 
     try {
+
+        # Oh man!
+        # On <2023-05-20> I found Pwsh 7.x series (above) can automatically
+        # handle status code 308, so it won't throw any exception, It can get
+        # the result successfully without any additinal procedure by us.
+        #
+        # But on PowerShell 5.x series, 308 will throw the exception, we should catch it!
         $wres = $wreq.GetResponse()
+
     } catch [System.Net.WebException] {
         $exc = $_.Exception
         $handledCodes = @(
             [System.Net.HttpStatusCode]::MovedPermanently,  # HTTP 301
             [System.Net.HttpStatusCode]::Found,             # HTTP 302
             [System.Net.HttpStatusCode]::SeeOther,          # HTTP 303
-            [System.Net.HttpStatusCode]::TemporaryRedirect  # HTTP 307
+            [System.Net.HttpStatusCode]::TemporaryRedirect # HTTP 307
+
+            # Because PowerShell v5.x series are based on .NET Framework (at least v4.5)
+            # Currently we are on most likely v4.8 (<2023-05-20>)
+            # But it still doesn't support 308, so we must write this code directly
+            308
         )
 
         # Only handle redirection codes
