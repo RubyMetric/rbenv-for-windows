@@ -1,6 +1,16 @@
 # Changelog
 
-## [Unreleased](#) (2023-05-19)
+## [Unreleased](#) (2023-05-20)
+
+<br>
+
+## [v1.4.8](#) (2023-05-20)
+
+### Bug fixes:
+
+- Fix bug: PowerShell `v5.x` series can't recognize `308` status code
+
+    See GitHub Issue [#18](https://github.com/ccmywish/rbenv-for-windows/issues/18), [#8](https://github.com/ccmywish/rbenv-for-windows/issues/8), [#7](https://github.com/ccmywish/rbenv-for-windows/issues/7)
 
 <br>
 

@@ -2,7 +2,7 @@
 # File          : rbenv.ps1
 # Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2022-05-02>
-# Last modified : <2023-05-19>
+# Last modified : <2023-05-20>
 # Contributors  : Scoop Contributors
 #
 #
@@ -25,7 +25,7 @@ param($cmd)
 # [String]
 # rbenv's own version
 # Not to conflict with $env:RBENV_VERSION ('rbenv shell' sets it)
-$RBENV_OWN_VERSION       = "rbenv v1.4.7"
+$RBENV_OWN_VERSION       = "rbenv v1.4.8"
 
 # [String]
 # Where we check the global version
