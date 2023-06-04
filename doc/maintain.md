@@ -2,24 +2,34 @@
 
 1. Clean binaries and test
 
-```PowerShell
-.\tools\clean.ps1
-```
+    ```PowerShell
+    .\tools\clean.ps1
+    ```
 
-2. Change `bin\source\README.md(i.e. this file)` to add a specific version to be released
+2. Build binaries locally
 
-3. Build binaries and test
+    ```PowerShell
+    .\tools\build.ps1
+    ```
 
-```PowerShell
-.\tools\build.ps1
-```
+3. Test each command
+
+    ```PowerShell
+    rbenv version
+    rbenv versions
+
+    gem install cr.rb
+    rbenv which cr
+    rbenv whence cr
+
+    rbenv global 3.1
+    rbenv local 3.2
+    rbenv shell 3.1.0
+    ```
+
 
 4. Change `rbenv` version
 
-In `bin\rbenv.ps1`, update `$RBENV_OWN_VERSION`
-
-5. Change `tools\*.ps1` versions and tags
-
-In `tools\install.ps1` and `tools\install-cn.ps1`, change `$tag`
+    In `bin\rbenv.ps1`, update `$RBENV_OWN_VERSION`
 
 <br>

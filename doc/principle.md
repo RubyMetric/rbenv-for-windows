@@ -38,7 +38,7 @@ rbenv: You shouldn't invoke 'ruby.exe', instead you should invoke 'ruby'
 
 <br>
 
-### ruby/rubyw imitator
+### ruby/rubyw caller
 
 Whenever you call `ruby`(`rubybw`) (without suffix), what you invoke in fact is `ruby.ps1`(`rubyw.ps1`).
 
