@@ -2,7 +2,7 @@
 # File          : install.ps1
 # Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2023-03-04>
-# Last modified : <2023-04-12>
+# Last modified : <2023-06-07>
 #
 # install:
 #
@@ -32,9 +32,11 @@ if ($config -eq "cn") {
 function download_binaries() {
     Write-Host -f green $welcome -NoNewline
 
-    curl -sSL "$repo/releases/download/$tag/ruby.exe" -o "$env:RBENV_ROOT\rbenv\bin\ruby.exe"
+    # Explicitly use curl.exe rather than curl
+    # Because on PowerShell v5.1, curl is aliased to `Invoke-Webrequest` by default
+    curl.exe -sSL "$repo/releases/download/$tag/ruby.exe" -o "$env:RBENV_ROOT\rbenv\bin\ruby.exe"
 
-    curl -sSL "$repo/releases/download/$tag/rbenv-exec.exe" -o "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe"
+    curl.exe -sSL "$repo/releases/download/$tag/rbenv-exec.exe" -o "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe"
 
     Write-Host -f green $goodbye
 }
