@@ -19,6 +19,6 @@
 
 $version, $_ = get_current_version_with_setmsg_from_fake_ruby
 
-$rubyexe = get_ridk_location_by_version "ridk" $version
+$rubyexe = get_ridk_location_by_version $version
 
 & $rubyexe $args
