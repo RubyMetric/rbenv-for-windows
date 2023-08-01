@@ -38,11 +38,17 @@ rbenv: You shouldn't invoke 'ruby.exe', instead you should invoke 'ruby'
 
 <br>
 
-### ruby/rubyw caller
+### ruby/rubyw/ridk caller
+
+The three callers reside in `rbenv/bin`, they are designed to let users directly invoke.
 
 Whenever you call `ruby`(`rubybw`) (without suffix), what you invoke in fact is `ruby.ps1`(`rubyw.ps1`).
 
-The two imitators are to help run `ruby` and `rubyw` with correct versions. Note that, it internally invoke `fake ruby.exe` to get current version info.
+The two callers are to help run `ruby` and `rubyw` with correct versions. Note that, it internally invoke `fake ruby.exe` to get current version info.
+
+`ridk.ps1` and `ridk.cmd` are bundled with RubyInstaller2, and they're sometimes very useful. There's no something like `fake ridk`.
+
+Whenever you call `ridk`(with or without suffix `.ps1`), what you invoke in fact is `ridk.ps1` from inside the correct versions directory.
 
 <br>
 

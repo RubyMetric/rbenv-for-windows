@@ -11,8 +11,8 @@
 # ----------
 # Note:
 #
-# When you type 'ridk',                   this file is hit
-# When you type 'ridk.ps1' or 'ridk.cmd', Nothing will be hit
+# When you type 'ridk',     this file is hit
+# When you type 'ridk.ps1', this file is hit
 # ---------------------------------------------------------------
 
 . $env:RBENV_ROOT\rbenv\lib\version.ps1
