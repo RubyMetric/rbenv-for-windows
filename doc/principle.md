@@ -46,9 +46,9 @@ Whenever you call `ruby`(`rubybw`) (without suffix), what you invoke in fact is 
 
 The two callers are to help run `ruby` and `rubyw` with correct versions. Note that, it internally invoke `fake ruby.exe` to get current version info.
 
-`ridk.ps1` and `ridk.cmd` are bundled with RubyInstaller2, and they're sometimes very useful. There's no something like `fake ridk`.
+`ridk.ps1`(and `ridk.cmd`) are bundled with RubyInstaller2, and they're sometimes very useful. There's no something like `fake ridk`.
 
-Whenever you call `ridk`(with or without suffix `.ps1`), what you invoke in fact is `ridk.ps1` from inside the correct versions directory.
+Whenever you call `ridk`(with or without suffix `.ps1`), what you invoke in fact is `ridk.ps1` or `ridk.cmd` from inside the correct versions directory.
 
 <br>
 

@@ -6,19 +6,19 @@
 #
 # ruby:
 #
-#   Delegate to real ridk.ps1
+#   Delegate to real 'ridk.ps1' or 'ridk.cmd'
 #
 # ----------
 # Note:
 #
-# When you type 'ridk',     this file is hit
-# When you type 'ridk.ps1', this file is hit
+# When you type 'ridk' or 'ridk.ps1',  this file is hit
+# When you type 'ridk.cmd',            this file is NOT hit
 # ---------------------------------------------------------------
 
 . $env:RBENV_ROOT\rbenv\lib\version.ps1
 
 $version, $_ = get_current_version_with_setmsg_from_fake_ruby
 
-$rubyexe = get_ruby_exe_location_by_version "ridk" $version
+$rubyexe = get_ridk_location_by_version "ridk" $version
 
 & $rubyexe $args

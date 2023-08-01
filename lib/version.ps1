@@ -194,20 +194,29 @@ function get_gem_bin_location_by_version ($cmd, $version) {
 }
 
 
-# This is called by 'get_executable_location' and three callers in rbenv/bin/
-#
-# Now, only 'ruby.exe', 'rubyw.exe' and 'ridk.ps1' should be called by this
+# This is called by
+# 1. 'get_executable_location'
+# 2. 'ruby' and 'rubyw' callers in rbenv/bin/
 #
 function get_ruby_exe_location_by_version ($exe, $version) {
-    if ($exe -eq 'ridk') {
-        $exe = $exe + '.ps1'
-    }
-    elseif (-not $exe.EndsWith('.exe')) {
+    if (-not $exe.EndsWith('.exe')) {
         $exe = $exe + '.exe'
     }
     $where = get_bin_path_for_version $version
 
     "$where\$exe"
+}
+
+# This is called by 'ridk' caller in rbenv/bin/
+#
+function get_ridk_location_by_version ($version) {
+    $where = get_bin_path_for_version $version
+
+    if (Test-Path "$where\ridk.ps1") {
+        "$where\ridk.ps1"
+    } else {
+        "$where\ridk.cmd"
+    }
 }
 
 
