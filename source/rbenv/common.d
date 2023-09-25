@@ -20,7 +20,7 @@ import std.algorithm    : filter, sort, map, cmp;
 import std.file         : getcwd, chdir, dirEntries, SpanMode, exists, readText, read;
 import std.path         : baseName, dirName, rootName;
 import std.regex        : matchAll;
-import std.string       : indexOf, splitLines;
+import std.string       : indexOf, splitLines, chompPrefix;
 import std.array        : join;
 
 import core.stdc.stdlib : exit;
@@ -113,6 +113,14 @@ string[] get_all_installed_versions() {
 
 
 string auto_fix_version_for_installed(string ver) {
+
+    // `rvm --ruby-version use 3.1.2`
+    //
+    // rvm will generate 'ruby-3.1.2', but rbenv(shell) will only generate '3.1.2'
+    // but rbenv(shell) will recognize 'ruby-3.1.2' too, so we do too
+    if (ver.startsWith("ruby-")) {
+        ver = ver.chompPrefix("ruby-");
+    }
 
     auto versions = get_all_installed_versions();
 
@@ -372,7 +380,7 @@ LocalVersionInfo get_local_version() {
 
     while (true) {
         if (root==cwd) break;
-        local_version_file = cwd ~ "/.ruby-version";
+        local_version_file = cwd ~ "\\.ruby-version";
         if(local_version_file.exists) {
             found = true;
             break;
