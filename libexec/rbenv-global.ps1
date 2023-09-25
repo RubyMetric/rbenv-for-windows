@@ -3,6 +3,17 @@
 
 param($cmd)
 
+function get_global_version() {
+  # common.d will ensure a global.txt (but empty)
+  $cont = Get-Content $GLOBAL_VERSION_FILE
+  if (!$cont) {
+    warn "rbenv: No global version has been set, use rbenv global <version>"
+  } else {
+    $cont
+  }
+}
+
+
 function set_global_version($version) {
 
     $version = auto_fix_version_for_installed $version

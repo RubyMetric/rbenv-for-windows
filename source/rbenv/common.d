@@ -17,7 +17,7 @@ import std.process      : environment, executeShell;
 import std.array        : split, array;
 import std.algorithm    : canFind, startsWith;
 import std.algorithm    : filter, sort, map, cmp;
-import std.file         : getcwd, chdir, dirEntries, SpanMode, exists, readText, read;
+import std.file         : getcwd, chdir, dirEntries, SpanMode, exists, readText, read, write;
 import std.path         : baseName, dirName, rootName;
 import std.regex        : matchAll;
 import std.string       : indexOf, splitLines, chompPrefix;
@@ -358,7 +358,7 @@ string get_global_version() {
         // return "";
         // Now we don't return an empty string, but show the *informative version*,
         // to make starship/oh-my-posh user directly know what is wrong
-        return "NoGlobalVersionIsSet";
+        return "GlobalVersionNotSet";
 
     } else {
         return ver;
