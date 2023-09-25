@@ -2,7 +2,7 @@
 * File          : common.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-03>
-* Last modified : <2023-05-19>
+* Last modified : <2023-09-25>
 *
 * common:
 *
@@ -17,8 +17,8 @@ import std.process      : environment, executeShell;
 import std.array        : split, array;
 import std.algorithm    : canFind, startsWith;
 import std.algorithm    : filter, sort, map, cmp;
-import std.file         : dirEntries, SpanMode, exists, readText, read;
-import std.path         : baseName;
+import std.file         : getcwd, chdir, dirEntries, SpanMode, exists, readText, read;
+import std.path         : baseName, dirName, rootName;
 import std.regex        : matchAll;
 import std.string       : indexOf, splitLines;
 import std.array        : join;
@@ -365,18 +365,23 @@ LocalVersionInfo get_local_version() {
     lvi.where = "";
     lvi.ver = "";
 
-    // pwd = std.path.absolute();
-    auto ret = executeShell("git rev-parse --show-toplevel");
-    if (ret.status != 0) return lvi;
+    auto cwd  = getcwd();
+    auto root = rootName(cwd);
+    string local_version_file = "";
+    bool found = false;
 
-    auto git_root = ret.output;
+    while (true) {
+        if (root==cwd) break;
+        local_version_file = cwd ~ "/.ruby-version";
+        if(local_version_file.exists) {
+            found = true;
+            break;
+        };
+        cwd = dirName(cwd);
+        chdir(cwd);
+    }
 
-    import std.string : strip;
-    // Because git return '/' separated path, we also add "/.ruby-version"
-    string local_version_file =  strip(git_root) ~ "/.ruby-version";
-
-    import std.file;
-    if (exists(local_version_file)) {
+    if (found) {
         string ver_content = cast(string)read(local_version_file);
         // Just read the first line to resist some evil editors!!!
         string ver = splitLines(ver_content)[0];
