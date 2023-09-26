@@ -22,33 +22,33 @@ Shell prompt tools like `starship` always look for `ruby.exe` in `PATH`, however
 
 There's a `ruby.exe` residing in `rbenv\bin`, `starship` will be fooled by this `fake ruby.exe` to display correct version set by users.
 
-Try use `ruby.exe` in your terminal, you will find that, all it will do is to handle `ruby.exe -v`(for `starship` to work) and `ruby.exe --version`(for `oh-my-posh` to work). All other commands will be rejected to notify that you shouldn't directly invoke it.
+Try use `ruby.exe` in your terminal, you will find that, all it will do is to handle `ruby.exe -v`(for `starship` to work) and `ruby.exe --version`(for `oh-my-posh` to work). All other commands will be delegated to run the real ruby.exe.
 
 ```PowerShell
-❯ ruby.exe -v
+❯ ruby -v
 ruby 3.2.0-1 (set by C:\Ruby-on-Windows\global.txt)
 
-❯ ruby.exe --version
+❯ ruby --version
 ruby 3.2.0-1 (set by C:\Ruby-on-Windows\global.txt)
 
-❯ ruby.exe -h
-rbenv: This is fake ruby.exe in $env:RBENV_ROOT\rbenv\bin
-rbenv: You shouldn't invoke 'ruby.exe', instead you should invoke 'ruby'
+❯ ruby -v --version
+ruby 3.2.0 (2022-12-25 revision a528908271) [x64-mingw-ucrt]
 ```
 
 <br>
 
-### ruby/rubyw/ridk caller
+### rubyw/ridk caller
 
-The three callers reside in `rbenv/bin`, they are designed to let users directly invoke.
+1. rubyw caller: `rubyw.ps1` for PowerShell users, and `rubyw.bat` for cmd users
+2. ridk caller:  `ridk.ps1` for PowerShell users, and `ridk.bat` for cmd users
 
-Whenever you call `ruby`(`rubybw`) (without suffix), what you invoke in fact is `ruby.ps1`(`rubyw.ps1`).
+They all reside in `rbenv/bin`, they are designed to let users directly invoke.
 
-The two callers are to help run `ruby` and `rubyw` with correct versions. Note that, it internally invoke `fake ruby.exe` to get current version info.
+In PowerShell, whenever you call `rubyw`(`ridk`) (without suffix), what you invoke in fact is `rubyw.ps1`(`ridk.ps1`).
 
-`ridk.ps1`(and `ridk.cmd`) are bundled with RubyInstaller2, and they're sometimes very useful. There's no something like `fake ridk`.
+The two callers are to help run `rubyw` and `ridk` with correct versions. Note that, they internally invoke `fake ruby.exe` to get current version info.
 
-Whenever you call `ridk`(with or without suffix `.ps1`), what you invoke in fact is `ridk.ps1` or `ridk.cmd` from inside the correct versions directory.
+`ridk.ps1` and `ridk.cmd` are bundled with RubyInstaller2, and they're sometimes very useful. But don't be confused. `rbenv\bin\ridk.ps1` invokes the `3.x.x\bin\ridk.ps1`, `rbenv\bin\ridk.bat` invokes the `3.x.x\bin\ridk.cmd`.
 
 <br>
 
