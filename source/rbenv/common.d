@@ -2,7 +2,7 @@
 * File          : common.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-03>
-* Last modified : <2023-09-25>
+* Last modified : <2023-09-26>
 *
 * common:
 *
@@ -374,8 +374,9 @@ LocalVersionInfo get_local_version() {
     lvi.ver = "";
 
     auto cwd  = getcwd();
+    auto cwd_saved = cwd;
     auto root = rootName(cwd);
-    string local_version_file = "";
+    auto local_version_file = "";
     bool found = false;
 
     while (true) {
@@ -397,10 +398,10 @@ LocalVersionInfo get_local_version() {
         ver = auto_fix_version_for_installed(ver);
         lvi.where = local_version_file;
         lvi.ver = ver;
-        return lvi;
-    } else {
-        return lvi;
     }
+    // writeln(cwd_saved);
+    chdir(cwd_saved);
+    return lvi;
 }
 
 

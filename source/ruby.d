@@ -59,11 +59,9 @@ int main(string[] args) {
         }
     }
 
-
-    string rubyexe  = "C:\\Ruby-on-Windows\\" ~ vsi.ver ~ "\\bin\\ruby.exe";
+    string rubyexe  = RBENV_ROOT ~ "\\" ~ vsi.ver ~ "\\bin\\ruby.exe";
 
     string shellcmd = join(rubyexe ~ escape_args[1..$], " ");
-
     // writeln(shellcmd);
 
     auto pid = spawnShell(shellcmd,    // must be a string, rather than string array
