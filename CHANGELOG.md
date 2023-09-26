@@ -2,6 +2,15 @@
 
 ## [Unreleased](#) (2023-09-26)
 
+### New features:
+
+- Add `ridk.bat` for cmd users
+- Add `rubyw.bat` for cmd users
+
+### Deprecations:
+
+- Not use `ruby.ps1` anymore
+
 <br>
 
 ## [v1.4.9](#) (2023-09-26)
