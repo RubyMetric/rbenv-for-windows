@@ -1,19 +1,23 @@
-/* --------------------------------------------------------------
-* File          : ruby.d
-* Authors       : Aoran Zeng <ccmywish@qq.com>
-* Created on    : <2023-02-11>
-* Last modified : <2023-04-20>
-*
-* ruby:
-*
-*   1. Cheat 'starship' to get version info
-*   2. Get correct version info for rbenv commands
-* -------------------------------------------------------------*/
+/** ------------------------------------------------------------
+ * File          : ruby.d
+ * Authors       : Aoran Zeng <ccmywish@qq.com>
+ * Created on    : <2023-02-11>
+ * Last modified : <2023-09-26>
+ *
+ * ruby:
+ *
+ *  1. Cheat starship/oh-my-posh to get version info
+ *  2. Get correct version info for rbenv commands
+ *  3. Invoke the real ruby.exe
+ * ------------------------------------------------------------*/
 
 import std.stdio;
 import std.process   : environment;
 import std.file      : getcwd;
 import std.algorithm : canFind;
+
+import std.process : spawnShell, wait, Config;
+import std.array;
 
 import rbenv.common;
 
@@ -36,15 +40,39 @@ int main(string[] args) {
         return -1;
     }
 
-    // support starship to quickly get answer
+    // When user only input '-v' or '--version'
+    //      we suppress invocation of real ruby.exe
+    // This supports starship/oh-my-posh to get answer more quickly
     if(arg_len == 2 && versionOptions.canFind(args[1])) {
         writeln("ruby ", vsi.ver, " ", vsi.setmsg);
         return 0;
-    } else {
-        warn("rbenv: This is fake ruby.exe in $env:RBENV_ROOT\\rbenv\\bin");
-        warn("rbenv: You shouldn't invoke 'ruby.exe', instead you should invoke 'ruby'");
-        return 0;
     }
+
+    string[] escape_args = [];
+    foreach (arg; args) {
+        if (arg.canFind(" ")) {
+            escape_args ~= "\"" ~ arg ~ "\"";
+        } else if (""==arg) {   // ruby -e ""
+            escape_args ~= `""`;
+        } else {
+            escape_args ~= arg;
+        }
+    }
+
+
+    string rubyexe  = "C:\\Ruby-on-Windows\\" ~ vsi.ver ~ "\\bin\\ruby.exe";
+
+    string shellcmd = join(rubyexe ~ escape_args[1..$], " ");
+
+    // writeln(shellcmd);
+
+    auto pid = spawnShell(shellcmd,    // must be a string, rather than string array
+                          null,        // env
+                          Config.none, // config
+                          pwd          // workDir
+                          );
+
+    return wait(pid);
 
     return 0;
 }
