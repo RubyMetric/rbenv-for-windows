@@ -13,9 +13,8 @@
 # ----------
 # Note:
 #
-# When you type 'rubyw',     this file is hit
-# When you type 'rubyw.exe', this file is NOT hit,
-#                            instead, rubyw.exe in env var path is hit
+# When you type 'rubyw' or 'rubyw.ps1',  this file is hit
+# When you type 'rubyw.bat',             this file is NOT hit,
 # ---------------------------------------------------------------
 
 . $env:RBENV_ROOT\rbenv\lib\version.ps1

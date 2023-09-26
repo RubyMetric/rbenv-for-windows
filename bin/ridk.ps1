@@ -2,7 +2,7 @@
 # File          : ridk.ps1
 # Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2023-08-01>
-# Last modified : <2023-09-25>
+# Last modified : <2023-09-26>
 #
 # ruby:
 #
@@ -12,7 +12,7 @@
 # Note:
 #
 # When you type 'ridk' or 'ridk.ps1',  this file is hit
-# When you type 'ridk.cmd',            this file is NOT hit
+# When you type 'ridk.bat',            this file is NOT hit
 # ---------------------------------------------------------------
 
 . $env:RBENV_ROOT\rbenv\lib\version.ps1
