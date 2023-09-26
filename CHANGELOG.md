@@ -1,10 +1,23 @@
 # Changelog
 
-## [Unreleased](#) (2023-08-02)
+## [Unreleased](#) (2023-09-26)
+
+<br>
+
+## [v1.4.9](#) (2023-09-26)
 
 ### New features:
 
 - Add caller `ridk.ps1`
+
+### Enhancements:
+
+- Not use `git` to detect `.ruby-version`
+- Support `ruby-` in `.ruby-version`
+
+### Bug fixes:
+
+- Fix ridk caller args for `ridk enable`
 
 <br>
 
