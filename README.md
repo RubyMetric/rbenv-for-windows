@@ -73,6 +73,7 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 
 & "$env:RBENV_ROOT\rbenv\bin\rbenv.ps1" init
 ```
+After adding these configurations to your $profile, restart your terminal for the changes to take effect.
 
 To update, use the following command:
 
