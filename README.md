@@ -44,13 +44,17 @@ There's a simple [record](./doc/benchmark.md) to show if `rbenv` will influence 
 
     PowerShell must be enabled for your user account e.g. `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 
+- cURL
 - Git
+- 7zip
+
+> [!TIP]
+> **It's portable, be bold to try it now**
 
 <br>
 
-**It's portable, be bold to try it now:**
-
-### For common users
+<details>
+<summary>For common users</summary>
 
 First, input and run these commands in your terminal:
 
@@ -83,9 +87,12 @@ rbenv update
 
 Note that, this tool is still under active development, if you've encountered some error, UPDATE FIRST!
 
+</details>
+
 <br>
 
-### For Chinese users
+<details>
+<summary>For Chinese users</summary>
 
 中国大陆用户请使用以下方式，通过Gitee避免网络问题，以及使用内置CN镜像。
 
@@ -118,6 +125,21 @@ rbenv update cn
 ```
 
 请注意，此工具仍在积极开发中，如果您遇到了一些错误，请先更新!
+
+</details>
+
+<br>
+
+<details>
+<summary>For Russian users</summary>
+
+You can refer to this article by @SKOLIA0
+
+Вы можете обратиться к этой статье @SKOLIA0
+
+https://github.com/SKOLIA0/rbenv-for-windows/blob/main/README_RU.md
+
+</details>
 
 <br>
 
