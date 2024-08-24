@@ -133,9 +133,9 @@ rbenv update cn
 <details>
 <summary>For Russian users</summary>
 
-You can refer to this article by @SKOLIA0
+You can refer to this article by [@SKOLIA0](https://github.com/SKOLIA0)
 
-Вы можете обратиться к этой статье @SKOLIA0
+Вы можете обратиться к этой статье [@SKOLIA0](https://github.com/SKOLIA0)
 
 https://github.com/SKOLIA0/rbenv-for-windows/blob/main/README_RU.md
 
