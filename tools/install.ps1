@@ -1,8 +1,8 @@
 # ---------------------------------------------------------------
 # File          : install.ps1
 # Authors       : Aoran Zeng <ccmywish@qq.com>
-# Created on    : <2023-03-04>
-# Last modified : <2023-06-07>
+# Created On    : <2023-03-04>
+# Last Modified : <2024-08-24>
 #
 # install:
 #
@@ -14,20 +14,18 @@ $tag = "latest-binary"
 
 if ($config -eq "cn") {
     $repo    = "https://gitee.com/ccmywish/rbenv-for-windows"
-    $welcome = "rbenv: 从Gitee下载预编译二进制文件... "
-    $goodbye = "结束"
-    $err_msg = 'rbenv installer: 您必须首先定义 $env:RBENV_ROOT'
-    $install = 'rbenv: 安装完成!'
-    $update  = 'rbenv: 更新完成!'
+    $welcome = "rbenv: Downloading pre-compiled binaries from Gitee... "
 } else {
     $repo    = "https://github.com/ccmywish/rbenv-for-windows"
     $welcome = "rbenv: Downloading pre-compiled binaries from GitHub... "
-    $goodbye = "Finished"
-    $err_msg = 'rbenv installer: You must define $env:RBENV_ROOT first'
-    $install = 'rbenv: Installation Complete!'
-    $update  = 'rbenv: Update Complete!'
 }
 # ---------------------------------------------------------------
+
+$goodbye = "Finished"
+$err_msg = 'rbenv installer: You must define $env:RBENV_ROOT first'
+$install = 'rbenv: Installation complete!'
+$update  = 'rbenv: Update complete!'
+
 
 function download_binaries() {
     Write-Host -f green $welcome -NoNewline
