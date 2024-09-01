@@ -1,8 +1,8 @@
 /** ------------------------------------------------------------
- * File          : ruby.d
- * Authors       : Aoran Zeng <ccmywish@qq.com>
- * Created on    : <2023-02-11>
- * Last modified : <2023-09-26>
+ * File Name     : ruby.d
+ * File Authors  : Aoran Zeng <ccmywish@qq.com>
+ * Created On    : <2023-02-11>
+ * Last Modified : <2024-09-02>
  *
  * ruby:
  *
@@ -59,7 +59,7 @@ int main(string[] args) {
         }
     }
 
-    string rubyexe  = RBENV_ROOT ~ "\\" ~ vsi.ver ~ "\\bin\\ruby.exe";
+    string rubyexe = get_bin_path_for_version(vsi.ver) ~ "\\ruby.exe";
 
     string shellcmd = join(rubyexe ~ escape_args[1..$], " ");
     // writeln(shellcmd);
