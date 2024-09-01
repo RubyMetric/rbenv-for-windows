@@ -23,13 +23,12 @@ function set_this_shell_version($version) {
 
     $version = auto_fix_version_for_installed $version
 
-    # if already set
-    if ($env:RBENV_VERSION) {
+    if ($env:RBENV_VERSION) { # If already set
         unset_this_shell_version
         set_this_shell_version($version)
     } else {
         $env:RBENV_VERSION = $version
-        $env:PATH = "$env:RBENV_ROOT\$version\bin;" + $env:PATH
+        $env:PATH = (get_bin_path_for_version($version)) + ";" + $env:PATH
     }
 }
 
