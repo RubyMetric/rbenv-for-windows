@@ -1,4 +1,6 @@
 # ---------------------------------------------------------------
+# SPDX-License-Identifier: MIT
+# ---------------------------------------------------------------
 # File Name     : build.ps1
 # File Authors  : Aoran Zeng <ccmywish@qq.com>
 # Created On    : <2023-03-04>

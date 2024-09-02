@@ -4,9 +4,9 @@
 # File Name      : install.ps1
 # File Authors   : Aoran Zeng <ccmywish@qq.com>
 # Created On     : <2023-03-04>
-# Last Modified  : <2024-09-02>
 # Major Revision :      4
-# ---------------------------------------------------------------
+# Last Modified  : <2024-09-02>
+#
 # install:
 #
 #   It installs/(Or Update) rbenv for Windows for users

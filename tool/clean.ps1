@@ -1,8 +1,10 @@
 # ---------------------------------------------------------------
-# File          : clean.ps1
-# Authors       : Aoran Zeng <ccmywish@qq.com>
-# Created on    : <2023-03-04>
-# Last modified : <2023-03-05>
+# SPDX-License-Identifier: MIT
+# ---------------------------------------------------------------
+# File Name     : clean.ps1
+# File Authors  : Aoran Zeng <ccmywish@qq.com>
+# Created On    : <2023-03-04>
+# Last Modified : <2023-03-05>
 #
 # clean:
 #
@@ -12,13 +14,13 @@
 $dir = "$env:RBENV_ROOT\rbenv"
 
 function clean_fake_ruby() {
-    rm "$dir\bin\ruby.exe"
-    rm "$dir\bin\ruby.obj"
+    Remove-Item "$dir\bin\ruby.exe"
+    Remove-Item "$dir\bin\ruby.obj"
 }
 
 function clean_rbenv_exec() {
-    rm "$dir\libexec\rbenv-exec.exe"
-    rm "$dir\libexec\rbenv-exec.obj"
+    Remove-Item "$dir\libexec\rbenv-exec.exe"
+    Remove-Item "$dir\libexec\rbenv-exec.obj"
 }
 
 
