@@ -4,7 +4,7 @@
 
 <p>
 
-<a href="https://github.com/RubyMetric/rbenv-for-windows/blob/main/LICENSE">
+<a href="https://github.com/RubyMetric/rbenv-for-windows/blob/main/LICENSE.txt">
     <img src="https://img.shields.io/github/license/RubyMetric/rbenv-for-windows.svg" alt="License" />
 </a>
 
