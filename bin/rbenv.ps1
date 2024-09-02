@@ -1,20 +1,16 @@
 # ---------------------------------------------------------------
-# File          : rbenv.ps1
-# Authors       : Aoran Zeng <ccmywish@qq.com>
-# Created on    : <2022-05-02>
-# Last modified : <2023-09-26>
-# Contributors  : Scoop Contributors
+# Copyright © 2022-2024 曾奥然 (Aoran Zeng)
+# SPDX-License-Identifier: MIT
+# ---------------------------------------------------------------
+# Project Name    : rbenv for Windows
+# Project Authors : Aoran Zeng <ccmywish@qq.com>
+# Contributors    : Scoop Contributors
+# Created On      : <2022-05-02>
+# Last Modified   : <2024-09-02>
 #
-#
-#               rbenv for Windows
-#
-# -------
-# Note:
-#
-#   I reuse a lot of code pieces from [scoop]
-#
+# Credit:
+#   I reuse a lot of code pieces from Scoop:
 #   <https://github.com/ScoopInstaller/Scoop> ("The Unlicense")
-#
 # ---------------------------------------------------------------
 
 param($cmd)
@@ -25,7 +21,7 @@ param($cmd)
 # [String]
 # rbenv's own version
 # Not to conflict with $env:RBENV_VERSION ('rbenv shell' sets it)
-$RBENV_OWN_VERSION       = "rbenv v1.5.0"
+$RBENV_OWN_VERSION       = "rbenv v1.5.1"
 
 # [String]
 # Where we check the global version
