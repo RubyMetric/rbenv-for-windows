@@ -1,8 +1,8 @@
 # ---------------------------------------------------------------
-# File          : build.ps1
-# Authors       : Aoran Zeng <ccmywish@qq.com>
-# Created on    : <2023-03-04>
-# Last modified : <2023-09-26>
+# File Name     : build.ps1
+# File Authors  : Aoran Zeng <ccmywish@qq.com>
+# Created On    : <2023-03-04>
+# Last Modified : <2024-09-02>
 #
 # build:
 #
@@ -59,7 +59,12 @@ if ($option -eq 'export') {
     $dest = "$HOME\Desktop\rbenv-for-Windows-export"
     mkdir $dest | Out-Null
 
-    cp $dir\bin\ruby.exe $dest
-    cp $dir\libexec\rbenv-exec.exe $dest
+    Copy-Item $dir\bin\ruby.exe $dest
+    Copy-Item $dir\libexec\rbenv-exec.exe $dest
+
+    $content = 'v' + (Get-Date -Format "yyyy-MM-dd") + "`n# Don't Edit Me!"
+    $file = "$dest\upstream-rbenv-binary-version.txt"
+    Set-Content -Path $file -Value $content
+
     Write-Host "rbenv: Copy built files to $dest"
 }
