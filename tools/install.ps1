@@ -18,11 +18,11 @@ $tag = "latest-binary"
 $binver_filename = "rbenv-binary-version.txt"
 
 if ($config -eq "cn") {
-              $repo = "https://gitee.com/ccmywish/rbenv-for-windows"
+              $repo = "https://gitee.com/RubyMetric/rbenv-for-windows"
        $dld_bin_msg = "Downloading pre-compiled binaries from Gitee... "
     $dld_binver_msg = "Checking $binver_filename from Gitee... "
 } else {
-              $repo = "https://github.com/ccmywish/rbenv-for-windows"
+              $repo = "https://github.com/RubyMetric/rbenv-for-windows"
        $dld_bin_msg = "Downloading pre-compiled binaries from GitHub... "
     $dld_binver_msg = "Checking $binver_filename from GitHub... "
 }

@@ -36,7 +36,7 @@
 
 - Fix bug: PowerShell `v5.x` series can't recognize `308` status code
 
-    See GitHub Issue [#18](https://github.com/ccmywish/rbenv-for-windows/issues/18), [#8](https://github.com/ccmywish/rbenv-for-windows/issues/8), [#7](https://github.com/ccmywish/rbenv-for-windows/issues/7)
+    See GitHub Issue [#18](https://github.com/RubyMetric/rbenv-for-windows/issues/18), [#8](https://github.com/RubyMetric/rbenv-for-windows/issues/8), [#7](https://github.com/RubyMetric/rbenv-for-windows/issues/7)
 
 <br>
 
@@ -63,7 +63,7 @@
 
 ### Bug fixes:
 
-- Use RubyGem's hook also in bundler process, this fixes the [one-year long bug: GitHub Issue #5](https://github.com/ccmywish/rbenv-for-windows/issues/5):
+- Use RubyGem's hook also in bundler process, this fixes the [one-year long bug: GitHub Issue #5](https://github.com/RubyMetric/rbenv-for-windows/issues/5):
 
 <br>
 
@@ -160,7 +160,7 @@
 
 - Revert change: not bypass `.bat` or `.cmd` delegator in [v1.3.0]()
 
-    See reasons: [GitHub Issue #12](https://github.com/ccmywish/rbenv-for-windows/issues/12)
+    See reasons: [GitHub Issue #12](https://github.com/RubyMetric/rbenv-for-windows/issues/12)
 
 ### Deprecations:
 
