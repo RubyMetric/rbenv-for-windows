@@ -1,6 +1,26 @@
 # Changelog
 
-## [Unreleased](#) (2023-09-26)
+## [Unreleased](#) (2024-09-02)
+
+<br>
+
+## [v1.5.1](#) (2024-09-02)
+
+### New features:
+
+- Conditionally update according to the binary version
+
+### Bug fixes:
+
+- `rbenv shell system`
+
+### Deprecations:
+
+- Move project URL and change tool directory name
+
+<br>
+
+## [v1.5.0](#) (2024-01-02)
 
 ### New features:
 
