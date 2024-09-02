@@ -31,7 +31,7 @@ There's a simple [record](./doc/benchmark.md) to show if `rbenv` will influence 
 
 ## Screenshot
 
-![screenshot](images/screenshot.png)
+![screenshot](image/screenshot.png)
 
 <br>
 
