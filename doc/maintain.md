@@ -3,13 +3,13 @@
 1. Clean binaries and test
 
     ```PowerShell
-    .\tools\clean.ps1
+    .\tool\clean.ps1
     ```
 
 2. Build binaries locally
 
     ```PowerShell
-    .\tools\build.ps1
+    .\tool\build.ps1
     ```
 
 3. Test each command

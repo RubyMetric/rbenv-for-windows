@@ -14,9 +14,9 @@ param($cmd)
 function update_rbenv($config) {
 
     if ($config -eq "cn") {
-        & "$env:RBENV_ROOT\rbenv\tools\install.ps1" update cn
+        & "$env:RBENV_ROOT\rbenv\tool\install.ps1" update cn
     } else {
-        & "$env:RBENV_ROOT\rbenv\tools\install.ps1" update
+        & "$env:RBENV_ROOT\rbenv\tool\install.ps1" update
     }
 }
 
