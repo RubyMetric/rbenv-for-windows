@@ -10,9 +10,8 @@
 param($cmd)
 
 
-# Pull repo && Download binaries
+# Invoke external script to update
 function update_rbenv($config) {
-    git -C $env:RBENV_ROOT\rbenv pull
 
     if ($config -eq "cn") {
         & "$env:RBENV_ROOT\rbenv\tools\install.ps1" update cn
