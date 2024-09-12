@@ -42,7 +42,10 @@ There's a simple [record](./doc/benchmark.md) to show if `rbenv` will influence 
 - Windows 7 SP1+ / Windows Server 2008+
 - [PowerShell 5](https://aka.ms/wmf5download) (or later, include [PowerShell Core](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-windows?view=powershell-6)) and [.NET Framework 4.5](https://www.microsoft.com/net/download) (or later)
 
-    PowerShell must be enabled for your user account e.g. `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+    PowerShell must be enabled for your user account e.g.
+  ```powershell
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+  ```
 
 - cURL
 - Git
@@ -52,6 +55,8 @@ There's a simple [record](./doc/benchmark.md) to show if `rbenv` will influence 
 > **It's portable, be bold to try it now**
 
 <br>
+
+### Install Guides
 
 <details>
 <summary>For common users</summary>
@@ -77,7 +82,7 @@ $env:RBENV_ROOT = "C:\Ruby-on-Windows"
 
 & "$env:RBENV_ROOT\rbenv\bin\rbenv.ps1" init
 ```
-After adding these configurations to your $profile, restart your terminal for the changes to take effect.
+After adding these configurations to your $profile `notepad.exe $profile`, restart your terminal for the changes to take effect.
 
 To update, use the following command:
 
@@ -105,7 +110,7 @@ $s = (iwr -useb "https://gitee.com/RubyMetric/rbenv-for-windows/raw/main/tool/in
 icm -sc ([scriptblock]::Create($s.Content)) -arg "install", "cn"
 ```
 
-其次，在你的 `$profile` 中, 添加这些内容:
+其次，在你的 `$profile` `notepad.exe $profile` 中, 添加这些内容:
 
 ```PowerShell
 # rbenv for Windows
