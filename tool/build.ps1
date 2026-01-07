@@ -15,52 +15,56 @@
 #
 #   Usage:
 #
-#       (1) ./build
+#       (1) ./build                   # Used for fast development
 #
-#       (2) ./build fast
+#       (2) ./build -Release          # Used for testing release build
 #
-#       (3) ./build export
+#       (3) ./build -Release -Export  # Used for GitHub Release
 #
-#   You can also change the compiler by using '-compiler dmd' not '-compiler=dmd'
+#   You can change the compiler by using '-Compiler dmd' not '-Compiler=dmd'
 # ---------------------------------------------------------------
 
 # working dir, is not where this script locates
 # (get-location).path
 
-param($option, $compiler = "ldc2")
+param([switch]$Release, [switch]$Export, $Compiler = "ldc2")
 
 $dir = "$env:RBENV_ROOT\rbenv"
 
 $script:compiler_flags = @()
 
-function set_compiler_flags($fast_mode) {
-    if ($compiler -eq "ldc2") {
-        use_ldc2 $fast_mode
+function set_compiler_flags($mode) {
+    if ($Compiler -eq "ldc2") {
+        use_ldc2 $mode
     }
 
-    elseif ($compiler -eq "dmd") {
-        use_dmd $fast_mode
+    elseif ($Compiler -eq "dmd") {
+        use_dmd $mode
     }
 
     else {
-        Write-Host "Unsupported D compiler: $compiler"
+        Write-Host "Unsupported D compiler: $Compiler"
         exit 1
     }
 }
 
-function use_dmd($fast_mode) {
-    if (!$fast_mode) {
+function use_dmd($mode) {
+    if ($mode -eq 'release') {
         $script:compiler_flags = '-O', '-release', '-inline'
+    } elseif ($mode -eq 'dev') {
+        $script:compiler_flags = @()
     } else {
         $script:compiler_flags = @()
     }
 }
 
-function use_ldc2($fast_mode) {
-    if (!$fast_mode) {
+function use_ldc2($mode) {
+    if ($mode -eq 'release') {
         # ldc2's -O is -O3
         # ldc2 doesn't support '-inline'
         $script:compiler_flags = '-O', '-release'
+    } elseif ($mode -eq 'dev') {
+        $script:compiler_flags = @()
     } else {
         $script:compiler_flags = @()
     }
@@ -68,27 +72,25 @@ function use_ldc2($fast_mode) {
 
 
 function build_fake_ruby() {
-    & $compiler $script:compiler_flags -of="$dir\bin\ruby.exe" "$dir\source\ruby.d" "$dir\source\rbenv\common.d"
+    & $Compiler $script:compiler_flags -of="$dir\bin\ruby.exe" "$dir\source\ruby.d" "$dir\source\rbenv\common.d"
 }
 
 function build_rbenv_exec() {
-    & $compiler $script:compiler_flags -of="$dir\libexec\rbenv-exec.exe" "$dir\source\rbenv-exec.d" "$dir\source\rbenv\common.d"
+    & $Compiler $script:compiler_flags -of="$dir\libexec\rbenv-exec.exe" "$dir\source\rbenv-exec.d" "$dir\source\rbenv\common.d"
 }
 
 
 # main
-if ($option -eq 'fast') {
-    set_compiler_flags $true
-} else {
-    set_compiler_flags $false
-}
-
 Write-Host "rbenv: " -NoNewline
-if ($option -eq 'fast') {
-    Write-Host "(fast mode) " -ForegroundColor Yellow -NoNewline
+if ($Release) {
+    Write-Host "(release mode) " -ForegroundColor Yellow -NoNewline
+    set_compiler_flags 'release'
+} else {
+    Write-Host "(dev mode) " -ForegroundColor Yellow -NoNewline
+    set_compiler_flags 'dev'
 }
 Write-Host "Using " -NoNewline
-Write-Host "$compiler" -ForegroundColor Blue -NoNewline
+Write-Host "$Compiler" -ForegroundColor Blue -NoNewline
 Write-Host " with " -NoNewline
 Write-Host "$script:compiler_flags" -ForegroundColor Magenta
 
@@ -98,7 +100,7 @@ Write-Host "rbenv: Building rbenv-exec.exe to $dir\libexec\"
 build_rbenv_exec
 
 
-if ($option -eq 'export') {
+if ($Export) {
     $dest = "$HOME\Desktop\rbenv-for-Windows-export"
     mkdir $dest | Out-Null
 
