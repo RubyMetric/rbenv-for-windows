@@ -108,8 +108,10 @@ if ($Export) {
     Copy-Item $dir\libexec\rbenv-exec.exe $dest
 
     $content = 'v' + (Get-Date -Format "yyyy-MM-dd") + "`n# Don't Edit Me!"
-    $file = "$dest\upstream-rbenv-binary-version.txt"
+    $file = "$dest\ETag.txt"
     Set-Content -Path $file -Value $content
+
+    Copy-Item $file "$dest\upstream-rbenv-binary-version.txt"
 
     Write-Host "rbenv: Copy built files to $dest"
 }
