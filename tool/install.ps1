@@ -38,16 +38,17 @@ function download_binary_files() {
 
     # Explicitly use curl.exe rather than curl
     # Because on PowerShell v5.1, curl is aliased to `Invoke-Webrequest` by default
-    curl.exe -sSL "$repo/releases/download/$tag/ruby.exe" -o "$env:RBENV_ROOT\rbenv\bin\ruby.exe"
+    curl.exe -fsSL "$repo/releases/download/$tag/ruby.exe" -o "$env:RBENV_ROOT\rbenv\bin\ruby.exe"
 
-    curl.exe -sSL "$repo/releases/download/$tag/rbenv-exec.exe" -o "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe"
+    curl.exe -fsSL "$repo/releases/download/$tag/rbenv-exec.exe" -o "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe"
 
     Write-Host -f Green "Finished"
 }
 
-function download_binary_version_file($when) {
-    Write-Host -f Blue $dld_binver_msg -NoNewline
-    curl.exe -sSL "$repo/releases/download/$tag/$upstream_binver_filename" -o $upstream_binver_file
+function download_etag_file($when) {
+    Write-Host -f Blue $dld_etag_msg -NoNewline
+    # We must use -f, otherwise "not found" will also cause non-zero exit code
+    curl.exe -fsSL "$repo/releases/download/$tag/$upstream_etag_filename" -o $upstream_etag_file
 
     if ($?) {
         if ($when -eq 'nonexist') {
@@ -56,7 +57,9 @@ function download_binary_version_file($when) {
             # Leave for the next step to output inline!
         }
     } else {
-        Write-Error "Download Error!"
+        # Don't use Write-Error here, because it will output extra info
+        Write-Host -f Red "Download Error!"
+        exit 1
     }
 }
 
