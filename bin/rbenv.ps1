@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------
-# Copyright © 2022-2024 曾奥然 (Aoran Zeng)
+# Copyright © 2022-2026 曾奥然 (Aoran Zeng)
 # SPDX-License-Identifier: MIT
 # ---------------------------------------------------------------
 # Project Name    : rbenv for Windows
