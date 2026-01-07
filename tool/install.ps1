@@ -4,8 +4,8 @@
 # File Name      : install.ps1
 # File Authors   : Aoran Zeng <ccmywish@qq.com>
 # Created On     : <2023-03-04>
-# Major Revision :      4
-# Last Modified  : <2024-09-02>
+# Major Revision :      5
+# Last Modified  : <2026-01-07>
 #
 # install:
 #
@@ -15,22 +15,24 @@ param($cmd, $config)
 
 $tag = "latest-binary"
 
-$binver_filename = "rbenv-binary-version.txt"
+$etag_filename = "rbenv-ETag.txt"
 
 if ($config -eq "cn") {
               $repo = "https://gitee.com/RubyMetric/rbenv-for-windows"
-       $dld_bin_msg = "Downloading pre-compiled binaries from Gitee... "
-    $dld_binver_msg = "Checking $binver_filename from Gitee... "
+       $dld_bin_msg = "从 Gitee 下载预编译二进制文件... "
+      $dld_etag_msg_when_comparing = "从 Gitee 检查 $etag_filename... "
+     $dld_etag_msg_when_missing = "下载 $etag_filename... "
 } else {
               $repo = "https://github.com/RubyMetric/rbenv-for-windows"
        $dld_bin_msg = "Downloading pre-compiled binaries from GitHub... "
-    $dld_binver_msg = "Checking $binver_filename from GitHub... "
+      $dld_etag_msg_when_comparing = "Checking $etag_filename from GitHub... "
+     $dld_etag_msg_when_missing = "Downloading $etag_filename... "
 }
 # ---------------------------------------------------------------
 
-$upstream_binver_filename = "upstream-$binver_filename"
-$upstream_binver_file     = "$env:RBENV_ROOT\$upstream_binver_filename"
-$local_binver_file        = "$env:RBENV_ROOT\$binver_filename"
+$upstream_etag_filename = "upstream-$etag_filename"
+$upstream_etag_file     = "$env:RBENV_ROOT\$upstream_etag_filename"
+$local_etag_file        = "$env:RBENV_ROOT\$etag_filename"
 
 
 function download_binary_files() {
@@ -45,54 +47,72 @@ function download_binary_files() {
     Write-Host -f Green "Finished"
 }
 
-function download_etag_file($when) {
-    Write-Host -f Blue $dld_etag_msg -NoNewline
+
+function download_etag_file($type, $etag_file_status) {
+<#
+.PARAMETER type
+    'install'  : when installing rbenv for the first time
+    'update'   : when updating rbenv
+.PARAMETER etag_file_status
+    'exist'    : when the local etag file exists  ($type can be 'update' only)
+    'missing'  : when the local etag file missing ($type can be 'install' or 'update')
+#>
+    if ($type -eq 'update' -and $etag_file_status -eq 'exist') {
+        Write-Host -f Blue $dld_etag_msg_when_comparing -NoNewline
+    } else {
+        Write-Host -f Blue $dld_etag_msg_when_missing -NoNewline
+    }
+
     # We must use -f, otherwise "not found" will also cause non-zero exit code
     curl.exe -fsSL "$repo/releases/download/$tag/$upstream_etag_filename" -o $upstream_etag_file
 
     if ($?) {
-        if ($when -eq 'nonexist') {
-            Write-Host -f Green "OK"
+        if ($etag_file_status -eq 'missing') {
+            Write-Host -f Green "OK!"
         } else {
             # Leave for the next step to output inline!
         }
     } else {
         # Don't use Write-Error here, because it will output extra info
-        Write-Host -f Red "Download Error!"
+        Write-Host -f Red "Download Error! $LASTEXITCODE"
         exit 1
     }
 }
 
 
-# For:
-# 1. old users' transition
-# 2. $local_binver_file was accidentally deleted
-function update_when_local_binverfile_exist() {
-    download_binary_version_file
+function update_when_local_etagfile_exist() {
+    download_etag_file "update" "exist"
 
     if ($True -eq (is_binary_latest)) {
         Write-Host -f Green  "Already Latest"
     } else {
         Write-Host -f Yellow "Outdated"
         download_binary_files
-        Copy-Item $upstream_binver_file $local_binver_file
-        Write-Host -f Green "Update the local $binver_filename"
+        Copy-Item $upstream_etag_file $local_etag_file
+        Write-Host -f Green "Update the local $etag_filename"
     }
 }
 
-function update_when_local_binverfile_nonexist() {
-    Write-Host -f Yellow "Lacking of local $binver_filename, rbenv will auto prepare it for you"
-    download_binary_version_file 'nonexist'
+
+function update_when_local_etagfile_missing() {
+<#
+.DESCRIPTION
+For:
+    1. old users' transition
+    2. $local_etag_file was accidentally deleted
+#>
+    Write-Host -f Yellow "Lacking of local $etag_filename, rbenv will prepare it for you"
+    download_etag_file "update" "missing"
 
     download_binary_files
-    Copy-Item $upstream_binver_file $local_binver_file
+    Copy-Item $upstream_etag_file $local_etag_file
 }
 
 
 function is_binary_latest()
 {
-    $local_ver    = Get-Content $local_binver_file    -TotalCount 1
-    $upstream_ver = Get-Content $upstream_binver_file -TotalCount 1
+    $local_ver    = Get-Content $local_etag_file    -TotalCount 1
+    $upstream_ver = Get-Content $upstream_etag_file -TotalCount 1
 
     if ($local_ver -ne $upstream_ver) {
         return $False
@@ -109,14 +129,14 @@ if ($cmd -eq "update") { # update
     git -C $env:RBENV_ROOT\rbenv pull
 
     # (2)
-    if (Test-Path $local_binver_file) {
-        update_when_local_binverfile_exist
+    if (Test-Path $local_etag_file) {
+        update_when_local_etagfile_exist
     } else {
-        update_when_local_binverfile_nonexist
+        update_when_local_etagfile_missing
     }
 
     # (END)
-    Remove-Item $upstream_binver_file
+    Remove-Item $upstream_etag_file
     Write-Host -f Green 'rbenv: Update complete!'
 
 } else { # Install
@@ -129,14 +149,14 @@ if ($cmd -eq "update") { # update
 
         # (2)
         download_binary_files
-        download_binary_version_file "nonexist"
+        download_etag_file "install" "missing"
 
         # (3)
-        Copy-Item $upstream_binver_file $local_binver_file
-        Write-Host -f Green "Update the local $binver_filename"
+        Copy-Item $upstream_etag_file $local_etag_file
+        # Write-Host -f Green "Set the local $etag_filename"
 
         # (END)
-        Remove-Item $upstream_binver_file
+        Remove-Item $upstream_etag_file
         Write-Host -f Green 'rbenv-installer: Installation complete!'
 
     } else {
