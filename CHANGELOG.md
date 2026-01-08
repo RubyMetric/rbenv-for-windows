@@ -1,6 +1,19 @@
 # Changelog
 
-## [Unreleased](#) (2024-09-02)
+## [Unreleased](#) (2026-01-08)
+
+<br>
+
+## [v1.5.2](#) (2026-01-08)
+
+### Enhancements:
+
+- Use `ldc2` to compile instead of `dmd` by default
+- Better `build.ps1` and `install.ps1`
+
+### Deprecations:
+
+- Rename `rbenv-binary-version.txt` to `rbenv-ETag.txt`
 
 <br>
 
