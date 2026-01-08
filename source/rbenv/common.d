@@ -2,7 +2,7 @@
 * File          : common.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-03>
-* Last modified : <2023-09-26>
+* Last modified : <2026-01-08>
 *
 * common:
 *
@@ -19,7 +19,7 @@ import std.algorithm    : canFind, startsWith;
 import std.algorithm    : filter, sort, map, cmp;
 import std.file         : getcwd, chdir, dirEntries, SpanMode, exists, readText, read, write;
 import std.path         : baseName, dirName, rootName;
-import std.regex        : matchAll;
+import std.regex        : ctRegex, matchAll;
 import std.string       : indexOf, splitLines, chompPrefix;
 import std.array        : join;
 
@@ -47,7 +47,7 @@ void success(string str) {
 //                  Global variable and constant
 // --------------------------------------------------------------
 
-private enum version_match_regexp = r"\d{1,}\.\d{1,}\.\d{1,}-\d{1,}";
+private enum version_match_regexp = ctRegex!(r"\d{1,}\.\d{1,}\.\d{1,}-\d{1,}");
 
 string RBENV_ROOT;
 string SHIMS_DIR;
@@ -200,16 +200,14 @@ unittest {
 }
 
 
-/*
-Function:
-
-    Used for shim script to find the correct version of gem executable
+/**
+Used for shim script to find the correct version of gem executable
 
 Directly called by:
 
     rbenv-exec.exe shim-get-gem <arg>
 
-Return:
+Returns:
 
     'correct_ver_dir\gem_name.cmd' arguments or
     'correct_ver_dir\gem_name.bat' arguments
