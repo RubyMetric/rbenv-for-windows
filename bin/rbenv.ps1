@@ -6,7 +6,7 @@
 # Project Authors : Aoran Zeng <ccmywish@qq.com>
 # Contributors    : Scoop Contributors
 # Created On      : <2022-05-02>
-# Last Modified   : <2024-09-02>
+# Last Modified   : <2026-01-08>
 #
 # Credit:
 #   I reuse a lot of code pieces from Scoop:
@@ -21,7 +21,7 @@ param($cmd)
 # [String]
 # rbenv's own version
 # Not to conflict with $env:RBENV_VERSION ('rbenv shell' sets it)
-$RBENV_OWN_VERSION       = "rbenv v1.5.1"
+$RBENV_OWN_VERSION       = "rbenv v1.5.2"
 
 # [String]
 # Where we check the global version
