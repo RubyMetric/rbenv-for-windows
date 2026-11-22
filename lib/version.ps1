@@ -16,6 +16,34 @@ function get_system_ruby_version_and_path {
 }
 
 
+function match_version_prefix($candidate, $ver) {
+    if ($ver.EndsWith('.') -or $ver.EndsWith('-')) {
+        return $candidate.StartsWith($ver)
+    }
+    $candidate -eq $ver -or $candidate.StartsWith("$ver.") -or $candidate.StartsWith("$ver-")
+}
+
+function find_matching_version($versions, $ver) {
+    if ($versions -contains $ver) {
+        return $ver
+    }
+    foreach ($i in $versions) {
+        $i = [string] $i
+        if (match_version_prefix $i ([string] $ver)) {
+            return $i
+        }
+    }
+    return $null
+}
+
+function version_sort_key($name) {
+    if ($name -eq 'head') { return '9999999999' }
+    if ($name -match '^(\d+)\.(\d+)\.(\d+)-(\d+)(.*)$') {
+        return '{0:D5}.{1:D5}.{2:D5}-{3:D5}{4}' -f [int]$Matches[1], [int]$Matches[2], [int]$Matches[3], [int]$Matches[4], $Matches[5]
+    }
+    return $name
+}
+
 # Auto fix version number to get close to installed versions
 #
 # commands using this:
@@ -26,17 +54,9 @@ function get_system_ruby_version_and_path {
 #
 function auto_fix_version_for_installed($ver) {
     $versions = get_all_installed_versions
+    $matched = find_matching_version $versions $ver
+    if ($matched) { return $matched }
 
-    if ($versions -contains $ver) {
-        return $ver
-    } else {
-        foreach ($i in $versions)  {
-            $i = [string] $i
-            $ver = [string] $ver
-            $idx = $i.IndexOf($ver)
-            if ($idx -eq 0) { return $i }
-        }
-    }
     warn "rbenv: version $ver not installed"
     exit
 }
@@ -49,17 +69,8 @@ function auto_fix_version_for_installed($ver) {
 # 1. rbenv-install
 function auto_fix_version_for_remote($ver) {
     $versions = get_all_remote_versions
-
-    if ($versions -contains $ver) {
-        return $ver
-    } else {
-        foreach ($i in $versions)  {
-            $i = [string] $i
-            $ver = [string] $ver
-            $idx = $i.IndexOf($ver)
-            if ($idx -eq 0) { return $i }
-        }
-    }
+    $matched = find_matching_version $versions $ver
+    if ($matched) { return $matched }
 
     warn "rbenv: version $ver not found"
     exit
@@ -81,9 +92,7 @@ function get_all_installed_versions {
                     $_.Name -match $(version_match_regexp) -or $_.Name -eq 'head'
                 }
 
-    # foreach ($ver in $versions) { $ver.Name }
-
-    $versions = $versions | Sort-Object -Descending | ForEach-Object {
+    $versions = $versions | Sort-Object -Descending { version_sort_key $_.Name } | ForEach-Object {
         $_.Name
     }
 
