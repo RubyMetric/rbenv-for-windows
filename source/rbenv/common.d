@@ -15,7 +15,7 @@ module rbenv.common;
 import std.stdio;
 import std.process      : environment, executeShell;
 import std.array        : split, array;
-import std.algorithm    : canFind, startsWith;
+import std.algorithm    : canFind, startsWith, endsWith;
 import std.algorithm    : filter, sort, map, cmp;
 import std.file         : getcwd, chdir, dirEntries, SpanMode, exists, readText, read, write;
 import std.path         : baseName, dirName, rootName;
@@ -89,18 +89,43 @@ string[] get_all_remote_versions() {
 }
 
 
+private int[4] parse_version_parts(string ver) {
+    import std.conv : to;
+    import std.regex : matchFirst;
+    auto m = ver.matchFirst(ctRegex!(r"^(\d+)\.(\d+)\.(\d+)-(\d+)"));
+    if (m.empty) return [0, 0, 0, 0];
+    return [m[1].to!int, m[2].to!int, m[3].to!int, m[4].to!int];
+}
+
+private bool version_gt(string a, string b) {
+    if (a == b) return false;
+    if (a == "head") return true;
+    if (b == "head") return false;
+    auto pa = parse_version_parts(a);
+    auto pb = parse_version_parts(b);
+    foreach (i; 0 .. 4) {
+        if (pa[i] != pb[i]) return pa[i] > pb[i];
+    }
+    return a > b;
+}
+
+private bool match_version_prefix(string candidate, string ver) {
+    if (ver.endsWith(".") || ver.endsWith("-")) {
+        return candidate.startsWith(ver);
+    }
+    return candidate == ver || candidate.startsWith(ver ~ ".") || candidate.startsWith(ver ~ "-");
+}
+
 // Read all dir names in the RBENV_ROOT
 string[] get_all_installed_versions() {
 
     // FilterResult!(__lambda1, _DirIterator!false)
-    auto vers = dirEntries(RBENV_ROOT, SpanMode.shallow).filter!(
-        (dir) {
-            auto name = dir.name;
-            return name.matchAll(version_match_regexp) || name == "head" ;
-        }
-    ).map!(a => baseName(a.name)).array;
+    auto vers = dirEntries(RBENV_ROOT, SpanMode.shallow)
+        .map!(dir => baseName(dir.name))
+        .filter!(name => name.matchAll(version_match_regexp) || name == "head")
+        .array;
 
-    vers = vers.sort!( (a,b) => cmp(a,b) == 1 ).array;
+    vers = vers.sort!((a, b) => version_gt(a, b)).array;
 
     string system_rb = environment.get("RBENV_SYSTEM_RUBY");
 
@@ -128,9 +153,7 @@ string auto_fix_version_for_installed(string ver) {
         return ver;
     } else {
         foreach (s ; versions)  {
-            // writeln(s);
-            auto yes = s.startsWith(ver);
-            if (yes) { return s; }
+            if (match_version_prefix(s, ver)) { return s; }
         }
     }
     warn("rbenv: version " ~ ver ~ " not installed");
@@ -150,8 +173,7 @@ string auto_fix_version_for_remote(string ver) {
         return ver;
     } else {
         foreach (s ; versions)  {
-            auto yes = s.startsWith(ver);
-            if (yes) { return s; }
+            if (match_version_prefix(s, ver)) { return s; }
         }
     }
 
