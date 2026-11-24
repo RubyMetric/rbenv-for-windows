@@ -25,7 +25,7 @@ Hi, hello
 2. Integrate with `RubyGems`, `Bundler` compactly
 3. Interact with shell prompt tools like [starship] and [oh-my-posh] properly
 4. Support RubyInstaller for ARM64
-5. Extend commands familiar to [mise] and [RVM] users
+5. Extend rational commands familiar to [mise] and [RVM] users. [Compare them](./doc/Comparing-RVM-mise-rbenv.md).
 
 There's a simple [record](./doc/benchmark.md) to show if `rbenv` will influence Ruby/Gem commands startup time significantly.
 
