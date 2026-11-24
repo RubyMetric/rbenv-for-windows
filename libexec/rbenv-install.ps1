@@ -314,6 +314,45 @@ function remove_ruby_registry_info($version) {
 #   1. Install whole rubyinstaller-devkit.exe when 'version < 3.1.0-1'
 #   2. Install only  rubyinstaller.7z when 'version >= 3.1.0-1'
 #
+function get_expected_sha256($version, $architecture, $checksum_column) {
+    $versions_file = "$PSScriptRoot\..\share\versions-for-$architecture.json"
+    $version_info = Get-Content -LiteralPath $versions_file -Raw |
+        ConvertFrom-Json |
+        Where-Object { $_.version -eq $version } |
+        Select-Object -First 1
+
+    if (!$version_info) {
+        abort "rbenv: no checksum entry for Ruby '$version' ($architecture)"
+    }
+
+    $expected = $version_info.$checksum_column
+    if ($version -eq 'head' -and $null -eq $expected) {
+        return $null
+    }
+    if ([string]::IsNullOrWhiteSpace($expected) -or $expected -notmatch '^[0-9a-fA-F]{64}$') {
+        abort "rbenv: no valid $checksum_column checksum for Ruby '$version' ($architecture)"
+    }
+
+    return $expected
+}
+
+
+function verify_download_sha256($path, $version, $architecture, $checksum_column) {
+    $expected = get_expected_sha256 $version $architecture $checksum_column
+    if (!$expected) {
+        warn "rbenv: no published SHA256 for Ruby '$version' ($architecture); skipping checksum verification"
+        return
+    }
+
+    $actual = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash
+    if ($actual -ine $expected) {
+        abort "rbenv: SHA256 mismatch for '$path' (expected $expected, got $actual)"
+    }
+
+    info "SHA256 verified"
+}
+
+
 function download_ruby($version) {
     # Get our mirror list
     . $PSScriptRoot\..\share\mirrors.ps1
@@ -341,7 +380,9 @@ function download_ruby($version) {
 
     Write-Host "Begin downloading ..."
     info "=> $url"
-    return download_with_cache $url $cache_name
+    $path = download_with_cache $url $cache_name
+    verify_download_sha256 $path $version $architecture 'SHA256'
+    return $path
 }
 
 
@@ -413,7 +454,9 @@ function download_ruby_with_msys2($version) {
 
     Write-Host "Begin downloading ..."
     info "=> $url"
-    return download_with_cache $url $cache_name
+    $path = download_with_cache $url $cache_name
+    verify_download_sha256 $path $version $architecture 'DEVKIT_SHA256'
+    return $path
 }
 
 
