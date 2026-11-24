@@ -4,6 +4,7 @@
 # Help: Show the active version and configured versions, including the nearest
 #       local version file.
 #       Shell takes precedence over local, which takes precedence over global.
+#       The command can also be abbreviated as rbenv cur.
 
 if ($args.Count -gt 0) {
     abort 'Usage: rbenv current'

@@ -70,6 +70,21 @@ global change affects other directories too, and an existing local or
 shell-specific version can override it. Use `--local` when the project itself
 should record the version.
 
+## Inspecting current versions with `current`
+
+RVM's [`rvm current`](https://github.com/rvm/rvm/blob/master/help/current.md)
+prints the current Ruby version and any active gemset. mise also has a
+[`mise current`](https://github.com/jdx/mise/blob/main/src/cli/current.rs)
+command: it is hidden from the command list and prints active tool versions,
+optionally for one tool, in a script-friendly format.
+
+`rbenv current` (also available as `rbenv cur`) shows the active Ruby version
+and its source first, followed by
+the configured global, local and shell versions and the detected system Ruby.
+The local value is shown as written in the nearest `.ruby-version` file.
+Shell takes precedence over local, which takes precedence over global; the
+system Ruby is a separate installation and is active only when selected.
+
 ## Inspecting the environment with `info`
 
 RVM provides [`rvm info`](https://rvm.io/rvm/cli) to show information about
