@@ -165,6 +165,19 @@ rbenv install -l
 # List all Ruby versions
 rbenv install -a
 
+# List installed Ruby versions in a table
+rbenv list
+# or
+rbenv ls
+
+# List available Ruby versions; a check mark indicates an installed version
+rbenv list -r
+# or
+rbenv ls --remote
+
+# Remote versions come from the bundled list for your Windows architecture.
+# Update rbenv to refresh it.
+
 # Hooray! So easy to try Ruby dev branch!
 rbenv install head
 

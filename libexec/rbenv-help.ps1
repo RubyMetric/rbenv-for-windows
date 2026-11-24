@@ -41,15 +41,25 @@ function print_help {
 
 function print_summaries {
     $commands = @{}
+    $extensions = @{}
 
     command_files | ForEach-Object {
         $command = command_name $_
-        $summary = summary (Get-Content (command_path $command) -raw)
+        $text = Get-Content (command_path $command) -raw
+        $summary = summary $text
         if(!($summary)) { $summary = '' }
-        $commands.add("$command ", $summary) # add padding
+        if ($text -match '(?m)^# Category: extension\r?$') {
+            $extensions.add("$command ", $summary)
+        } else {
+            $commands.add("$command ", $summary)
+        }
     }
 
     $commands.getenumerator() | Sort-Object name | Format-Table -hidetablehead -autosize -wrap
+    if ($extensions.Count -gt 0) {
+        "`nExtended commands by rbenv for Windows:"
+        $extensions.getenumerator() | Sort-Object name | Format-Table -hidetablehead -autosize -wrap
+    }
 }
 
 $available_commands = get_commands
