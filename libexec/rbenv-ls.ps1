@@ -1,4 +1,4 @@
-# Usage: rbenv ls [-r|--remote]
+# Usage: rbenv ls [-i|--installed|-l|--local|-r|--remote]
 # Summary: Alias for rbenv list
 # Category: extension
 # Help: See rbenv help list.

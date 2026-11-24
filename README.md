@@ -25,6 +25,7 @@ Hi, hello
 2. Integrate with `RubyGems`, `Bundler` compactly
 3. Interact with shell prompt tools like [starship] and [oh-my-posh] properly
 4. Support RubyInstaller for ARM64
+5. Extend commands familiar to [mise] and [RVM] users
 
 There's a simple [record](./doc/benchmark.md) to show if `rbenv` will influence Ruby/Gem commands startup time significantly.
 
@@ -169,7 +170,12 @@ rbenv install -a
 rbenv list
 # or
 rbenv ls
-
+# These also list installed versions
+rbenv ls -i
+rbenv ls --installed
+rbenv ls -l
+rbenv ls -local
+rbenv ls --local
 # List available Ruby versions; a check mark indicates an installed version
 rbenv list -r
 # or
@@ -283,5 +289,7 @@ name | example | description
 
 [RubyInstaller2]: https://github.com/oneclick/rubyinstaller2
 [rbenv]: https://github.com/rbenv/rbenv
+[RVM]: https://github.com/rvm/rvm
+[mise]: https://github.com/jdx/mise
 [starship]: https://github.com/starship/starship
 [oh-my-posh]: https://github.com/JanDeDobbeleer/oh-my-posh
