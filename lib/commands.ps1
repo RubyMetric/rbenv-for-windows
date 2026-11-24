@@ -24,5 +24,11 @@ function command_path($cmd) {
 function command_exec($cmd, $arguments) {
     $cmd_path = command_path $cmd
 
+    # Prevent a previous native command's exit code from affecting this command.
+    $global:LASTEXITCODE = 0
     & $cmd_path @arguments
+    if (-not $?) {
+        if ($LASTEXITCODE -eq 0) { exit 1 }
+        exit $LASTEXITCODE
+    }
 }

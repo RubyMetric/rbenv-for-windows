@@ -213,6 +213,12 @@ rbenv global
 # Set local version
 rbenv local 3.1.2-1
 
+# Use global scope when this directory or a parent contains .git; otherwise use local
+rbenv use 3.1.2-1
+# Override the automatic choice
+rbenv use --local 3.1.2-1
+rbenv use --global 3.1.2-1
+
 # Check versions
 rbenv versions
 
