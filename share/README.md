@@ -13,4 +13,4 @@ Sorry for not support x86 versions. If you are interested, you can contribute to
 
 **For maintainers**:
 
-Run `ruby tool/update_versions.rb` from the repository root to regenerate the x64 and arm version tables from the upstream downloads data.
+Run `ruby tool/update_versions.rb` from the repository root to regenerate the x64 and arm JSON version lists from the upstream downloads data. The JSON records include SHA256 checksums for Ruby archives and Devkit installers.

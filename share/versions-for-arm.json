@@ -1,0 +1,137 @@
+[
+  {
+    "version": "head",
+    "sha256": null,
+    "devkit_sha256": null
+  },
+  {
+    "version": "4.0.10-1",
+    "sha256": "ddb276f02e9b5e9c8226ee78b2cd11d8475acd6132347da7ea918fb6c674d5cb",
+    "devkit_sha256": "b58548db3f7eeb417009042ae4515a207760a9e75efbd000f47618e707e57cd1"
+  },
+  {
+    "version": "4.0.9-1",
+    "sha256": "d13273600bff5ca349f3866a0492517b144510ceb916525e891e2e1a3f728b78",
+    "devkit_sha256": "e6db63786857028bd13f2fcc4803923057e143487a738b6879399a5a875f375c"
+  },
+  {
+    "version": "4.0.7-2",
+    "sha256": "911c20f8741c67977ce24600780cf0164c67244d748d4a7618b60f01a699d87c",
+    "devkit_sha256": "937348f005bf4028d512f2708fc499b17d1259d5cb44fe15fc139624cf54ac05"
+  },
+  {
+    "version": "4.0.7-1",
+    "sha256": "54f55648f2e700f497ba1057974824c829ec63336bf4802619837548af6bdcfb",
+    "devkit_sha256": "a8b262675be9394e73698a9f111f007e5ac5ae729dca8c72c348a273a088d556"
+  },
+  {
+    "version": "4.0.6-1",
+    "sha256": "7d4c80e2251190afb4708f2c840425f16b0c912669a7fc105f889fbe6565cd8c",
+    "devkit_sha256": "ca359427f1de1c716e6ecc42157a82dcf3f774acd0bfef11f55196eaa17902e7"
+  },
+  {
+    "version": "4.0.5-1",
+    "sha256": "c7c6bcd0b070bf7c2e0c03e70fb9754d022b8a216ebc4befab880874c6180b51",
+    "devkit_sha256": "33fd2da83342161201f3e3a2aa4cbf0b74caec4d0d90475a11b37ddf810ca902"
+  },
+  {
+    "version": "4.0.4-1",
+    "sha256": "c21cf28d2a8e417c66a3f063785d43b6784d339a31d8a51f6ed329c30741066f",
+    "devkit_sha256": "76ac80cdd18f53c493f446dd805934654569f67433991e77cdc72a0c6bee9dbd"
+  },
+  {
+    "version": "4.0.3-1",
+    "sha256": "0ac6b87598a8afab77111b643f765ecfe7c23212b3fe669438fa1268b13ab390",
+    "devkit_sha256": "0254fbfd8906602cd935430bb482f35e61cef255a80728ef61f33a8a465c90dc"
+  },
+  {
+    "version": "4.0.2-1",
+    "sha256": "f7ceacfa7468da793d74fc60816fcb319b3249b444b0a0ad68fd33365f7f2b3f",
+    "devkit_sha256": "d2ca7bd3c311a27f48b6e11821f08ddd1cc54885a90dd2fe6dfc9e95f7797d1e"
+  },
+  {
+    "version": "4.0.1-1",
+    "sha256": "479646ca0305dbd4db756b8061f2084b9328b195ddab88ad400e16e82345a1cf",
+    "devkit_sha256": "8eed26160fbce4000ef1518c0e8b3c523f47c087cb5f29bb0baa0603506e103d"
+  },
+  {
+    "version": "4.0.0-1",
+    "sha256": "32fd28e78174bcd3c66dbb843afa6ff295088bd4dbad3cdb4aa3bb1e5a2bd95f",
+    "devkit_sha256": "a0a2d438a73c999df142fead97b545f37c6b07d305d8a774e66beb8f15160ab0"
+  },
+  {
+    "version": "3.4.13-1",
+    "sha256": "1eadf2d39e17d2b3d3d7e6ee59da7f97220f96b1fe9eda8938e1c1f4dcdc8fdb",
+    "devkit_sha256": "ab4828b1c856dddf1ff27d0e32c8db5331a5fb54709a6ec6a484f8d195500763"
+  },
+  {
+    "version": "3.4.12-1",
+    "sha256": "6462eea40a8399420708518b82d121eec0d24daf5bb64abdf238a54d85362d29",
+    "devkit_sha256": "4931ab1771026a4c28ce61b947ea2f8bc550cd522025e0e940a8297feafcad97"
+  },
+  {
+    "version": "3.4.11-2",
+    "sha256": "1f8b24d70e136b9cef60aba0001a78f1a5d54ef661243965036b0670085f1d85",
+    "devkit_sha256": "ec88ecbc6e4ec03e23aa760936f33f6f2d840f65ecc67d1feb54586b286bde26"
+  },
+  {
+    "version": "3.4.11-1",
+    "sha256": "48b43e9aa362c7590475aa2d011ece7c352632c55f71fa0a482d92fc8edbc521",
+    "devkit_sha256": "f4646a9f5dd8f3fb3696d9272f97118d831a2f9a85087ca1ff89f2138c03fa56"
+  },
+  {
+    "version": "3.4.10-1",
+    "sha256": "472da9b8963ce4fca52baae753cafb7788a03fd73baaa1fc430ea7557445d331",
+    "devkit_sha256": "95e2bff28565df0af5403df02969b4c4559a8af8166d9c12fded10cf388d39bd"
+  },
+  {
+    "version": "3.4.9-1",
+    "sha256": "ba73f9c75ad119413e444996db3b4865d55221673172dbb6329f250bd4ca6156",
+    "devkit_sha256": "4a1cd09407289ee75db5eb1e628d2d38ea0885dabc783de2d6eb31e7d353ff30"
+  },
+  {
+    "version": "3.4.8-1",
+    "sha256": "57a08041d5a974aa40732ef71c5b6da8873e32d4855b712faa2ed4c1d6c43317",
+    "devkit_sha256": "3803dd333b102d6ef216edc28ef50b3e107c35fcce3cad0e81e72386da93d091"
+  },
+  {
+    "version": "3.4.7-1",
+    "sha256": "9cd36d5ae080ffe7161d13e060d350e6fc2286e81fb42d16b79ea40d4f9e799d",
+    "devkit_sha256": "0b95955dad716a7fbfebc1d108890034c80dc24722fda86c0c2cc560ed91c1a6"
+  },
+  {
+    "version": "3.4.6-1",
+    "sha256": "a247460bc7675af433e43871ffb653596119ac0e53882c3ef0e98964fc573880",
+    "devkit_sha256": "b3fdb646c3aa979b30829f076d79dcd2639178ced6ab05dbf92b8a8404fe5197"
+  },
+  {
+    "version": "3.4.5-1",
+    "sha256": "d41d154f9112323d6e2206280581bbe03c246fd618b65c330e10f74ea8afa855",
+    "devkit_sha256": "9b3ef4eca0ebcb84acee7122f53cd18f23d042b1545d1ecc1dc8da24b8004b76"
+  },
+  {
+    "version": "3.4.4-2",
+    "sha256": "7b5910dbffafd6fbfb245cd1d97e561bd36ff4eb2e98b0af16f6db1dccfd28c8",
+    "devkit_sha256": "27c293184e4349897f85df2debbc8ddfb41c0f18dc57c5927888d1a2bb9d9e59"
+  },
+  {
+    "version": "3.4.4-1",
+    "sha256": "0865f61f99d7168b468950c946e03b38fb02e3a9298095bb0823e3dcdccc9505",
+    "devkit_sha256": "2e2b95e215e18635aad63748b1ebca0e52eb59033f004d2b3ca503521e8227c4"
+  },
+  {
+    "version": "3.4.3-1",
+    "sha256": "f91520e8fc3a6fb54a1d4e58a7e1c10a9cfdd43aad8aa3d0b66a32a3a05d21c2",
+    "devkit_sha256": "cdcaa058acf05d191e0b634137ce0f972a82a25f561245d042529f63d3ba634a"
+  },
+  {
+    "version": "3.4.2-1",
+    "sha256": "83f451827cc0bda8ef69caa36c411bfe588c12b864fc82ae15d6ff074bdb4c18",
+    "devkit_sha256": "f054851866cb35d59785a2218d3d5c61843e40762521939e21fb0befa6ef91d0"
+  },
+  {
+    "version": "3.4.1-2",
+    "sha256": "4527628ca1cd85cfd99372b45bc9832cec2f882f1e968ec0096da18f976408f5",
+    "devkit_sha256": "70c18fab3f3c0b233921d4b5a41879859dc9e65f4b9f8a67cb460b4ab01bb594"
+  }
+]

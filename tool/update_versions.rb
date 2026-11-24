@@ -11,6 +11,7 @@
 # ---------------------------------------------------------------
 
 require "open-uri"
+require "json"
 require "yaml"
 
 SOURCE_URL = "https://raw.githubusercontent.com/oneclick/rubyinstaller.org-website/master/_data/downloads.yaml"
@@ -37,27 +38,56 @@ def versions_for_architecture(entries, architecture)
   versions = {}
 
   entries.each do |entry|
-    next unless entry.is_a?(Hash) && entry["filetype"] == "rubyinstaller7z"
+    next unless entry.is_a?(Hash)
 
     href = entry.fetch("href")
-    match = href.match(%r{/rubyinstaller-(\d+\.\d+\.\d+-\d+)-(x64|arm|x86)\.7z\z})
-    next unless match && match[2] == architecture
+    case entry["filetype"]
+    when "rubyinstaller7z"
+      match = href.match(%r{/rubyinstaller-(\d+\.\d+\.\d+-\d+)-(x64|arm|x86)\.7z\z})
+      checksum_column = "sha256"
+      architecture_index = 2
+    when "ridkexe"
+      match = href.match(%r{/rubyinstaller-devkit-(\d+\.\d+\.\d+-\d+)-(x64|arm|x86)\.exe\z})
+      checksum_column = "devkit_sha256"
+      architecture_index = 2
+    else
+      next
+    end
+    next unless match && match[architecture_index] == architecture
 
     version = match[1]
     next unless supported_version?(version)
 
     sha256 = entry.fetch("sha256")
     raise "Invalid SHA256 for Ruby #{version} (#{architecture})" unless sha256.match?(/\A[0-9a-f]{64}\z/i)
-    raise "Duplicate Ruby #{version} (#{architecture}) entry" if versions.key?(version)
 
-    versions[version] = sha256.downcase
+    version_info = versions[version] ||= { "sha256" => nil, "devkit_sha256" => nil }
+    if version_info[checksum_column]
+      raise "Duplicate #{checksum_column} for Ruby #{version} (#{architecture})"
+    end
+    version_info[checksum_column] = sha256.downcase
   end
 
-  versions.sort_by { |version, _sha256| version_sort_key(version) }.reverse
+  versions.each do |version, checksums|
+    missing = %w[sha256 devkit_sha256].reject { |checksum| checksums[checksum] }
+    unless missing.empty?
+      raise "Missing #{missing.join(' and ')} for Ruby #{version} (#{architecture})"
+    end
+  end
+
+  versions.sort_by { |version, _checksums| version_sort_key(version) }.reverse
 end
 
-def tsv_content(versions)
-  (["VERSION\tSHA256", "head\tN/A"] + versions.map { |version, sha256| "#{version}\t#{sha256}" }).join("\n") + "\n"
+def json_content(versions)
+  records = [{ "version" => "head", "sha256" => nil, "devkit_sha256" => nil }]
+  versions.each do |version, checksums|
+    records << {
+      "version" => version,
+      "sha256" => checksums["sha256"],
+      "devkit_sha256" => checksums["devkit_sha256"]
+    }
+  end
+  JSON.pretty_generate(records) + "\n"
 end
 
 yaml = URI.open(SOURCE_URL, open_timeout: 10, read_timeout: 30, &:read)
@@ -71,7 +101,7 @@ versions_by_architecture = ARCHITECTURES.each_with_object({}) do |architecture, 
 end
 
 versions_by_architecture.each do |architecture, versions|
-  path = File.join(REPOSITORY_ROOT, "share", "versions-for-#{architecture}.tsv")
-  File.write(path, tsv_content(versions), mode: "w:UTF-8")
+  path = File.join(REPOSITORY_ROOT, "share", "versions-for-#{architecture}.json")
+  File.write(path, json_content(versions), mode: "w:UTF-8")
   puts "Updated #{path} (#{versions.length} versions)"
 end
