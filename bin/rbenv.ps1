@@ -21,7 +21,7 @@ param($cmd)
 # [String]
 # rbenv's own version
 # Not to conflict with $env:RBENV_VERSION ('rbenv shell' sets it)
-$RBENV_OWN_VERSION       = "rbenv v1.6.0"
+$RBENV_OWN_VERSION       = "v1.6.0"
 
 # [String]
 # Where we check the global version
@@ -160,7 +160,7 @@ $available_commands = get_commands
 
 if ( @('-v', '--version') -contains $cmd -or $args[0] -contains '-v') {
     # Defined at the top of this file
-    $RBENV_OWN_VERSION
+    "rbenv for Windows $RBENV_OWN_VERSION"
 }
 
 elseif ( @($null, '--help', '/?') -contains $cmd -or $args[0] -contains '-h') {

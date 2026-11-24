@@ -228,6 +228,9 @@ rbenv shell 3.0.0-1
 # Show current version
 rbenv version
 
+# Show rbenv, binary, PowerShell and Ruby environment information
+rbenv info
+
 # Unset Ruby version in this shell
 rbenv shell --unset
 
