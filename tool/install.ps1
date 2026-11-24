@@ -5,8 +5,9 @@
 # File Authors   : Aoran Zeng <ccmywish@qq.com>
 # Created On     : <2023-03-04>
 # Major Revision :      5
-# Encoding       : UTF-8 with BOM (required for PowerShell 5.1 compatibility with CN characters)
 # Last Modified  : <2026-11-24>
+# Encoding       : UTF-8 with BOM (required for PowerShell 5.1
+#                | compatibility with ZH characters)
 #
 # install:
 #

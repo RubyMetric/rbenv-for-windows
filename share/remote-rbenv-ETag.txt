@@ -1,2 +1,5 @@
 v2026.11.24-1
+
 # Don't Edit Me!
+# This file records the version of rbenv's binary files.
+# The version is separated from the version of rbenv itself.
