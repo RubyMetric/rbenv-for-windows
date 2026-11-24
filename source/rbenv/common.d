@@ -2,7 +2,7 @@
 * File          : common.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-03>
-* Last modified : <2026-01-08>
+* Last modified : <2026-11-24>
 *
 * common:
 *
@@ -14,14 +14,13 @@ module rbenv.common;
 
 import std.stdio;
 import std.process      : environment, executeShell;
-import std.array        : split, array;
+import std.array        : split, join, array;
 import std.algorithm    : canFind, startsWith, endsWith;
 import std.algorithm    : filter, sort, map, cmp;
 import std.file         : getcwd, chdir, dirEntries, SpanMode, exists, readText, read, write;
 import std.path         : baseName, dirName, rootName;
-import std.regex        : ctRegex, matchAll;
+import std.regex        : ctRegex, matchAll, matchFirst;
 import std.string       : indexOf, splitLines, chompPrefix;
-import std.array        : join;
 
 import core.stdc.stdlib : exit;
 
@@ -47,7 +46,7 @@ void success(string str) {
 //                  Global variable and constant
 // --------------------------------------------------------------
 
-private enum version_match_regexp = ctRegex!(r"\d{1,}\.\d{1,}\.\d{1,}-\d{1,}");
+private enum version_match_regexp = ctRegex!r"^(\d+)\.(\d+)\.(\d+)-(\d+)";
 
 string RBENV_ROOT;
 string SHIMS_DIR;
@@ -91,8 +90,7 @@ string[] get_all_remote_versions() {
 
 private int[4] parse_version_parts(string ver) {
     import std.conv : to;
-    import std.regex : matchFirst;
-    auto m = ver.matchFirst(ctRegex!(r"^(\d+)\.(\d+)\.(\d+)-(\d+)"));
+    auto m = ver.matchFirst(version_match_regexp);
     if (m.empty) return [0, 0, 0, 0];
     return [m[1].to!int, m[2].to!int, m[3].to!int, m[4].to!int];
 }
