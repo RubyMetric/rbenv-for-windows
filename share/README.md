@@ -13,4 +13,4 @@ Sorry for not support x86 versions. If you are interested, you can contribute to
 
 **For maintainers**:
 
-Add new versions from https://rubyinstaller.org/downloads/archives/
+Run `ruby tool/update_versions.rb` from the repository root to regenerate the x64 and arm version tables from the upstream downloads data.
