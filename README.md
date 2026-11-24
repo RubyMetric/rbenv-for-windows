@@ -228,6 +228,10 @@ rbenv shell 3.0.0-1
 # Show current version
 rbenv version
 
+# Show the active version and configured global, local, shell and system versions.
+# The local version is shown as written in the nearest .ruby-version file.
+rbenv current
+
 # Show rbenv, binary, PowerShell and Ruby environment information
 rbenv info
 
