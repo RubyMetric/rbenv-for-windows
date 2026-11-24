@@ -17,6 +17,6 @@ That changed when I realized that we needed a `ruby.exe` binary of our own. As d
 
 For a while, some responsibilities were implemented in both D and PowerShell. Even then, all of the code was still written by humans.
 
-As the two implementations accumulated more and more overlapping logic, maintaining both became increasingly difficult. I decided to gradually move that shared logic into D rather than keep two copies in sync.
+As the two implementations accumulated more and more overlapping logic, maintaining both became increasingly difficult. I decided to gradually move that shared logic into D rather than keep two copies in sync.There is no rush to make this transition, though, since the implementation is not difficult.
 
 PowerShell still has an essential role, though. Features such as `rbenv shell` depend on PowerShell's ability to update the environment of the current shell, so PowerShell remains an important part of the project. The goal is not to replace PowerShell entirely, but to put each language to work where it fits best.

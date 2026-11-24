@@ -4,7 +4,7 @@
 # File Name     : build.ps1
 # File Authors  : Aoran Zeng <ccmywish@qq.com>
 # Created On    : <2023-03-04>
-# Last Modified : <2026-01-07>
+# Last Modified : <2026-11-24>
 #
 # build:
 #
@@ -31,6 +31,16 @@ param([switch]$Release, [switch]$Export, $Compiler = "ldc2")
 
 $dir = "$env:RBENV_ROOT\rbenv"
 
+# LDC statically links the used Phobos (including std.json) and druntime
+# into executables by default; -link-defaultlib-shared opts into shared
+# default libraries instead.
+#
+# DMD also defaults to static runtime linking on Windows. Its -shared flag
+# creates a DLL; to link an executable to a shared D runtime, use
+# -defaultlib=<import-lib> and ship the matching DLLs.
+#
+# The current static build needs matching architecture libraries at link time,
+# but does not require D runtime DLLs at run time.
 $script:compiler_flags = @()
 
 function set_compiler_flags($mode) {
@@ -106,12 +116,6 @@ if ($Export) {
 
     Copy-Item $dir\bin\ruby.exe $dest
     Copy-Item $dir\libexec\rbenv-exec.exe $dest
-
-    $content = 'v' + (Get-Date -Format "yyyy-MM-dd") + "`n# Don't Edit Me!"
-    $file = "$dest\upstream-rbenv-ETag.txt"
-    Set-Content -Path $file -Value $content
-
-    Copy-Item $file "$dest\upstream-rbenv-binary-version.txt"
 
     Write-Host "rbenv: Copy built files to $dest"
 }

@@ -24,6 +24,7 @@ Hi, hello
 1. Handle `rbenv local` well
 2. Integrate with `RubyGems`, `Bundler` compactly
 3. Interact with shell prompt tools like [starship] and [oh-my-posh] properly
+4. Support RubyInstaller for ARM64
 
 There's a simple [record](./doc/benchmark.md) to show if `rbenv` will influence Ruby/Gem commands startup time significantly.
 
@@ -223,9 +224,9 @@ However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7
 
 **The current implementation has these drawbacks and issues:**
 
-1. We only support CRuby, x64 versions, provided by RubyInstaller2
+1. We only support CRuby, x64 and arm versions, provided by RubyInstaller2
 
-    Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on. If you want to support it, consider to be a maintainer please! Thank you!
+    Sorry for that I have no plan to add x86 versions and other Ruby implementations like mruby, JRuby, TruffleRuby and so on. If you want to support it, consider to be a maintainer!
 
 2. We don't support old versions that have a little different leading URL
 
