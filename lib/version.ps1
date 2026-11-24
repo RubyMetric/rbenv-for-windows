@@ -97,8 +97,9 @@ function get_current_architecture {
 
 function get_all_remote_versions {
     $architecture = get_current_architecture
-    Import-Csv -LiteralPath "$PSScriptRoot\..\share\versions-for-$architecture.tsv" -Delimiter "`t" |
-        ForEach-Object { $_.VERSION }
+    Get-Content -LiteralPath "$PSScriptRoot\..\share\versions-for-$architecture.json" -Raw |
+        ConvertFrom-Json |
+        ForEach-Object { $_.version }
 }
 
 

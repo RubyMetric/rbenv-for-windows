@@ -13,6 +13,7 @@
 module rbenv.common;
 
 import std.stdio;
+import std.json         : parseJSON;
 import std.process      : environment, executeShell;
 import std.array        : split, join, array;
 import std.algorithm    : canFind, startsWith, endsWith;
@@ -95,19 +96,13 @@ struct LocalVersionInfo{
 string[] get_all_remote_versions() {
 
     auto architecture = get_current_architecture();
-    auto vers_file = RBENV_ROOT ~ "\\rbenv\\share\\versions-for-" ~ architecture ~ ".tsv";
+    auto vers_file = RBENV_ROOT ~ "\\rbenv\\share\\versions-for-" ~ architecture ~ ".json";
 
-    auto vers_str = readText(vers_file);
-    auto vers_lines = vers_str.splitLines;
+    auto vers_json = parseJSON(readText(vers_file));
     string[] vers;
 
-    foreach (line; vers_lines) {
-        if (line.length == 0) continue;
-
-        auto columns = line.split("\t");
-        if (columns.length < 2 || columns[0] == "VERSION") continue;
-
-        vers ~= columns[0];
+    foreach (entry; vers_json.array) {
+        vers ~= entry["version"].str;
     }
 
     return vers;
