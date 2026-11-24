@@ -329,13 +329,14 @@ function download_ruby($version) {
     }
 
     $url = $site_url -replace '<version>', $version
+    $architecture = get_current_architecture
 
-    $cache_name = "rubyinstaller-$version-x64.7z"
+    $cache_name = "rubyinstaller-$version-$architecture.7z"
     $url += "/$cache_name"
 
     if ($version -eq 'head') {
         warn "rbenv: The 'head' version can only be downloaded from Github"
-        $url = "https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-head/rubyinstaller-head-x64.7z"
+        $url = "https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-head/rubyinstaller-head-$architecture.7z"
     }
 
     Write-Host "Begin downloading ..."
@@ -405,8 +406,9 @@ function download_ruby_with_msys2($version) {
     }
 
     $url = $site_url -replace '<version>', $version
+    $architecture = get_current_architecture
 
-    $cache_name = "rubyinstaller-devkit-$version-x64.exe"
+    $cache_name = "rubyinstaller-devkit-$version-$architecture.exe"
     $url += "/$cache_name"
 
     Write-Host "Begin downloading ..."
@@ -422,7 +424,7 @@ function download_ruby_with_msys2($version) {
 function install_ruby_with_msys2($version) {
     $path = download_ruby_with_msys2 $version
 
-    # e.g. rubyinstaller-devkit-3.1.2-1-x64
+    # e.g. rubyinstaller-devkit-3.1.2-1-<arch>.exe
     $target = fname $path
     Write-Host "Installing $target ..."
 
@@ -469,7 +471,7 @@ So the snippet below is unneeded.
 }
 
 
-# Download the latest x64 MSYS2 built into official RubyInstaller-devkit
+# Download the latest architecture-matched MSYS2 built into official RubyInstaller-devkit
 #
 # The 64-bit version MSYS2 is able to build both 32-bit and 64-bit packages
 #
@@ -522,7 +524,7 @@ function install_shared_msys2 {
 
     $path = download_shared_msys2
 
-    # e.g. rubyinstaller-devkit-3.1.2-1-x64
+    # e.g. rubyinstaller-devkit-3.1.2-1-<arch>.exe
     $target = fname $path
     Write-Host "Installing $target(MSYS2) ..."
 

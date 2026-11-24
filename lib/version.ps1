@@ -78,10 +78,27 @@ function auto_fix_version_for_remote($ver) {
 
 
 # Read versions list
+function get_current_architecture {
+    # Prefer the OS architecture when running a 32-bit process under WOW64.
+    $architecture = $env:PROCESSOR_ARCHITEW6432
+    if ([string]::IsNullOrWhiteSpace($architecture)) {
+        $architecture = $env:PROCESSOR_ARCHITECTURE
+    }
+    if ([string]::IsNullOrWhiteSpace($architecture)) {
+        abort 'rbenv: unable to determine Windows architecture'
+    }
+
+    switch ($architecture.ToUpperInvariant()) {
+        { $_ -in @('ARM64', 'AARCH64') } { return 'arm' }
+        { $_ -in @('AMD64', 'X64', 'X86_64') } { return 'x64' }
+        default { abort "rbenv: unsupported Windows architecture '$architecture'" }
+    }
+}
+
 function get_all_remote_versions {
-    $versions = Get-Content $PSScriptRoot\..\share\versions.txt
-    $versions = $versions -split "`n"
-    $versions
+    $architecture = get_current_architecture
+    Import-Csv -LiteralPath "$PSScriptRoot\..\share\versions-for-$architecture.tsv" -Delimiter "`t" |
+        ForEach-Object { $_.VERSION }
 }
 
 

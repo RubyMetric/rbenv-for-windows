@@ -59,6 +59,23 @@ static this()
     GLOBAL_VERSION_FILE = RBENV_ROOT ~ "\\global.txt";
 }
 
+string get_current_architecture() {
+    // Prefer the OS architecture when running a 32-bit process under WOW64.
+    string architecture;
+    if ("PROCESSOR_ARCHITEW6432" in environment && environment["PROCESSOR_ARCHITEW6432"].length > 0) {
+        architecture = environment["PROCESSOR_ARCHITEW6432"];
+    } else if ("PROCESSOR_ARCHITECTURE" in environment) {
+        architecture = environment["PROCESSOR_ARCHITECTURE"];
+    }
+
+    if (architecture == "ARM64" || architecture == "AARCH64") return "arm";
+    if (architecture == "AMD64" || architecture == "X64" || architecture == "X86_64") return "x64";
+
+    warn("rbenv: unsupported Windows architecture '" ~ architecture ~ "'");
+    exit(1);
+    return "";
+}
+
 
 // --------------------------------------------------------------
 //                              Struct
@@ -77,12 +94,21 @@ struct LocalVersionInfo{
 // Read versions list
 string[] get_all_remote_versions() {
 
-    auto vers_file = RBENV_ROOT ~ "\\rbenv\\share\\versions.txt";
+    auto architecture = get_current_architecture();
+    auto vers_file = RBENV_ROOT ~ "\\rbenv\\share\\versions-for-" ~ architecture ~ ".tsv";
 
     auto vers_str = readText(vers_file);
+    auto vers_lines = vers_str.splitLines;
+    string[] vers;
 
-    // split newline by default
-    auto vers = vers_str.split;
+    foreach (line; vers_lines) {
+        if (line.length == 0) continue;
+
+        auto columns = line.split("\t");
+        if (columns.length < 2 || columns[0] == "VERSION") continue;
+
+        vers ~= columns[0];
+    }
 
     return vers;
 }

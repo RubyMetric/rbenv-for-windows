@@ -4,13 +4,13 @@
 # The whole download link is:
 #
 # 1. For RubyInstaller2-devkit(MSYS2)
-# https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.2-1/rubyinstaller-devkit-3.1.2-1-x64.exe
+# https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.2-1/rubyinstaller-devkit-3.1.2-1-<arch>.exe
 #
 # 2. For RubyInstaller.7z
-# https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.2-1/rubyinstaller-3.1.2-1-x64.7z
+# https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.2-1/rubyinstaller-3.1.2-1-<arch>.7z
 #
 # 3. For head version
-# https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-head/rubyinstaller-head-x64.7z
+# https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-head/rubyinstaller-head-<arch>.7z
 #
 # NOTE that, the CN mirror doesn't support head version
 #
