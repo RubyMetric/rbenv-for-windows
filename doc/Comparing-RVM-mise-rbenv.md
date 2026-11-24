@@ -69,3 +69,16 @@ Use `-l` / `--local` or `-g` / `--global` to choose the scope explicitly. A
 global change affects other directories too, and an existing local or
 shell-specific version can override it. Use `--local` when the project itself
 should record the version.
+
+## Inspecting the environment with `info`
+
+RVM provides [`rvm info`](https://rvm.io/rvm/cli) to show information about
+the current Ruby. mise's [command list](https://mise.jdx.dev/cli/) does not
+include an `info` command; [`mise tool ruby`](https://mise.jdx.dev/cli/tool.html)
+shows information about Ruby as a managed tool, while
+[`mise doctor`](https://mise.jdx.dev/cli/doctor.html) reports the mise setup
+and checks it for problems.
+
+`rbenv info` shows the rbenv, rbenv binary and PowerShell versions, then
+runs `ridk version` for the selected Ruby. It is an environment information
+command inspired by RVM, not a diagnostic equivalent of `mise doctor`.
