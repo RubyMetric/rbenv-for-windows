@@ -36,28 +36,18 @@ function find_matching_version($versions, $ver) {
     return $null
 }
 
-function version_sort_key($name) {
-    if ($name -eq 'head') { return '9999999999' }
-    if ($name -match '^(\d+)\.(\d+)\.(\d+)-(\d+)(.*)$') {
-        return '{0:D5}.{1:D5}.{2:D5}-{3:D5}{4}' -f [int]$Matches[1], [int]$Matches[2], [int]$Matches[3], [int]$Matches[4], $Matches[5]
-    }
-    return $name
-}
-
 # Auto fix version number to get close to installed versions
 #
 # commands using this:
-# 1. rbenv-global
-# 2. rbenv-shell
-# 3. rbenv-uninstall
+# 1. rbenv-shell
+# 2. rbenv-uninstall
 #
 function auto_fix_version_for_installed($ver) {
-    $versions = get_all_installed_versions
-    $matched = find_matching_version $versions $ver
-    if ($matched) { return $matched }
-
-    warn "rbenv: version $ver not installed"
-    exit
+    $version = invoke_rbenv_exec _find-installed-version_ $ver
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
+    return $version
 }
 
 
@@ -76,22 +66,12 @@ function auto_fix_version_for_remote($ver) {
 }
 
 
-# Read versions list
 function get_current_architecture {
-    # Prefer the OS architecture when running a 32-bit process under WOW64.
-    $architecture = $env:PROCESSOR_ARCHITEW6432
-    if ([string]::IsNullOrWhiteSpace($architecture)) {
-        $architecture = $env:PROCESSOR_ARCHITECTURE
+    $architecture = invoke_rbenv_exec _get-current-architecture_
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
     }
-    if ([string]::IsNullOrWhiteSpace($architecture)) {
-        abort 'rbenv: unable to determine Windows architecture'
-    }
-
-    switch ($architecture.ToUpperInvariant()) {
-        { $_ -in @('ARM64', 'AARCH64') } { return 'arm' }
-        { $_ -in @('AMD64', 'X64', 'X86_64') } { return 'x64' }
-        default { abort "rbenv: unsupported Windows architecture '$architecture'" }
-    }
+    $architecture
 }
 
 function get_all_remote_versions {
@@ -102,21 +82,10 @@ function get_all_remote_versions {
 }
 
 
-# Read all dir names in the RBENV_ROOT
 function get_all_installed_versions {
-    # System.IO.DirectoryInfo
-    $versions = (Get-ChildItem ($env:RBENV_ROOT)) | Where-Object {
-                    $_.Name -match $(version_match_regexp) -or $_.Name -eq 'head'
-                }
-
-    $versions = $versions | Sort-Object -Descending { version_sort_key $_.Name } | ForEach-Object {
-        $_.Name
-    }
-
-    if ($env:RBENV_SYSTEM_RUBY) {
-        if ($versions.Count -eq 0) { $versions = @() }
-        if ($versions.Count -eq 1) { $versions = @() + $versions }
-        $versions = $versions + "system"
+    $versions = invoke_rbenv_exec _get-all-installed-versions_
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
     }
     $versions
 }

@@ -9,6 +9,3 @@ function print_current_version_with_setmsg {
 
 
 print_current_version_with_setmsg
-
-# Don't show this by default
-# ridk version
