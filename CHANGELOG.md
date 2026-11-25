@@ -1,6 +1,21 @@
 # Changelog
 
-## [Unreleased](#) (2026-11-24)
+## [Unreleased](#) (2026-11-25)
+
+<br>
+
+## [v1.7.0](#) (2026-11-25)
+
+### New features:
+
+- Add `rbenv ls`
+- Add `rbenv use`
+- Add `rbenv info`
+- Add `rbenv current`
+
+### Enhancements:
+
+- Wrap `ridk.ps1` exit code
 
 <br>
 
