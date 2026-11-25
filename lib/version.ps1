@@ -48,9 +48,8 @@ function version_sort_key($name) {
 #
 # commands using this:
 # 1. rbenv-global
-# 2. rbenv-local
-# 3. rbenv-shell
-# 4. rbenv-uninstall
+# 2. rbenv-shell
+# 3. rbenv-uninstall
 #
 function auto_fix_version_for_installed($ver) {
     $versions = get_all_installed_versions

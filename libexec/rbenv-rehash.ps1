@@ -9,12 +9,12 @@ param($cmd, $argument)
 
 
 function rehash_single_gem ($name, $echo_or_not=$True) {
-    & "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe" rehash-gem $name
+    invoke_rbenv_exec rehash-gem $name
 }
 
 
 function rehash_version ($version) {
-    & "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe" rehash-version $version
+    invoke_rbenv_exec rehash-version $version
 }
 
 

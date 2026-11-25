@@ -4,10 +4,17 @@
 param($cmd)
 
 
-# Read the .ruby-version file
+function get_local_version {
+    invoke_rbenv_exec read-local-version
+    if ($LASTEXITCODE -ne 0) {
+        abort 'rbenv: unable to read local version' $LASTEXITCODE
+    }
+}
+
+
 function set_local_version($version) {
     # See doc\PowerShell-problems.md for the encoding rationale.
-    & "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe" write-local-version $version
+    invoke_rbenv_exec write-local-version $version
     if ($LASTEXITCODE -ne 0) {
         abort 'rbenv: unable to set local version' $LASTEXITCODE
     }
@@ -15,12 +22,7 @@ function set_local_version($version) {
 
 
 if (!$cmd) {
-    $version = get_local_version
-    if ($version -eq $null) {
-        Write-Host "rbenv: no local version configured for this directory"
-    } else {
-        $version
-    }
+    get_local_version
 } else {
     set_local_version $cmd
 }

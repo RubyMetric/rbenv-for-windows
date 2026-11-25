@@ -51,6 +51,21 @@ function info($msg)  { write-host "$msg" -f darkblue }
 function success($msg) { write-host $msg -f darkgreen }
 
 
+function invoke_rbenv_exec {
+    # rbenv-exec writes UTF-8; its output can contain paths and version names.
+    # If the path contains non-ASCII UTF8 characters, it will cause garbled
+    # output on a regular console. Therefore, we need to temporarily set the
+    # console to output in UTF8 format.
+    $previous_encoding = [Console]::OutputEncoding
+    try {
+        [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+        & "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe" @args
+    } finally {
+        [Console]::OutputEncoding = $previous_encoding
+    }
+}
+
+
 function filesize($length) {
     $gb = [math]::pow(2, 30)
     $mb = [math]::pow(2, 20)

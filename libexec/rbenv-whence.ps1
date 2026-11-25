@@ -8,5 +8,5 @@ param($cmd)
 if (!$cmd) {
     rbenv help whence
 } else {
-     & "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe" list-who-has $cmd
+     invoke_rbenv_exec list-who-has $cmd
 }
