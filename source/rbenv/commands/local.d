@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------
-* local_version:
+* local:
 *
 *   rbenv local: show or set the local version of the current directory,
 *   stored in its .ruby-version file.
@@ -7,7 +7,7 @@
 *   Unlike 'rbenv current', showing it does not search parent directories.
 * -------------------------------------------------------------*/
 
-module rbenv.commands.local_version;
+module rbenv.commands.local;
 
 import std.array  : split;
 import std.file   : getcwd, write;

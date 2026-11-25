@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------
-* global_version:
+* global:
 *
 *   rbenv global: show or set the global version, stored in global.txt.
 *
@@ -7,7 +7,7 @@
 *   reported even though the version has already been saved.
 * -------------------------------------------------------------*/
 
-module rbenv.commands.global_version;
+module rbenv.commands.global;
 
 import std.algorithm : all;
 import std.file      : exists, isFile, write;

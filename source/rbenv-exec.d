@@ -44,9 +44,9 @@ import std.string    : stripRight;
 import std.utf       : UTFException;
 
 import rbenv.commands.current           : print_current_versions;
-import rbenv.commands.global_version    : get_global_version, set_global_version;
+import rbenv.commands.global            : get_global_version, set_global_version;
 import rbenv.commands.install_list      : list_recent_versions;
-import rbenv.commands.local_version     : get_local_version, set_local_version;
+import rbenv.commands.local             : get_local_version, set_local_version;
 import rbenv.commands.powershell_helpers;
 import rbenv.commands.rehash            : rehash_single_gem_echo, rehash_version;
 import rbenv.commands.shim              : shim_get_gem;
