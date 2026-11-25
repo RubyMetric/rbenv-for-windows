@@ -6,19 +6,11 @@ param($cmd)
 
 # Read the .ruby-version file
 function set_local_version($version) {
-
-    $local_version_file = "$PWD\.ruby-version"
-
-    $version = auto_fix_version_for_installed $version
-
-<#
-    To make every Ruby project portable from Windows to *nix, we try to be compatible with `rbenv`
-
-    So, we will remove the version '3.2.0-1' suffix '-1'
-#>
-
-    $version, $suffix = $version.split("-")
-    Set-Content $local_version_file $version -NoNewline
+    # See doc\PowerShell-problems.md for the encoding rationale.
+    & "$env:RBENV_ROOT\rbenv\libexec\rbenv-exec.exe" write-local-version $version
+    if ($LASTEXITCODE -ne 0) {
+        abort 'rbenv: unable to set local version' $LASTEXITCODE
+    }
 }
 
 

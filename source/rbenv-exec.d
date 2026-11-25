@@ -93,6 +93,26 @@ int main(string[] args) {
 }
 
 
+int write_local_version(string requested_version) {
+    auto installed_version = find_installed_version(requested_version);
+    if (installed_version is null) {
+        stderr.writeln("rbenv: version " ~ requested_version ~ " not installed");
+        return 1;
+    }
+
+    /**
+     * To make every Ruby project portable from Windows to POSIX, we try to be
+     * compatible with `rbenv`. So, we drop the RubyInstaller suffix.
+     * e.g.
+     *      remove the version '3.2.0-1' suffix '-1'
+     */
+    auto portable_version = installed_version.split("-")[0];
+    auto version_file = buildPath(getcwd(), ".ruby-version");
+    write(version_file, portable_version);
+    return 0;
+}
+
+
 void rehash_single_gem(string name) {
     string file = SHIMS_DIR ~ "\\" ~ name ~ ".bat";
     // std.file : write NOT std.stdio : write
