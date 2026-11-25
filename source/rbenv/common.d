@@ -2,26 +2,34 @@
 * File          : common.d
 * Authors       : Aoran Zeng <ccmywish@qq.com>
 * Created on    : <2023-03-03>
-* Last modified : <2026-11-24>
+* Last modified : <2026-11-25>
 *
 * common:
 *
-*   Common functions for 'fake ruby.exe' and
-*                        'libexec\rbenv-exec.exe'
+*   Version detection returns facts: the version name, its source and path,
+*   and its state. It does not turn an unavailable version into display text.
+*   Shell takes precedence over local, then global.
+*
+*   get_current_versions() reports the configuration without creating a global
+*   file. get_active_version() retains fake Ruby's global-file behavior.
+*   Presentation and PowerShell responses belong to version_display.d and
+*   version_protocol.d respectively. Other shared functions remain here.
 * -------------------------------------------------------------*/
 
 module rbenv.common;
 
 import std.stdio;
-import std.json         : parseJSON;
+import std.conv         : to;
+import std.json         : JSONException, parseJSON;
 import std.process      : environment, executeShell;
 import std.array        : split, join, array;
 import std.algorithm    : canFind, startsWith, endsWith;
 import std.algorithm    : filter, sort, map, cmp;
-import std.file         : getcwd, chdir, dirEntries, SpanMode, exists, readText, read, write;
-import std.path         : baseName, dirName, rootName;
+import std.file         : getcwd, dirEntries, SpanMode, exists, isFile, readText, read, write;
+import std.path         : baseName, buildPath, dirName, rootName;
 import std.regex        : ctRegex, matchAll, matchFirst;
-import std.string       : indexOf, splitLines, chompPrefix;
+import std.string       : indexOf, splitLines, chompPrefix, strip, stripRight;
+import std.uni          : toUpper;
 
 import core.stdc.stdlib : exit;
 
@@ -62,13 +70,17 @@ static this()
 
 string get_current_architecture() {
     // Prefer the OS architecture when running a 32-bit process under WOW64.
-    string architecture;
-    if ("PROCESSOR_ARCHITEW6432" in environment && environment["PROCESSOR_ARCHITEW6432"].length > 0) {
-        architecture = environment["PROCESSOR_ARCHITEW6432"];
-    } else if ("PROCESSOR_ARCHITECTURE" in environment) {
-        architecture = environment["PROCESSOR_ARCHITECTURE"];
+    auto architecture = environment.get("PROCESSOR_ARCHITEW6432");
+    if (!architecture.strip.length) {
+        architecture = environment.get("PROCESSOR_ARCHITECTURE");
     }
 
+    if (!architecture.strip.length) {
+        warn("rbenv: unable to determine Windows architecture");
+        exit(1);
+    }
+
+    architecture = architecture.toUpper;
     if (architecture == "ARM64" || architecture == "AARCH64") return "arm";
     if (architecture == "AMD64" || architecture == "X64" || architecture == "X86_64") return "x64";
 
@@ -81,14 +93,75 @@ string get_current_architecture() {
 // --------------------------------------------------------------
 //                              Struct
 // --------------------------------------------------------------
-struct VersionSetInfo {
-    string ver;
-    string setmsg;
+private struct Version {
+    string name;
+    int major;
+    int minor;
+    int patch;
+    int revision;
+
+    this(string name) {
+        import std.exception : enforce;
+
+        this.name = name;
+        if (name == "head") return;
+
+        auto parts = name.matchFirst(version_match_regexp);
+        enforce(!parts.empty, "Invalid version: " ~ name);
+        major = parts[1].to!int;
+        minor = parts[2].to!int;
+        patch = parts[3].to!int;
+        revision = parts[4].to!int;
+    }
+
+    int opCmp(ref const Version other) const {
+        if (name == "head") return other.name == "head" ? 0 : 1;
+        if (other.name == "head") return -1;
+
+        auto result = cmp(
+            [major, minor, patch, revision],
+            [other.major, other.minor, other.patch, other.revision]
+        );
+        return result != 0 ? result : cmp(name, other.name);
+    }
 }
 
-struct LocalVersionInfo{
-    string ver;
-    string where;
+enum VersionSource {
+    none,
+    shell,
+    local,
+    global
+}
+
+enum ActiveVersionState {
+    available,
+    notInstalled,
+    globalNotSet
+}
+
+struct ActiveVersion {
+    string name;
+    VersionSource source;
+    string source_path;
+    ActiveVersionState state;
+}
+
+struct LocalVersion {
+    string name; // Raw first line of .ruby-version
+    string path; // Empty when no local file was found
+}
+
+struct SystemVersion {
+    string name;
+    string path;
+}
+
+struct CurrentVersions {
+    ActiveVersion active;
+    string        global;
+    LocalVersion  local;
+    string        shell;
+    SystemVersion system;
 }
 
 
@@ -109,26 +182,41 @@ string[] get_all_remote_versions() {
 }
 
 
-private int[4] parse_version_parts(string ver) {
-    import std.conv : to;
-    auto m = ver.matchFirst(version_match_regexp);
-    if (m.empty) return [0, 0, 0, 0];
-    return [m[1].to!int, m[2].to!int, m[3].to!int, m[4].to!int];
-}
-
-private bool version_gt(string a, string b) {
-    if (a == b) return false;
-    if (a == "head") return true;
-    if (b == "head") return false;
-    auto pa = parse_version_parts(a);
-    auto pb = parse_version_parts(b);
-    foreach (i; 0 .. 4) {
-        if (pa[i] != pb[i]) return pa[i] > pb[i];
+string[] get_recent_remote_versions() {
+    auto remote_versions = get_all_remote_versions();
+    foreach (ver; remote_versions) {
+        if (ver != "head" && ver.matchFirst(version_match_regexp).empty) {
+            throw new JSONException("Invalid remote version: " ~ ver);
+        }
     }
-    return a > b;
+
+    auto versions = remote_versions.map!(to!Version).array;
+    versions.sort!((left, right) => left > right);
+    string[] recent;
+    int previous_major;
+    int previous_minor;
+    size_t minor_count;
+    bool has_head;
+
+    foreach (ver; versions) {
+        if (ver.name == "head") {
+            if (!has_head) recent ~= ver.name;
+            has_head = true;
+            continue;
+        }
+
+        if (minor_count && ver.major == previous_major && ver.minor == previous_minor) continue;
+        if (minor_count == 10) break;
+
+        recent ~= ver.name;
+        previous_major = ver.major;
+        previous_minor = ver.minor;
+        minor_count++;
+    }
+    return recent;
 }
 
-private bool match_version_prefix(string candidate, string ver) {
+bool match_version_prefix(string candidate, string ver) {
     if (ver.endsWith(".") || ver.endsWith("-")) {
         return candidate.startsWith(ver);
     }
@@ -138,26 +226,26 @@ private bool match_version_prefix(string candidate, string ver) {
 // Read all dir names in the RBENV_ROOT
 string[] get_all_installed_versions() {
 
-    // FilterResult!(__lambda1, _DirIterator!false)
-    auto vers = dirEntries(RBENV_ROOT, SpanMode.shallow)
+    auto versions = dirEntries(RBENV_ROOT, SpanMode.shallow)
         .map!(dir => baseName(dir.name))
         .filter!(name => name.matchAll(version_match_regexp) || name == "head")
+        .map!(to!Version)
         .array;
 
-    vers = vers.sort!((a, b) => version_gt(a, b)).array;
+    versions.sort!((left, right) => left > right);
+    auto version_names = versions.map!(ver => ver.name).array;
 
     string system_rb = environment.get("RBENV_SYSTEM_RUBY");
 
-    if (system_rb != null) {
-        vers ~= "system";
+    if (system_rb.length) {
+        version_names ~= "system";
     }
 
-    return vers;
+    return version_names;
 }
 
 
-string auto_fix_version_for_installed(string ver) {
-
+string find_installed_version(string ver) {
     // `rvm --ruby-version use 3.1.2`
     //
     // rvm will generate 'ruby-3.1.2', but rbenv(shell) will only generate '3.1.2'
@@ -175,41 +263,8 @@ string auto_fix_version_for_installed(string ver) {
             if (match_version_prefix(s, ver)) { return s; }
         }
     }
-    warn("rbenv: version " ~ ver ~ " not installed");
-
-    // exit(0);
-    // Now we don't exit instantly, but show the *informative version*,
-    // to make starship/oh-my-posh user directly know what is wrong
-    return ver ~ "NotInstalled";
+    return null;
 }
-
-
-string auto_fix_version_for_remote(string ver) {
-
-    auto versions = get_all_remote_versions();
-
-    if (versions.canFind(ver)) {
-        return ver;
-    } else {
-        foreach (s ; versions)  {
-            if (match_version_prefix(s, ver)) { return s; }
-        }
-    }
-
-    warn("rbenv: version " ~ ver ~ " not installed");
-    exit(0);
-}
-
-
-// rdmd -unittest -main .\rbenv.d
-unittest {
-    auto arr  = get_all_remote_versions();
-    auto arr2 = get_all_installed_versions();
-    auto ret  = "2.7".auto_fix_version_for_installed;
-    auto ret2 = "2.7".auto_fix_version_for_remote;
-    // writeln(ret2);
-}
-
 
 
 string[] get_system_ruby_version_and_path() {
@@ -238,41 +293,6 @@ unittest {
     // no auto fix version
     auto path = get_ruby_bin_path_for_version("3.1.3-1");
     assert(path == "C:\\Ruby-on-Windows\\3.1.3-1\\bin" );
-}
-
-
-/**
-Used for shim script to find the correct version of gem executable
-
-Directly called by:
-
-    rbenv-exec.exe shim-get-gem <arg>
-
-Returns:
-
-    'correct_ver_dir\gem_name.cmd' arguments or
-    'correct_ver_dir\gem_name.bat' arguments
-*/
-string shim_get_gem(string cmd_path) {
-
-    string cmd;
-
-    // E.g. C:Ruby-on-Windows\shims\cr.bat
-    // if (cmd_path.indexOf(':'))
-    cmd = baseName(cmd_path, ".bat"); // Now 'cr'
-
-    VersionSetInfo vsi = get_current_version_with_setmsg();
-    auto ver = vsi.ver;
-
-    // This condition is only met when global version is not set
-    // Enforce users to set global version
-    if (ver == "") {
-        return "";
-    }
-
-    // Still need to call this function to do some work (e.g. find available bins)
-    auto gem = get_gem_executable_by_version(cmd, ver);
-    return gem;
 }
 
 
@@ -378,9 +398,7 @@ string get_bin_path_for_version(string ver) {
 //                          Version Get
 // --------------------------------------------------------------
 
-
-// Read the global.txt file
-string get_global_version() {
+string get_global_version_for_active() {
 
 	if (! exists(GLOBAL_VERSION_FILE)) {
         // warn("rbenv: Global version file doesn't exist!");
@@ -388,64 +406,99 @@ string get_global_version() {
         write(GLOBAL_VERSION_FILE, []);
     }
 
-    // read return 'void[]'' type
-    string ver = cast(string)read(GLOBAL_VERSION_FILE);
-
-    if ("" == ver) {
-        warn("rbenv: No global version has been set, use rbenv global <version>");
-
-        // return "";
-        // Now we don't return an empty string, but show the *informative version*,
-        // to make starship/oh-my-posh user directly know what is wrong
-        return "GlobalVersionNotSet";
-
-    } else {
-        return ver;
-    }
+    return get_configured_global_version();
 }
 
 
-// Read the .ruby-version file
-LocalVersionInfo get_local_version() {
+// global.txt is written as ASCII and rbenv local writes UTF-8. Existing files
+// may still contain UTF-8 with a BOM or UTF-16 from PowerShell or other tools.
+// Detect the BOM and normalize the contents to UTF-8 before interpreting them.
+private string read_version_file(string version_file) {
+    import std.utf : toUTF8, UTFException, validate;
 
-    LocalVersionInfo lvi;
-    lvi.where = "";
-    lvi.ver = "";
+    auto bytes = cast(ubyte[]) read(version_file);
 
+    // UTF-16 may be little-endian or big-endian; the BOM identifies the order.
+    if (bytes.length >= 2 &&
+        ((bytes[0] == 0xff && bytes[1] == 0xfe) ||
+         (bytes[0] == 0xfe && bytes[1] == 0xff))) {
+
+        if ((bytes.length - 2) % 2 != 0) {
+            throw new UTFException("Invalid UTF-16 in " ~ version_file);
+        }
+        bool little_endian = bytes[0] == 0xff;
+        wchar[] text;
+
+        foreach (i; 0 .. (bytes.length - 2) / 2) {
+            auto a = bytes[2 + i * 2];
+            auto b = bytes[3 + i * 2];
+            text ~= cast(wchar)(little_endian ? (a | (b << 8)) : ((a << 8) | b));
+        }
+
+        return toUTF8(text);
+    }
+
+    // Otherwise expect UTF-8, with or without a BOM.
+    if (bytes.length >= 3 && bytes[0 .. 3] == [0xef, 0xbb, 0xbf]) {
+        bytes = bytes[3 .. $];
+    }
+
+    auto text = cast(string) bytes;
+    validate(text);
+    return text;
+}
+
+
+string get_configured_global_version() {
+    if (!GLOBAL_VERSION_FILE.exists || !GLOBAL_VERSION_FILE.isFile) {
+        return "";
+    }
+
+    auto value = read_version_file(GLOBAL_VERSION_FILE);
+    return value.strip.length ? value.stripRight("\r\n") : "";
+}
+
+
+LocalVersion get_local_version_in_directory(string directory) {
+    LocalVersion local_version;
+    auto version_file = buildPath(directory, ".ruby-version");
+
+    if (version_file.exists && version_file.isFile) {
+        local_version.path = version_file;
+        auto lines = read_version_file(version_file).splitLines();
+        if (lines.length) {
+            local_version.name = lines[0];
+        }
+    }
+
+    return local_version;
+}
+
+
+// Find the nearest local file without changing the process working directory.
+LocalVersion get_nearest_local_version() {
     auto cwd  = getcwd();
-    auto cwd_saved = cwd;
     auto root = rootName(cwd);
-    auto local_version_file = "";
-    bool found = false;
 
-    while (true) {
-        if (root==cwd) break;
-        local_version_file = cwd ~ "\\.ruby-version";
-        if(local_version_file.exists) {
-            found = true;
+    while (root != cwd) {
+        auto local_version = get_local_version_in_directory(cwd);
+        if (local_version.path.length) {
+            return local_version;
+        }
+
+        auto parent = dirName(cwd);
+        if (parent == cwd) {
             break;
-        };
-        cwd = dirName(cwd);
-        chdir(cwd);
+        }
+        cwd = parent;
     }
 
-    if (found) {
-        string ver_content = cast(string)read(local_version_file);
-        // Just read the first line to resist some evil editors!!!
-        string ver = splitLines(ver_content)[0];
-        // Complete '3.1.3' with the suffix '-1'
-        ver = auto_fix_version_for_installed(ver);
-        lvi.where = local_version_file;
-        lvi.ver = ver;
-    }
-    // writeln(cwd_saved);
-    chdir(cwd_saved);
-    return lvi;
+    return LocalVersion.init;
 }
 
 
 // Read the global shell variable
-string get_this_shell_version() {
+string get_shell_version() {
     // https://dlang.org/phobos/std_process.html#environment.get
     // get won't throw
     auto ver = environment.get("RBENV_VERSION");
@@ -454,34 +507,71 @@ string get_this_shell_version() {
 }
 
 
-VersionSetInfo get_current_version_with_setmsg() {
+private ActiveVersion determine_active_version(
+    string       shell_version,
+    LocalVersion local_version = LocalVersion.init,
+    string       global_version = ""
+) {
+    ActiveVersion active;
 
-    VersionSetInfo vsi;
-
-    string ver = get_this_shell_version();
-    if("" != ver) {
-        vsi.ver = ver;
-        vsi.setmsg = "(set by $env:RBENV_VERSION environment variable)";
-        return vsi;
+    if (shell_version.length) {
+        active.name = shell_version;
+        active.source = VersionSource.shell;
+    } else if (local_version.path.length && local_version.name.strip.length) {
+        active.name = find_installed_version(local_version.name);
+        if (active.name is null) {
+            active.name = local_version.name.chompPrefix("ruby-");
+            active.state = ActiveVersionState.notInstalled;
+        }
+        active.source = VersionSource.local;
+        active.source_path = local_version.path;
+    } else if (global_version.length) {
+        active.name = global_version;
+        active.source = VersionSource.global;
+        active.source_path = GLOBAL_VERSION_FILE;
     }
 
+    return active;
+}
 
-    LocalVersionInfo lvi;
-    lvi = get_local_version();
 
-    if("" != lvi.ver) {
-        vsi.ver = lvi.ver;
-        vsi.setmsg = "(set by " ~ lvi.where ~ ")";
-        return vsi;
+ActiveVersion get_active_version() {
+    auto shell_version = get_shell_version();
+    if (shell_version.length) {
+        return determine_active_version(shell_version);
     }
 
-    ver = get_global_version();
-    if("" != ver) {
-        vsi.ver = ver;
-        vsi.setmsg = "(set by " ~ GLOBAL_VERSION_FILE ~ ")";
-        return vsi;
+    auto local_version = get_nearest_local_version();
+    if (local_version.path.length && local_version.name.strip.length) {
+        return determine_active_version(shell_version, local_version);
     }
 
-    // return empty string, this will cause program to exit -1
-    return vsi;
+    auto global_version = get_global_version_for_active();
+    if (!global_version.length) {
+        ActiveVersion active;
+        active.source = VersionSource.global;
+        active.source_path = GLOBAL_VERSION_FILE;
+        active.state = ActiveVersionState.globalNotSet;
+        return active;
+    }
+    return determine_active_version(shell_version, local_version, global_version);
+}
+
+
+CurrentVersions get_current_versions() {
+    CurrentVersions current;
+    current.global = get_configured_global_version();
+    current.local  = get_nearest_local_version();
+    current.shell  = get_shell_version();
+
+    auto system = environment.get("RBENV_SYSTEM_RUBY").split("<=>");
+    if (system.length) {
+        current.system.name = system[0];
+    }
+    if (system.length > 1) {
+        current.system.path = system[1];
+    }
+
+    current.active = determine_active_version(current.shell, current.local, current.global);
+    return current;
 }

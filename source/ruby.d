@@ -9,6 +9,10 @@
  *  1. Cheat starship/oh-my-posh to get version info
  *  2. Get correct version info for rbenv commands
  *  3. Invoke the real ruby.exe
+ *
+ *  Version selection returns structured data from rbenv.common. This program
+ *  uses version_display.d to format its Ruby-compatible output and warnings,
+ *  rather than writing the PowerShell protocol used by rbenv-exec.
  * ------------------------------------------------------------*/
 
 import std.stdio;
@@ -20,6 +24,7 @@ import std.process : spawnShell, wait, Config;
 import std.array;
 
 import rbenv.common;
+import rbenv.version_display : format_active_version_name, format_ruby_version, warn_active_version;
 
 // Written in the D programming language.
 // --------------------------------------------------------------
@@ -30,10 +35,12 @@ int main(string[] args) {
     auto arg_len = args.length;
 
     ActiveVersion active = get_active_version();
+    warn_active_version(active);
+    auto version_name = format_active_version_name(active);
 
     string pwd = getcwd();
 
-    if ("" == active.name) {
+    if ("" == version_name) {
         // The last valid version to check is the global version, we've warned already
         // warn("rbenv: No valid version has been set");
         return -1;
@@ -43,7 +50,7 @@ int main(string[] args) {
     //      we suppress invocation of real ruby.exe
     // This supports starship/oh-my-posh to get answer more quickly
     if(arg_len == 2 && versionOptions.canFind(args[1])) {
-        writeln("ruby ", active.name, " ", active.source);
+        writeln(format_ruby_version(active));
         return 0;
     }
 
@@ -58,7 +65,7 @@ int main(string[] args) {
         }
     }
 
-    string rubyexe = get_bin_path_for_version(active.name) ~ "\\ruby.exe";
+    string rubyexe = get_bin_path_for_version(version_name) ~ "\\ruby.exe";
 
     string shellcmd = join(rubyexe ~ escape_args[1..$], " ");
     // writeln(shellcmd);

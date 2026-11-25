@@ -10,6 +10,19 @@
 *   rbenv-exec.exe rehash-version <version>
 *   rbenv-exec.exe shim-get-gem   <gem_shim.bat>
 *   rbenv-exec.exe list-who-has   <gem_name>
+*   rbenv-exec.exe _find-installed-version_ <version>
+*   rbenv-exec.exe _get-all-installed-versions_
+*   rbenv-exec.exe _get-current-architecture_
+*   rbenv-exec.exe list-recent-versions
+*   rbenv-exec.exe get-global-version
+*   rbenv-exec.exe set-global-version <version>
+*   rbenv-exec.exe get-local-version
+*   rbenv-exec.exe set-local-version <version>
+*
+*   User-facing commands print their own results here. Responses for
+*   PowerShell helpers and current JSON are written by version_protocol.d;
+*   their stdout is a communication channel, not a user-facing message.
+*   Names surrounded by underscores identify auxiliary commands.
 *
 * -------------------------------------------------------------*/
 
@@ -18,16 +31,22 @@ module rbenv.exec;
 
 import std.stdio;
 import std.process      : environment;
-import std.array        : array;
+import std.array        : array, split;
 import std.algorithm    : remove, endsWith;
 import std.algorithm    : map, filter;
-import std.file         : dirEntries, SpanMode;
+import std.file         : dirEntries, exists, FileException, getcwd, isFile, SpanMode;
 import std.file         : write;
-import std.path         : baseName;
+import std.path         : baseName, buildPath;
 import std.exception    : enforce;
 import std.format       : format;
+import std.json         : JSONException;
+import std.string       : strip;
+import std.utf          : UTFException;
 
 import rbenv.common;
+import rbenv.version_display : auto_fix_version_for_installed, format_active_version_name, warn_active_version;
+import rbenv.version_protocol : write_current_architecture, write_current_versions;
+import rbenv.version_protocol : write_installed_version, write_installed_versions;
 
 // Written in the D programming language.
 // --------------------------------------------------------------
@@ -52,10 +71,29 @@ if not exists, %gem_exe% is:
 
 
 int main(string[] args) {
+    try {
+        return run_command(args);
+    } catch (FileException error) {
+        stderr.writeln("rbenv: " ~ error.msg);
+        return 1;
+    } catch (UTFException error) {
+        stderr.writeln("rbenv: " ~ error.msg);
+        return 1;
+    } catch (JSONException error) {
+        stderr.writeln("rbenv: " ~ error.msg);
+        return 1;
+    }
+}
 
+
+int run_command(string[] args) {
     // auto arg_len = args.length;
     // enforce(arg_len == 3);
 
+    if (args.length < 2) {
+        stderr.writeln("rbenv-exec.exe: missing command");
+        return -1;
+    }
     if(args[1] == "rehash-gem") {
         // Full form:
         //
@@ -86,14 +124,146 @@ int main(string[] args) {
         list_who_has_gem(args[2]);
         return 0;
     }
+    else if (args[1] == "_find-installed-version_") {
+        if (args.length != 3 || args[2].length == 0) {
+            stderr.writeln("Usage: rbenv-exec.exe _find-installed-version_ <version>");
+            return 1;
+        }
+
+        return write_installed_version(args[2]);
+    }
+    else if (args[1] == "_get-all-installed-versions_") {
+        if (args.length != 2) {
+            stderr.writeln("Usage: rbenv-exec.exe _get-all-installed-versions_");
+            return 1;
+        }
+
+        write_installed_versions();
+        return 0;
+    }
+    else if (args[1] == "_get-current-architecture_") {
+        if (args.length != 2) {
+            stderr.writeln("Usage: rbenv-exec.exe _get-current-architecture_");
+            return 1;
+        }
+
+        write_current_architecture();
+        return 0;
+    }
+    else if (args[1] == "list-recent-versions") {
+        if (args.length != 2) {
+            stderr.writeln("Usage: rbenv-exec.exe list-recent-versions");
+            return 1;
+        }
+
+        foreach (ver; get_recent_remote_versions()) {
+            writeln(ver);
+        }
+        return 0;
+    }
+    else if (args[1] == "get-global-version") {
+        if (args.length != 2) {
+            stderr.writeln("Usage: rbenv-exec.exe get-global-version");
+            return 1;
+        }
+
+        return get_global_version();
+    }
+    else if (args[1] == "set-global-version") {
+        if (args.length != 3 || args[2].length == 0) {
+            stderr.writeln("Usage: rbenv-exec.exe set-global-version <version>");
+            return 1;
+        }
+
+        return set_global_version(args[2]);
+    }
+    else if (args[1] == "get-local-version") {
+        if (args.length != 2) {
+            stderr.writeln("Usage: rbenv-exec.exe get-local-version");
+            return 1;
+        }
+
+        return get_local_version();
+    }
+    else if (args[1] == "set-local-version") {
+        if (args.length != 3 || args[2].length == 0) {
+            stderr.writeln("Usage: rbenv-exec.exe set-local-version <version>");
+            return 1;
+        }
+
+        return set_local_version(args[2]);
+    }
+    else if (args[1] == "current" && args.length == 2) {
+        write_current_versions(get_current_versions());
+        return 0;
+    }
     else {
-        stderr.writeln("rbenv-exec.exe: Unmatched command " ~ args[2]);
+        stderr.writeln("rbenv-exec.exe: Unmatched command " ~ args[1]);
         return -1;
     }
 }
 
 
-int write_local_version(string requested_version) {
+int get_global_version() {
+    if (GLOBAL_VERSION_FILE.exists && !GLOBAL_VERSION_FILE.isFile) {
+        stderr.writeln("rbenv: global version file is not a file: " ~ GLOBAL_VERSION_FILE);
+        return 1;
+    }
+
+    auto global_version = get_configured_global_version();
+    if (!global_version.length) {
+        writeln("rbenv: No global version has been set, use rbenv global <version>");
+    } else {
+        writeln(global_version);
+    }
+    return 0;
+}
+
+
+int set_global_version(string requested_version) {
+    auto installed_version = find_installed_version(requested_version);
+    if (installed_version is null) {
+        stderr.writeln("rbenv: version " ~ requested_version ~ " not installed");
+        return 1;
+    }
+
+    foreach (char byte_value; installed_version) {
+        if (byte_value > 0x7f) {
+            stderr.writeln("rbenv: global version must contain only ASCII characters");
+            return 1;
+        }
+    }
+
+    write(GLOBAL_VERSION_FILE, installed_version);
+    success("rbenv: Change to global version '" ~ installed_version ~ "'");
+    rehash_version(installed_version);
+    return 0;
+}
+
+
+int get_local_version() {
+    auto local_version = get_local_version_in_directory(getcwd());
+    if (!local_version.path.length) {
+        writeln("rbenv: no local version configured for this directory");
+        return 0;
+    }
+    if (!local_version.name.strip.length) {
+        stderr.writeln("rbenv: empty local version file: " ~ local_version.path);
+        return 1;
+    }
+
+    auto installed_version = find_installed_version(local_version.name);
+    if (installed_version is null) {
+        stderr.writeln("rbenv: version " ~ local_version.name ~ " not installed");
+        return 1;
+    }
+
+    writeln(installed_version);
+    return 0;
+}
+
+
+int set_local_version(string requested_version) {
     auto installed_version = find_installed_version(requested_version);
     if (installed_version is null) {
         stderr.writeln("rbenv: version " ~ requested_version ~ " not installed");
@@ -110,6 +280,42 @@ int write_local_version(string requested_version) {
     auto version_file = buildPath(getcwd(), ".ruby-version");
     write(version_file, portable_version);
     return 0;
+}
+
+
+/**
+Used for shim script to find the correct version of gem executable
+
+Directly called by:
+
+    rbenv-exec.exe shim-get-gem <arg>
+
+Returns:
+
+    'correct_ver_dir\gem_name.cmd' arguments or
+    'correct_ver_dir\gem_name.bat' arguments
+*/
+string shim_get_gem(string cmd_path) {
+
+    string cmd;
+
+    // E.g. C:Ruby-on-Windows\shims\cr.bat
+    // if (cmd_path.indexOf(':'))
+    cmd = baseName(cmd_path, ".bat"); // Now 'cr'
+
+    ActiveVersion active = get_active_version();
+    warn_active_version(active);
+    auto ver = format_active_version_name(active);
+
+    // This condition is only met when global version is not set
+    // Enforce users to set global version
+    if (ver == "") {
+        return "";
+    }
+
+    // Still need to call this function to do some work (e.g. find available bins)
+    auto gem = get_gem_executable_by_version(cmd, ver);
+    return gem;
 }
 
 
