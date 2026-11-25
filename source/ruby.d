@@ -2,7 +2,7 @@
  * File Name     : ruby.d
  * File Authors  : Aoran Zeng <ccmywish@qq.com>
  * Created On    : <2023-02-11>
- * Last Modified : <2024-09-02>
+ * Last Modified : <2026-11-25>
  *
  * ruby:
  *
@@ -29,12 +29,11 @@ string[] versionOptions = ["-v", "--version"];
 int main(string[] args) {
     auto arg_len = args.length;
 
-    VersionSetInfo vsi;
-    vsi = get_current_version_with_setmsg();
+    ActiveVersion active = get_active_version();
 
     string pwd = getcwd();
 
-    if ("" == vsi.ver) {
+    if ("" == active.name) {
         // The last valid version to check is the global version, we've warned already
         // warn("rbenv: No valid version has been set");
         return -1;
@@ -44,7 +43,7 @@ int main(string[] args) {
     //      we suppress invocation of real ruby.exe
     // This supports starship/oh-my-posh to get answer more quickly
     if(arg_len == 2 && versionOptions.canFind(args[1])) {
-        writeln("ruby ", vsi.ver, " ", vsi.setmsg);
+        writeln("ruby ", active.name, " ", active.source);
         return 0;
     }
 
@@ -59,7 +58,7 @@ int main(string[] args) {
         }
     }
 
-    string rubyexe = get_bin_path_for_version(vsi.ver) ~ "\\ruby.exe";
+    string rubyexe = get_bin_path_for_version(active.name) ~ "\\ruby.exe";
 
     string shellcmd = join(rubyexe ~ escape_args[1..$], " ");
     // writeln(shellcmd);

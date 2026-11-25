@@ -5,7 +5,7 @@
 # Usage: rbenv install <version>
 # Summary: Install a Ruby version using RubyInstaller2
 # Help: rbenv install head     => Install the daily-updated version of the Ruby dev branch
-# rbenv install -l       => List recent versions
+# rbenv install -l       => List head (if available) and the latest version of each of the 10 most recent minor series
 # rbenv install -a       => List all versions
 # rbenv install 3.1.2-1  => Install RubyInstaller 3.1.2-1
 # rbenv install 3.1.2    => Install the latest packaged version of 3.1.2
@@ -641,12 +641,14 @@ When users firstly installed `rbenv`, they will go here,
 
 
 
-if ($args[0] -eq '-l' -or $args[0] -eq '--list') {
-    $versions = get_all_remote_versions
-    $versions[0..10]
+if ($cmd -in @('-l', '--list') -or $args[0] -in @('-l', '--list')) {
+    invoke_rbenv_exec list-recent-versions
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
 }
 
-elseif ($args[0] -eq '-a' -or $args[0] -eq '--all') {
+elseif ($cmd -in @('-a', '--all') -or $args[0] -in @('-a', '--all')) {
     get_all_remote_versions
 }
 
