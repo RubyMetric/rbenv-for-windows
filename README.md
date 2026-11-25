@@ -160,7 +160,7 @@ Try use
 - `rbenv install 3.1`
 
 ```PowerShell
-# List recent Ruby versions
+# List head (if available) and the latest version of each of the 10 most recent minor series
 rbenv install -l
 
 # List all Ruby versions
@@ -212,6 +212,8 @@ rbenv global
 
 # Set local version
 rbenv local 3.1.2-1
+# Show the resolved version from this directory's .ruby-version
+rbenv local
 
 # Use global scope when this directory or a parent contains .git; otherwise use local
 rbenv use 3.1.2-1
@@ -233,6 +235,8 @@ rbenv version
 rbenv current
 # or
 rbenv cur
+# Show the JSON returned by rbenv-exec as well
+rbenv current --debug
 
 # Show rbenv, binary, PowerShell and Ruby environment information
 rbenv info

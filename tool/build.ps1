@@ -43,6 +43,10 @@ $dir = "$env:RBENV_ROOT\rbenv"
 # but does not require D runtime DLLs at run time.
 $script:compiler_flags = @()
 
+# '-i' makes the compiler also compile every module that the given file imports,
+# searching from the '-I' directory (Phobos is not included). So each executable
+# only contains what it uses, and adding a module never requires editing this script.
+
 function set_compiler_flags($mode) {
     if ($Compiler -eq "ldc2") {
         use_ldc2 $mode
@@ -82,11 +86,11 @@ function use_ldc2($mode) {
 
 
 function build_fake_ruby() {
-    & $Compiler $script:compiler_flags -of="$dir\bin\ruby.exe" "$dir\source\ruby.d" "$dir\source\rbenv\common.d"
+    & $Compiler $script:compiler_flags -i "-I$dir\source" -of="$dir\bin\ruby.exe" "$dir\source\ruby.d"
 }
 
 function build_rbenv_exec() {
-    & $Compiler $script:compiler_flags -of="$dir\libexec\rbenv-exec.exe" "$dir\source\rbenv-exec.d" "$dir\source\rbenv\common.d"
+    & $Compiler $script:compiler_flags -i "-I$dir\source" -of="$dir\libexec\rbenv-exec.exe" "$dir\source\rbenv-exec.d"
 }
 
 

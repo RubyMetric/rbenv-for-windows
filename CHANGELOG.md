@@ -2,6 +2,14 @@
 
 ## [Unreleased](#) (2026-11-25)
 
+### Bug fixes:
+
+- Fix: `rbenv local <version>` encoding problmes
+- Fix: `rbenv local` can't show current local version
+- Fix: `rbenv rehash` created a shim for `setrbvars` and counted the executables wrongly
+- Fix: `rbenv rehash version <version>` reported a confusing path error for an uninstalled version
+- Fix: `rbenv-exec.exe` crashed instead of showing its usage when a command lacked arguments
+
 <br>
 
 ## [v1.7.0](#) (2026-11-25)

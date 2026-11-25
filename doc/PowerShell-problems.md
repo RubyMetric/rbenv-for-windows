@@ -85,16 +85,16 @@ with a BOM. This was not a safe format for the D implementation, which read
 the file as bytes and cast those bytes to a string without decoding them.
 It could therefore interpret the BOM and zero bytes as part of the version.
 
-In 2023, commit `c46681d` changed this to explicitly use ASCII. The current
-[global command](../libexec/rbenv-global.ps1) still uses:
+In 2023, commit `c46681d` changed this to explicitly use ASCII:
 
 ```powershell
 $version | Out-File $GLOBAL_VERSION_FILE -NoNewline -Encoding ASCII
 ```
 
-This produces the same BOM-free bytes in PowerShell 5.1 and 7 for the
-ASCII version names rbenv writes. The ASCII choice was already in place; it
-was not a new fix introduced by the later `rbenv current` work.
+This produced the same BOM-free bytes in PowerShell 5.1 and 7 for ASCII version
+names. The current [global command](../libexec/rbenv-global.ps1) delegates to
+`rbenv-exec.exe`, which checks that the installed version is ASCII and writes
+the same bytes without a BOM or newline.
 
 ### `rbenv local`: `Set-Content` without an encoding
 
@@ -118,7 +118,7 @@ directory as UTF-8 bytes without a BOM or newline. This preserves the portable
 ### Reading old files
 
 Changing the writer does not change files that already exist. The shared D
-reader in [common.d](../source/rbenv/common.d) therefore still accepts UTF-8
+reader in [version_files.d](../source/rbenv/version_files.d) therefore still accepts UTF-8
 with or without a BOM, and BOM-marked UTF-16LE or UTF-16BE, converting the
 contents to UTF-8 before interpreting the version. Invalid encodings are
 reported rather than silently treated as a valid version.
