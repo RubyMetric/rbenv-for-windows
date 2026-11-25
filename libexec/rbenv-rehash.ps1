@@ -10,11 +10,13 @@ param($cmd, $argument)
 
 function rehash_single_gem ($name, $echo_or_not=$True) {
     invoke_rbenv_exec rehash-gem $name
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 
 function rehash_version ($version) {
     invoke_rbenv_exec rehash-version $version
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
 
