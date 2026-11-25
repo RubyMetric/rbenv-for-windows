@@ -2,7 +2,7 @@
 # File          : ridk.ps1
 # Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2023-08-01>
-# Last modified : <2023-09-26>
+# Last modified : <2026-11-25>
 #
 # ruby:
 #
@@ -22,3 +22,8 @@ $version, $_ = get_current_version_with_setmsg_from_fake_ruby
 $rubyexe = get_ridk_location_by_version $version
 
 & $rubyexe @args
+
+if (-not $?) {
+    if ($LASTEXITCODE -eq 0) { exit 1 }
+    exit $LASTEXITCODE
+}
