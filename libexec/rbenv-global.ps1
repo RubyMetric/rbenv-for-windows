@@ -18,7 +18,11 @@ function set_global_version($version) {
 
     $version = auto_fix_version_for_installed $version
 
-    $version | Out-File $GLOBAL_VERSION_FILE -NoNewline -Encoding ascii
+    # Out-File defaults to UTF-16LE in Windows PowerShell 5.1 and UTF-8 without
+    # a BOM in PowerShell 7.
+    # Explicit `-Encoding UTF8` writes a BOM in 5.1, but not in 7.
+    # Explicit `-Encoding ASCII` gives version files the same bytes in both.
+    $version | Out-File $GLOBAL_VERSION_FILE -NoNewline -Encoding ASCII
 
     success "rbenv: Change to global version '$version'"
 
