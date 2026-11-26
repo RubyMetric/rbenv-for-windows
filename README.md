@@ -209,7 +209,7 @@ rbenv global
 
 # Set local version
 rbenv local 3.1.2-1
-# Show the resolved version from this directory's .ruby-version (or .tool-versions)
+# Show the resolved version from this directory's .ruby-version (or mise.toml / .tool-versions)
 rbenv local
 
 # Use global scope when this directory or a parent contains .git; otherwise use local
@@ -228,8 +228,8 @@ rbenv shell 3.0.0-1
 rbenv version
 
 # Show the active version and configured global, local, shell and system versions.
-# The local version is shown as written in the nearest .ruby-version or .tool-versions file.
-# rbenv only reads .tool-versions (its ruby entry); it never writes it.
+# The local version is shown as written in the nearest .ruby-version, mise.toml or .tool-versions file.
+# rbenv only reads the ruby entry of mise.toml and .tool-versions; it never writes them.
 rbenv current
 # or
 rbenv cur

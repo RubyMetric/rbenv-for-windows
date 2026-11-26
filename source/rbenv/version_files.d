@@ -2,7 +2,7 @@
 * version_files:
 *
 *   Read the files that configure a Ruby version: global.txt and the
-*   .ruby-version or .tool-versions files of local projects.
+*   .ruby-version, mise.toml or .tool-versions files of local projects.
 *
 *   Reading only reports what the files say. Whether the version they name
 *   is installed is decided elsewhere.
@@ -13,7 +13,8 @@ module rbenv.version_files;
 import std.algorithm : startsWith;
 import std.file      : exists, getcwd, isFile, read, write;
 import std.path      : buildPath, dirName, rootName;
-import std.string    : split, splitLines, strip, stripRight;
+import std.regex     : matchFirst;
+import std.string    : indexOf, split, splitLines, strip, stripRight;
 import std.utf       : toUTF8, UTFException, validate;
 
 import rbenv.paths : GLOBAL_VERSION_FILE;
@@ -107,11 +108,11 @@ string get_configured_global_version() {
 
 
 // --------------------------------------------------------------
-//                 .ruby-version and .tool-versions
+//          .ruby-version, mise.toml and .tool-versions
 // --------------------------------------------------------------
 
 struct LocalVersion {
-    string name; // Raw version from .ruby-version, or the ruby entry of .tool-versions
+    string name; // Raw version from .ruby-version, or the ruby entry of mise.toml or .tool-versions
     string path; // Empty when no local file was found
 }
 
@@ -135,8 +136,41 @@ private string parse_tool_versions_ruby(string contents) {
 }
 
 
-// Read the .ruby-version file, falling back to the .tool-versions file.
-// A .tool-versions file without a ruby entry is ignored.
+// Read the ruby entry of the [tools] table of a mise.toml file. Supports
+// 'ruby = "3.3.0"', 'ruby = ["3.3.0", ...]' and 'ruby = { version = "3.3.0" }'.
+// Returns an empty string when there is no ruby entry
+private string parse_mise_toml_ruby(string contents) {
+    bool in_tools = false;
+    foreach (line; contents.splitLines()) {
+        auto content = line.strip;
+        if (content.length == 0 || content.startsWith("#")) {
+            continue;
+        }
+
+        if (content.startsWith("[")) {
+            in_tools = content == "[tools]";
+            continue;
+        }
+
+        auto equal = content.indexOf('=');
+        if (!in_tools || equal < 0 || content[0 .. equal].strip != "ruby") {
+            continue;
+        }
+
+        auto value = content[equal + 1 .. $].strip;
+        auto match = value.startsWith("{")
+            ? matchFirst(value, `version\s*=\s*['"]([^'"]+)['"]`)
+            : matchFirst(value, `['"]([^'"]+)['"]`);
+        if (!match.empty) {
+            return match[1];
+        }
+    }
+    return "";
+}
+
+
+// Read the .ruby-version file, falling back to the mise.toml and then the
+// .tool-versions file. A mise.toml or .tool-versions without a ruby entry is ignored.
 LocalVersion get_local_version_in_directory(string directory) {
     LocalVersion local_version;
 
@@ -149,6 +183,16 @@ LocalVersion get_local_version_in_directory(string directory) {
             local_version.name = lines[0];
         }
         return local_version;
+    }
+
+    auto mise_file = buildPath(directory, "mise.toml");
+    if (mise_file.exists && mise_file.isFile) {
+        auto name = parse_mise_toml_ruby(read_version_file(mise_file));
+        if (name.length) {
+            local_version.path = mise_file;
+            local_version.name = name;
+            return local_version;
+        }
     }
 
     auto tool_versions_file = buildPath(directory, ".tool-versions");
@@ -192,4 +236,14 @@ unittest {
     assert(parse_tool_versions_ruby("ruby   3.3.0-1  3.2.1\n") == "3.3.0-1");
     assert(parse_tool_versions_ruby("nodejs 20.1.0\n") == "");
     assert(parse_tool_versions_ruby("# ruby 3.2.1\n") == "");
+}
+
+
+unittest {
+    assert(parse_mise_toml_ruby("[tools]\nnodejs = \"20\"\nruby = \"3.3.0\"\n") == "3.3.0");
+    assert(parse_mise_toml_ruby("[tools]\nruby = ['3.2.2', '3.1']\n") == "3.2.2");
+    assert(parse_mise_toml_ruby("[tools]\nruby = { version = \"3.4.1\", compile = false }\n") == "3.4.1");
+    // ruby outside [tools] is not a tool version
+    assert(parse_mise_toml_ruby("[env]\nruby = \"3.0.0\"\n") == "");
+    assert(parse_mise_toml_ruby("[tools]\nnodejs = \"20\"\n") == "");
 }

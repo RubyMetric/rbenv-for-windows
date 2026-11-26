@@ -77,7 +77,7 @@ In the last step of the chain, the argument of ruby interpreter is the so-called
 
 There are three kind of 'versions'
 1. global version (set by `$env:RBENV_ROOT\global.txt`)
-2. local version  (set by `$PWD\.ruby-version`, or the `ruby` entry of `$PWD\.tool-versions`)
+2. local version  (set by `$PWD\.ruby-version`, or the `ruby` entry of `$PWD\mise.toml` or `$PWD\.tool-versions`)
 3. shell version (set by `$env:RBENV_VERSION`)
 
 <br>
