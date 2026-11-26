@@ -1,4 +1,7 @@
 :: --------------------------------------------------------------
+:: Copyright © 2023-2026 Aoran Zeng
+:: SPDX-License-Identifier: MIT
+:: --------------------------------------------------------------
 :: File          : rubyw.bat
 :: Authors       : Aoran Zeng <ccmywish@qq.com>
 :: Created on    : <2023-09-26>

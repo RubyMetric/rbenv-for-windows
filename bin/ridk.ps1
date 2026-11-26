@@ -1,4 +1,7 @@
 # ---------------------------------------------------------------
+# Copyright © 2023-2026 Aoran Zeng
+# SPDX-License-Identifier: MIT
+# ---------------------------------------------------------------
 # File          : ridk.ps1
 # Authors       : Aoran Zeng <ccmywish@qq.com>
 # Created on    : <2023-08-01>

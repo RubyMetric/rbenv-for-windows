@@ -1,12 +1,12 @@
 # ---------------------------------------------------------------
-# Copyright © 2022-2026 曾奥然 (Aoran Zeng)
+# Copyright © 2022-2026 Aoran Zeng
 # SPDX-License-Identifier: MIT
 # ---------------------------------------------------------------
 # Project Name    : rbenv for Windows
 # Project Authors : Aoran Zeng <ccmywish@qq.com>
 # Contributors    : Scoop Contributors
 # Created On      : <2022-05-02>
-# Last Modified   : <2026-11-25>
+# Last Modified   : <2026-11-26>
 #
 # Credit:
 #   I reuse a lot of code pieces from Scoop:
@@ -21,7 +21,7 @@ param($cmd)
 # [String]
 # rbenv's own version
 # Not to conflict with $env:RBENV_VERSION ('rbenv shell' sets it)
-$RBENV_OWN_VERSION       = "v1.7.0"
+$RBENV_OWN_VERSION       = "v1.8.0"
 
 # [String]
 # Where we check the global version
