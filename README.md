@@ -25,8 +25,9 @@ Hi, hello
 2. Interact with shell prompt tools like [starship] and [oh-my-posh] properly
 3. Very minor impact on the Ruby/Gem commands startup time
 4. Support RubyInstaller for ARM64
-5. Extend rational commands familiar to [mise] and [RVM] users. [Compare them](./doc/Comparing-RVM-mise-rbenv.md).
+5. Extend rational commands familiar to [mise] and [RVM] users. [Compare them](./doc/Comparing-RVM-mise-rbenv.md)
 6. Recognize other tools for the version, such as [asdf] and [mise]
+7. Use in CMD also
 
 <br>
 
@@ -239,6 +240,9 @@ rbenv current --debug
 # Show rbenv, binary, PowerShell and Ruby environment information
 rbenv info
 
+# Run a command using the current rbenv environment
+rbenv exec bundle install
+
 # Unset Ruby version in this shell
 rbenv shell --unset
 
@@ -255,6 +259,30 @@ From `3.1.0-1`, we should download `rubyinstaller-<version>.7z` directly, no dev
 However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7z`, with devkit. That's about 130MB ... **Every Ruby has their own MSYS64.**
 
 <br>
+
+
+
+### Use in CMD
+
+You can also use rbenv for Windows in CMD. In CMD, rbenv is completely handed over to PowerShell for execution. After all, this is implemented using PowerShell. So, please first follow the installation instructions to ensure that you can already use rbenv in PowerShell.
+
+Then set the required environment variables in CMD (or permanently add them to the environment variables).
+
+```batch
+set "RBENV_ROOT=C:\Ruby-on-Windows"
+set "PATH=%RBENV_ROOT%\rbenv\bin;%RBENV_ROOT%\shims;%PATH%"
+```
+
+Then we can use now!
+
+```batch
+rbenv -v
+rbenv current
+```
+
+<br>
+
+
 
 ## Known issues
 
