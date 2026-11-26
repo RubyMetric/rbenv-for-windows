@@ -16,9 +16,9 @@ Manage multiple Rubies on Windows.
 
 <br>
 
-嗨, 你好
+嗨, 你好。该项目独立设计开发于生成式 AI 编程工具普及之前，并已获得真实用户的采用和认可。
 
-Hi, hello
+Hi, hello. This project was built independently before generative AI coding tools became mainstream, with real-world users and proven adoption.
 
 `rbenv for Windows` is a [rbenv] clone for Ruby users on Windows. After continuous improvements, It now can
 1. Integrate with `RubyGems`, `Bundler` compactly
@@ -27,7 +27,7 @@ Hi, hello
 4. Support RubyInstaller for ARM64
 5. Extend rational commands familiar to [mise] and [RVM] users. [Compare them](./doc/Comparing-RVM-mise-rbenv.md)
 6. Recognize other tools for the version, such as [asdf] and [mise]
-7. Use in CMD also
+7. Can be used in CMD also, even `rbenv shell`
 
 <br>
 
@@ -148,6 +148,34 @@ https://github.com/SKOLIA0/rbenv-for-windows/blob/main/README_RU.md
 
 <br>
 
+
+
+### Use in CMD
+
+You can also use `rbenv for Windows` in `CMD`.
+
+1. First, follow the installation guides above for `PowerShell`.
+
+2. Then set the required environment variables in `CMD` (or permanently add them).
+
+    ```cmd
+    set "RBENV_ROOT=C:\Ruby-on-Windows"
+    set "PATH=%RBENV_ROOT%\rbenv\bin;%RBENV_ROOT%\shims;%PATH%"
+    ```
+
+3. Then we can use now!
+
+    ```cmd
+    rbenv -v
+    rbenv current
+    rbenv shell 3.2
+    rbenv shell --unset
+    ```
+
+<br>
+
+
+
 ## Usage
 
 **Note:** You can omit many numbers when you specify a version!
@@ -257,28 +285,6 @@ rbenv update
 From `3.1.0-1`, we should download `rubyinstaller-<version>.7z` directly, no devkit. That's only about 15MB. **Every Ruby shares one MSYS64.**
 
 However, before `3.1.0-1`, we have to download `rubyinstaller-devkit-<version>.7z`, with devkit. That's about 130MB ... **Every Ruby has their own MSYS64.**
-
-<br>
-
-
-
-### Use in CMD
-
-You can also use rbenv for Windows in CMD. In CMD, rbenv is completely handed over to PowerShell for execution. After all, this is implemented using PowerShell. So, please first follow the installation instructions to ensure that you can already use rbenv in PowerShell.
-
-Then set the required environment variables in CMD (or permanently add them to the environment variables).
-
-```batch
-set "RBENV_ROOT=C:\Ruby-on-Windows"
-set "PATH=%RBENV_ROOT%\rbenv\bin;%RBENV_ROOT%\shims;%PATH%"
-```
-
-Then we can use now!
-
-```batch
-rbenv -v
-rbenv current
-```
 
 <br>
 
