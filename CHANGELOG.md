@@ -1,6 +1,21 @@
 # Changelog
 
-## [Unreleased](#) (2026-11-25)
+## [Unreleased](#) (2026-11-26)
+
+<br>
+
+## [v1.8.0](#) (2026-11-26)
+
+### New features:
+
+- Support in CMD
+- Support `mise.toml`
+- Support `.tool-versions`
+
+### Enhancements:
+
+- Mixed D and PowerShell implementation
+- Postpone `MSYS2` installation
 
 ### Bug fixes:
 

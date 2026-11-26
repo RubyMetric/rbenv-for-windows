@@ -1,4 +1,4 @@
-v2026.11.24-2
+v2026.11.26-1
 
 # Don't Edit Me!
 # This file records the version of rbenv's binary files.
