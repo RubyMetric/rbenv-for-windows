@@ -1,10 +1,10 @@
 <!-- -----------------------------------------------------------
- ! SPDX-License-Identifier: GFDL-1.3-or-later
+ ! Copyright © 2026 Aoran Zeng
+ ! SPDX-License-Identifier: MIT
  ! -------------------------------------------------------------
  ! Doc Type      : Markdown
  ! Doc Name      : Comparing-RVM-mise-rbenv.md
  ! Doc Authors   : Aoran Zeng <ccmywish@qq.com>
- ! Contributors  : Nil Null
  ! Created On    : <2026-11-24>
  ! Last Modified : <2026-11-24>
  ! ---------------------------------------------------------- -->

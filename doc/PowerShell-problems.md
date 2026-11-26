@@ -4,7 +4,6 @@
  ! Doc Type      : Markdown
  ! Doc Name      : PowerShell-problems.md
  ! Doc Authors   : Aoran Zeng <ccmywish@qq.com>
- ! Contributors  : Nil Null
  ! Created On    : <2026-11-25>
  ! Last Modified : <2026-11-25>
  ! ---------------------------------------------------------- -->
