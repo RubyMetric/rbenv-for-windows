@@ -396,6 +396,28 @@ function install_ruby($version) {
         exit
     }
 
+    # We MUST download our own MSYS2, and not reuse user's own!
+    # Because the RubyInstaller2 bundled MSYS2 have everything ready to build CRuby gems,
+    # battle-tested by upstream.
+    #
+    # However,we don't know what exists in user's own MSYS2, it may lack of something.
+    #
+    # And there's another reason:
+    #   `ridk` is in Ruby commands runtime. When any Ruby command starts, it will search
+    # MSYS2 existence, hence severely affect the start up time if not quickly checked.
+    #
+    if (-Not (Test-Path "$env:RBENV_ROOT\msys64") ) {
+        Write-Host -f DarkYellow "MSYS2 is not installed yet, installing it now"
+        Write-Host -f DarkYellow "MSYS2 is must-have if you want to install gems with C extensions"
+
+        if ($version -ne 'head' -and $version -ge '3.1.0-1') {
+            install_shared_msys2 $version
+            return
+        }
+
+        install_shared_msys2
+    }
+
     if ($version -lt '3.1.0-1') {
         warn "version < '3.1.0-1' need mingw64 toolchain (Not compatible with our shared MSYS2's ucrt64 toolchain)"
         warn "Only full version can make you install a gem with C extensions`n"
@@ -542,7 +564,11 @@ So the snippet below is unneeded.
 # ------------------------------------------------------------------
 #
 # See share/mirrors.ps1
-function download_shared_msys2 {
+function download_shared_msys2($version) {
+    if ($version -and $version -ne 'head') {
+        return download_ruby_with_msys2 $version
+    }
+
     $all = get_all_remote_versions
     $installed = get_all_installed_versions
 
@@ -558,14 +584,14 @@ function download_shared_msys2 {
 }
 
 
-function install_shared_msys2 {
+function install_shared_msys2($version) {
 
     if (Test-Path "$env:RBENV_ROOT\msys64") {
         warn "rbenv: Already exists the shared msys64 ("$env:RBENV_ROOT\msys64")"
         exit
     }
 
-    $path = download_shared_msys2
+    $path = download_shared_msys2 $version
 
     # e.g. rubyinstaller-devkit-3.1.2-1-<arch>.exe
     $target = fname $path
@@ -606,9 +632,9 @@ When users firstly installed `rbenv`, they will go here,
     remove_ruby_registry_info $version
 
     success "rbenv: The shared MSYS2 was installed successfully!"
-    success "rbenv: In addition, the newest version '$version' was installed for you!"
+    success "rbenv: In addition, Ruby version '$version' was installed for you!"
 
-    # Firstly install, then globally set this newest version instantly
+    # Firstly install, then globally set this Ruby version instantly
     rbenv global $version
 }
 

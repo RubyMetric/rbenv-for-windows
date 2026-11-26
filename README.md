@@ -195,7 +195,7 @@ rbenv install 3.0.0-1
 # Install devkit
 
 # No need to run it by yourself now,
-# It will run automatically when first setup rbenv
+# It will run automatically when you first install a Ruby version
 rbenv install msys
 # or
 rbenv install msys2

@@ -39,7 +39,7 @@ $GLOBAL_VERSION_FILE = "$env:RBENV_ROOT\global.txt"
 $SHIMS_DIR = "$env:RBENV_ROOT\shims"
 
 <#
-The init process does 7 things:
+The init process does 6 things:
 
     1. Set init flag to avoid double init
     2. Add two paths at the front of the user PATH (almost no delay)
@@ -49,7 +49,6 @@ The init process does 7 things:
     4. Ensure global.txt and shims dir (2ms       delay)
     5. Check system Ruby               (10ms~20ms delay)
     6. If has system Ruby, rehash it just only one time (50ms, but only when you first setup rbenv)
-    7. If no the shared MSYS2, install it
 #>
 
 if ($cmd -eq "init") {
@@ -117,24 +116,6 @@ if ($cmd -eq "init") {
                 rbenv rehash version system
             }
         }
-    }
-
-    # We MUST download our own MSYS2, and not reuse user's own!
-    # Because the RubyInstaller2 bundled MSYS2 have everything ready to build CRuby gems,
-    # battle-tested by upstream.
-    #
-    # However,we don't know what exists in user's own MSYS2, it may lack of something.
-    #
-    # And there's another reason:
-    #   `ridk` is in Ruby commands runtime. When any Ruby command starts, it will search
-    # MSYS2 existence, hence severely affect the start up time if not quickly checked.
-    #
-    if (-Not (Test-Path "$env:RBENV_ROOT\msys64") )
-    {
-        Write-Host -f DarkYellow "Seems you have just installed rbenv, auto install MSYS2 for you"
-        Write-Host -f DarkYellow "MSYS2 is must-have if you want to install gems with C extensions"
-
-        rbenv install msys
     }
 
     # return instantly so that rbenv doesn't delay the user startup too much
