@@ -21,13 +21,12 @@ Manage multiple Rubies on Windows.
 Hi, hello
 
 `rbenv for Windows` is a [rbenv] clone for Ruby users on Windows. After continuous improvements, It now can
-1. Handle `rbenv local` well
-2. Integrate with `RubyGems`, `Bundler` compactly
-3. Interact with shell prompt tools like [starship] and [oh-my-posh] properly
+1. Integrate with `RubyGems`, `Bundler` compactly
+2. Interact with shell prompt tools like [starship] and [oh-my-posh] properly
+3. Very minor impact on the Ruby/Gem commands startup time
 4. Support RubyInstaller for ARM64
 5. Extend rational commands familiar to [mise] and [RVM] users. [Compare them](./doc/Comparing-RVM-mise-rbenv.md).
-
-There's a simple [record](./doc/benchmark.md) to show if `rbenv` will influence Ruby/Gem commands startup time significantly.
+6. Recognize other tools for the version, such as [asdf] and [mise]
 
 <br>
 
@@ -58,7 +57,7 @@ There's a simple [record](./doc/benchmark.md) to show if `rbenv` will influence 
 ### Install Guides
 
 > [!TIP]
-> **It's portable, be bold to try it now**
+> **It's portable. Be bold and try it.**
 
 <details>
 <summary>For common users</summary>
@@ -92,7 +91,7 @@ To update, use the following command:
 rbenv update
 ```
 
-Note that, this tool is still under active development, if you've encountered some error, UPDATE FIRST!
+Note that, if you've encountered some error, UPDATE FIRST!
 
 </details>
 
@@ -130,8 +129,6 @@ $env:RBENV_USE_MIRROR = "CN"
 ```PowerShell
 rbenv update cn
 ```
-
-请注意，此工具仍在积极开发中，如果您遇到了一些错误，请先更新!
 
 </details>
 
@@ -212,7 +209,7 @@ rbenv global
 
 # Set local version
 rbenv local 3.1.2-1
-# Show the resolved version from this directory's .ruby-version
+# Show the resolved version from this directory's .ruby-version (or .tool-versions)
 rbenv local
 
 # Use global scope when this directory or a parent contains .git; otherwise use local
@@ -231,7 +228,8 @@ rbenv shell 3.0.0-1
 rbenv version
 
 # Show the active version and configured global, local, shell and system versions.
-# The local version is shown as written in the nearest .ruby-version file.
+# The local version is shown as written in the nearest .ruby-version or .tool-versions file.
+# rbenv only reads .tool-versions (its ruby entry); it never writes it.
 rbenv current
 # or
 rbenv cur
@@ -310,5 +308,6 @@ name | example | description
 [rbenv]: https://github.com/rbenv/rbenv
 [RVM]: https://github.com/rvm/rvm
 [mise]: https://github.com/jdx/mise
+[asdf]: https://github.com/asdf-vm/asdf
 [starship]: https://github.com/starship/starship
 [oh-my-posh]: https://github.com/JanDeDobbeleer/oh-my-posh

@@ -2,7 +2,7 @@
 * version_files:
 *
 *   Read the files that configure a Ruby version: global.txt and the
-*   .ruby-version files of local projects.
+*   .ruby-version or .tool-versions files of local projects.
 *
 *   Reading only reports what the files say. Whether the version they name
 *   is installed is decided elsewhere.
@@ -13,7 +13,7 @@ module rbenv.version_files;
 import std.algorithm : startsWith;
 import std.file      : exists, getcwd, isFile, read, write;
 import std.path      : buildPath, dirName, rootName;
-import std.string    : splitLines, strip, stripRight;
+import std.string    : split, splitLines, strip, stripRight;
 import std.utf       : toUTF8, UTFException, validate;
 
 import rbenv.paths : GLOBAL_VERSION_FILE;
@@ -107,26 +107,56 @@ string get_configured_global_version() {
 
 
 // --------------------------------------------------------------
-//                          .ruby-version
+//                 .ruby-version and .tool-versions
 // --------------------------------------------------------------
 
 struct LocalVersion {
-    string name; // Raw first line of .ruby-version
+    string name; // Raw version from .ruby-version, or the ruby entry of .tool-versions
     string path; // Empty when no local file was found
 }
 
 
-// Read the .ruby-version file
+// Read the 'ruby' entry of an asdf-style .tool-versions file, e.g. 'ruby 3.2.1'
+// Returns an empty string when there is no ruby entry
+private string parse_tool_versions_ruby(string contents) {
+    foreach (line; contents.splitLines()) {
+        auto content = line.strip;
+        if (content.length == 0 || content.startsWith("#")) {
+            continue;
+        }
+
+        // Only the first version of the ruby entry is used
+        auto tokens = content.split();
+        if (tokens.length >= 2 && tokens[0] == "ruby") {
+            return tokens[1];
+        }
+    }
+    return "";
+}
+
+
+// Read the .ruby-version file, falling back to the .tool-versions file.
+// A .tool-versions file without a ruby entry is ignored.
 LocalVersion get_local_version_in_directory(string directory) {
     LocalVersion local_version;
-    auto version_file = buildPath(directory, ".ruby-version");
 
-    if (version_file.exists && version_file.isFile) {
-        local_version.path = version_file;
-        auto lines = read_version_file(version_file).splitLines();
+    auto ruby_version_file = buildPath(directory, ".ruby-version");
+    if (ruby_version_file.exists && ruby_version_file.isFile) {
+        local_version.path = ruby_version_file;
+        auto lines = read_version_file(ruby_version_file).splitLines();
         if (lines.length) {
             // Just read the first line to resist some evil editors!!!
             local_version.name = lines[0];
+        }
+        return local_version;
+    }
+
+    auto tool_versions_file = buildPath(directory, ".tool-versions");
+    if (tool_versions_file.exists && tool_versions_file.isFile) {
+        auto name = parse_tool_versions_ruby(read_version_file(tool_versions_file));
+        if (name.length) {
+            local_version.path = tool_versions_file;
+            local_version.name = name;
         }
     }
 
@@ -153,4 +183,13 @@ LocalVersion get_nearest_local_version() {
     }
 
     return LocalVersion.init;
+}
+
+
+unittest {
+    // Comments and other tools are skipped; the first ruby entry wins
+    assert(parse_tool_versions_ruby("# managed\nnodejs 20.1.0\nruby 3.2.1\n") == "3.2.1");
+    assert(parse_tool_versions_ruby("ruby   3.3.0-1  3.2.1\n") == "3.3.0-1");
+    assert(parse_tool_versions_ruby("nodejs 20.1.0\n") == "");
+    assert(parse_tool_versions_ruby("# ruby 3.2.1\n") == "");
 }
